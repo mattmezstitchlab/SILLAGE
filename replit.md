@@ -27,7 +27,8 @@ _Populate as you build — short repo map plus pointers to the source-of-truth f
 ## Architecture decisions
 
 - La version connectée utilise des comptes organisateurs et une sauvegarde serveur ; les anciennes données locales ne doivent être importées que sur action explicite.
-- Les extraits du catalogue servent à découvrir la musique, sans téléchargement. Les fichiers audio importés restent privés au propriétaire ; les liens invités ne donnent jamais accès à leur lecture.
+- Les extraits du catalogue servent à découvrir la musique, sans téléchargement. Les fichiers audio importés restent privés ; les liens invités ne donnent jamais accès à leur lecture. Un transfert DJ distinct autorise seulement le compte destinataire à télécharger une sélection explicitement approuvée.
+- Un transfert DJ est une sélection figée, pas un partage évolutif de playlist : ajouter ensuite des morceaux à une playlist ne doit jamais étendre automatiquement les droits accordés. La révocation bloque les nouvelles demandes, pas les copies déjà reçues ni les transferts déjà démarrés.
 - Ne pas inventer de BPM, tonalité ou énergie lorsque la source ne fournit pas ces informations. Les transitions sur fichiers importés ne constituent pas un moteur de beatmatching professionnel.
 - Garder les services de recherche, prévisualisation, bibliothèque, collaboration, Timeline et compatibilité remplaçables pour de futures intégrations officielles.
 

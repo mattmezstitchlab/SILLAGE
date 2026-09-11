@@ -7,6 +7,12 @@
  */
 
 export * from './createFolderBody';
+export * from './djTransfer';
+export * from './djTransferCreate';
+export * from './djTransferHistory';
+export * from './djTransferHistoryStatus';
+export * from './djTransferStatus';
+export * from './djTransferTrack';
 export * from './event';
 export * from './eventInput';
 export * from './guestEvent';
@@ -26,6 +32,7 @@ export * from './prototypeImport';
 export * from './prototypeImportState';
 export * from './replaceMomentTracksBody';
 export * from './replacePlaylistTracksBody';
+export * from './revokeDjTransfer200';
 export * from './searchCatalogue200';
 export * from './searchCatalogueParams';
 export * from './searchGuestCatalogueParams';

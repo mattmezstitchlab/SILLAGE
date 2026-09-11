@@ -136,6 +136,84 @@ export interface GuestEvent {
   proposals: Proposal[];
 }
 
+export interface DjTransferCreate {
+  /** @maxLength 320 */
+  recipientEmail: string;
+  /**
+     * @minItems 1
+     * @maxItems 500
+     */
+  trackIds: string[];
+  /** Future ISO timestamp */
+  expiresAt: string;
+  rightsConfirmed: true;
+}
+
+export interface DjTransferTrack {
+  id: string;
+  title: string;
+  artist: string;
+  album: string;
+  mimeType: string;
+  /** @minimum 1 */
+  byteSize: number;
+  /** API download endpoint; never an object-storage URL */
+  downloadUrl: string;
+}
+
+export type DjTransferHistoryStatus = typeof DjTransferHistoryStatus[keyof typeof DjTransferHistoryStatus];
+
+
+export const DjTransferHistoryStatus = {
+  initiated: 'initiated',
+  served: 'served',
+  failed: 'failed',
+  aborted: 'aborted',
+} as const;
+
+export interface DjTransferHistory {
+  id: string;
+  trackId: string | null;
+  /** Transferred file title captured when the attempt was authorized */
+  titleSnapshot: string | null;
+  status: DjTransferHistoryStatus;
+  /** Clerk account id that initiated the attempt */
+  djUserId: string | null;
+  startedAt: string;
+  completedAt: string | null;
+}
+
+export type DjTransferStatus = typeof DjTransferStatus[keyof typeof DjTransferStatus];
+
+
+export const DjTransferStatus = {
+  pending: 'pending',
+  active: 'active',
+  expired: 'expired',
+  revoked: 'revoked',
+} as const;
+
+export interface DjTransfer {
+  id: string;
+  eventId: string;
+  /** Event name snapshot retained for transfer history */
+  eventName: string;
+  /** Copyable application URL /dj-transfers/{id} */
+  url: string;
+  recipientEmail: string;
+  /** Bound Clerk user id; null until first verified-email access */
+  recipientUserId: string | null;
+  boundAt: string | null;
+  rightsConfirmedAt: string;
+  expiresAt: string;
+  revokedAt: string | null;
+  createdAt: string;
+  status: DjTransferStatus;
+  tracks: DjTransferTrack[];
+  /** Owner-only download audit history; omitted for recipient responses */
+  history?: DjTransferHistory[];
+}
+
 export type OwnerStateFoldersItem = { [key: string]: unknown };
 
 export type OwnerStateTimelineItem = { [key: string]: unknown };
@@ -210,5 +288,10 @@ export type ModerateProposalBody = {
   status: ModerateProposalBodyStatus;
   playlistId?: string;
   revision?: number;
+};
+
+export type RevokeDjTransfer200 = {
+  id: string;
+  revokedAt: string;
 };
 

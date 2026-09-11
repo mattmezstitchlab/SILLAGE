@@ -1,1 +1,2 @@
 - [Design delegation paths](design-delegation-paths.md) — Confirm the actual output directory after delegated builds; outputDir alone may not constrain file writes.
+- [Private-link error handling](private-link-errors.md) — Authorization denials must promptly replace cached private content, not remain behind retry/loading states.

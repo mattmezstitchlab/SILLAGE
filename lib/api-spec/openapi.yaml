@@ -9,6 +9,7 @@ tags:
   - name: health
   - name: owner
   - name: guest
+  - name: dj-transfer
 paths:
   /healthz:
     get:
@@ -261,6 +262,92 @@ paths:
         required: true
         content: { application/json: { schema: { type: object, required: [status], properties: { status: { type: string, enum: [approved, rejected] }, playlistId: { type: string }, revision: { type: integer } } } } }
       responses: { "200": { description: Moderated } }
+  /events/{eventId}/dj-transfers:
+    post:
+      operationId: createDjTransfer
+      tags: [dj-transfer]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/DjTransferCreate" }
+      responses:
+        "201":
+          description: DJ transfer created. The URL is a copyable application URL; no email is sent.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DjTransfer" }
+    get:
+      operationId: listDjTransfers
+      tags: [dj-transfer]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      responses:
+        "200":
+          description: Owner transfer history, including revoked and expired grants.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/DjTransfer" }
+  /dj-transfers/received:
+    get:
+      operationId: listReceivedDjTransfers
+      tags: [dj-transfer]
+      responses:
+        "200":
+          description: Grants addressed to the signed-in user's verified Clerk email or already bound to that user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/DjTransfer" }
+  /dj-transfers/{transferId}/revoke:
+    post:
+      operationId: revokeDjTransfer
+      tags: [dj-transfer]
+      parameters: [{ $ref: "#/components/parameters/TransferId" }]
+      responses:
+        "200":
+          description: Transfer revoked. Requests authorized before the revocation may finish their current stream.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [id, revokedAt]
+                properties:
+                  id: { type: string, format: uuid }
+                  revokedAt: { type: string, format: date-time }
+  /dj-transfers/{transferId}:
+    get:
+      operationId: getDjTransfer
+      tags: [dj-transfer]
+      parameters: [{ $ref: "#/components/parameters/TransferId" }]
+      responses:
+        "200":
+          description: Selected tracks for the verified recipient, or an owner view with owner-only download history. First recipient access atomically binds an unbound email grant to that Clerk user.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DjTransfer" }
+  /dj-transfers/{transferId}/tracks/{trackId}/download:
+    get:
+      operationId: downloadDjTransferTrack
+      tags: [dj-transfer]
+      description: Full private attachment only; Range headers are ignored and the endpoint never returns a signed storage URL.
+      parameters:
+        - { $ref: "#/components/parameters/TransferId" }
+        - { $ref: "#/components/parameters/TrackId" }
+      responses:
+        "200":
+          description: Full private audio attachment. A completed response means the server transferred the bytes; it cannot observe whether a browser saved the file.
+          headers:
+            Content-Disposition: { schema: { type: string } }
+            Cache-Control: { schema: { type: string, example: "private, no-store" } }
+          content:
+            audio/*:
+              schema: { type: string, format: binary }
+        "404": { description: Grant inactive or track not selected }
+        "416": { description: Reserved for clients that require byte ranges; this implementation ignores Range and returns a full attachment }
 components:
   parameters:
     EventId: { in: path, name: eventId, required: true, schema: { type: string } }
@@ -270,6 +357,7 @@ components:
     ShareId: { in: path, name: shareId, required: true, schema: { type: string } }
     ProposalId: { in: path, name: proposalId, required: true, schema: { type: string } }
     Token: { in: path, name: token, required: true, schema: { type: string } }
+    TransferId: { in: path, name: transferId, required: true, schema: { type: string, format: uuid } }
   schemas:
     HealthStatus: { type: object, required: [status], properties: { status: { type: string } } }
     EventInput: { type: object, required: [name], properties: { name: { type: string, minLength: 1, maxLength: 120 }, date: { type: string, nullable: true } } }
@@ -297,6 +385,62 @@ components:
     Proposal: { type: object, required: [id, guestName, message, track, status, votes], properties: { id: { type: string }, guestName: { type: string }, message: { type: string }, track: { $ref: "#/components/schemas/Track" }, status: { type: string }, votes: { type: integer } } }
     ShareLink: { type: object, required: [id, token, url], properties: { id: { type: string }, token: { type: string, nullable: true }, url: { type: string, nullable: true }, createdAt: { type: string } } }
     GuestEvent: { type: object, required: [name, proposals], properties: { name: { type: string }, proposals: { type: array, items: { $ref: "#/components/schemas/Proposal" } } } }
+    DjTransferCreate:
+      type: object
+      required: [recipientEmail, trackIds, expiresAt, rightsConfirmed]
+      properties:
+        recipientEmail: { type: string, format: email, maxLength: 320 }
+        trackIds:
+          type: array
+          minItems: 1
+          maxItems: 500
+          uniqueItems: true
+          items: { type: string, format: uuid }
+        expiresAt: { type: string, format: date-time, description: Future ISO timestamp, no more than 90 days from creation }
+        rightsConfirmed: { type: boolean, const: true }
+    DjTransferTrack:
+      type: object
+      required: [id, title, artist, album, mimeType, byteSize, downloadUrl]
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        artist: { type: string }
+        album: { type: string }
+        mimeType: { type: string }
+        byteSize: { type: integer, minimum: 1 }
+        downloadUrl: { type: string, description: API download endpoint; never an object-storage URL }
+    DjTransferHistory:
+      type: object
+      required: [id, trackId, titleSnapshot, status, djUserId, startedAt, completedAt]
+      properties:
+        id: { type: string, format: uuid }
+        trackId: { type: string, format: uuid, nullable: true }
+        titleSnapshot: { type: string, nullable: true, description: "Transferred file title captured when the attempt was authorized" }
+        status: { type: string, enum: [initiated, served, failed, aborted] }
+        djUserId: { type: string, nullable: true, description: "Clerk account id that initiated the attempt" }
+        startedAt: { type: string, format: date-time }
+        completedAt: { type: string, format: date-time, nullable: true }
+    DjTransfer:
+      type: object
+      required: [id, eventId, eventName, url, recipientEmail, recipientUserId, boundAt, rightsConfirmedAt, expiresAt, revokedAt, createdAt, status, tracks]
+      properties:
+        id: { type: string, format: uuid }
+        eventId: { type: string, format: uuid }
+        eventName: { type: string, description: Event name snapshot retained for transfer history }
+        url: { type: string, description: "Copyable application URL /dj-transfers/{id}" }
+        recipientEmail: { type: string, format: email }
+        recipientUserId: { type: string, nullable: true, description: Bound Clerk user id; null until first verified-email access }
+        boundAt: { type: string, format: date-time, nullable: true }
+        rightsConfirmedAt: { type: string, format: date-time }
+        expiresAt: { type: string, format: date-time }
+        revokedAt: { type: string, format: date-time, nullable: true }
+        createdAt: { type: string, format: date-time }
+        status: { type: string, enum: [pending, active, expired, revoked] }
+        tracks: { type: array, items: { $ref: "#/components/schemas/DjTransferTrack" } }
+        history:
+          type: array
+          description: "Owner-only download audit history; omitted for recipient responses"
+          items: { $ref: "#/components/schemas/DjTransferHistory" }
     OwnerState:
       type: object
       required: [events, activeEventId, library, playlists, folders, timeline, proposals]

@@ -746,3 +746,199 @@ export const ModerateProposalBody = zod.object({
 export const ModerateProposalResponse = zod.unknown()
 
 
+export const CreateDjTransferParams = zod.object({
+  "eventId": zod.coerce.string()
+})
+
+export const createDjTransferBodyRecipientEmailMax = 320;
+
+export const createDjTransferBodyTrackIdsMax = 500;
+
+
+
+export const CreateDjTransferBody = zod.object({
+  "recipientEmail": zod.string().email().max(createDjTransferBodyRecipientEmailMax),
+  "trackIds": zod.array(zod.string().uuid()).min(1).max(createDjTransferBodyTrackIdsMax),
+  "expiresAt": zod.coerce.date().describe('Future ISO timestamp'),
+  "rightsConfirmed": zod.literal(true)
+})
+
+
+
+
+export const CreateDjTransferResponse = zod.object({
+  "id": zod.string().uuid(),
+  "eventId": zod.string().uuid(),
+  "eventName": zod.string().describe('Event name snapshot retained for transfer history'),
+  "url": zod.string().describe('Copyable application URL /dj-transfers/{id}'),
+  "recipientEmail": zod.string().email(),
+  "recipientUserId": zod.string().nullable().describe('Bound Clerk user id; null until first verified-email access'),
+  "boundAt": zod.coerce.date().nullable(),
+  "rightsConfirmedAt": zod.coerce.date(),
+  "expiresAt": zod.coerce.date(),
+  "revokedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "status": zod.enum(['pending', 'active', 'expired', 'revoked']),
+  "tracks": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "artist": zod.string(),
+  "album": zod.string(),
+  "mimeType": zod.string(),
+  "byteSize": zod.number().int().min(1),
+  "downloadUrl": zod.string().describe('API download endpoint; never an object-storage URL')
+})),
+  "history": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "trackId": zod.string().uuid().nullable(),
+  "titleSnapshot": zod.string().nullable().describe('Transferred file title captured when the attempt was authorized'),
+  "status": zod.enum(['initiated', 'served', 'failed', 'aborted']),
+  "djUserId": zod.string().nullable().describe('Clerk account id that initiated the attempt'),
+  "startedAt": zod.coerce.date(),
+  "completedAt": zod.coerce.date().nullable()
+})).optional().describe('Owner-only download audit history; omitted for recipient responses')
+})
+
+
+export const ListDjTransfersParams = zod.object({
+  "eventId": zod.coerce.string()
+})
+
+
+
+
+export const ListDjTransfersResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "eventId": zod.string().uuid(),
+  "eventName": zod.string().describe('Event name snapshot retained for transfer history'),
+  "url": zod.string().describe('Copyable application URL /dj-transfers/{id}'),
+  "recipientEmail": zod.string().email(),
+  "recipientUserId": zod.string().nullable().describe('Bound Clerk user id; null until first verified-email access'),
+  "boundAt": zod.coerce.date().nullable(),
+  "rightsConfirmedAt": zod.coerce.date(),
+  "expiresAt": zod.coerce.date(),
+  "revokedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "status": zod.enum(['pending', 'active', 'expired', 'revoked']),
+  "tracks": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "artist": zod.string(),
+  "album": zod.string(),
+  "mimeType": zod.string(),
+  "byteSize": zod.number().int().min(1),
+  "downloadUrl": zod.string().describe('API download endpoint; never an object-storage URL')
+})),
+  "history": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "trackId": zod.string().uuid().nullable(),
+  "titleSnapshot": zod.string().nullable().describe('Transferred file title captured when the attempt was authorized'),
+  "status": zod.enum(['initiated', 'served', 'failed', 'aborted']),
+  "djUserId": zod.string().nullable().describe('Clerk account id that initiated the attempt'),
+  "startedAt": zod.coerce.date(),
+  "completedAt": zod.coerce.date().nullable()
+})).optional().describe('Owner-only download audit history; omitted for recipient responses')
+})
+export const ListDjTransfersResponse = zod.array(ListDjTransfersResponseItem)
+
+
+
+
+
+export const ListReceivedDjTransfersResponseItem = zod.object({
+  "id": zod.string().uuid(),
+  "eventId": zod.string().uuid(),
+  "eventName": zod.string().describe('Event name snapshot retained for transfer history'),
+  "url": zod.string().describe('Copyable application URL /dj-transfers/{id}'),
+  "recipientEmail": zod.string().email(),
+  "recipientUserId": zod.string().nullable().describe('Bound Clerk user id; null until first verified-email access'),
+  "boundAt": zod.coerce.date().nullable(),
+  "rightsConfirmedAt": zod.coerce.date(),
+  "expiresAt": zod.coerce.date(),
+  "revokedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "status": zod.enum(['pending', 'active', 'expired', 'revoked']),
+  "tracks": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "artist": zod.string(),
+  "album": zod.string(),
+  "mimeType": zod.string(),
+  "byteSize": zod.number().int().min(1),
+  "downloadUrl": zod.string().describe('API download endpoint; never an object-storage URL')
+})),
+  "history": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "trackId": zod.string().uuid().nullable(),
+  "titleSnapshot": zod.string().nullable().describe('Transferred file title captured when the attempt was authorized'),
+  "status": zod.enum(['initiated', 'served', 'failed', 'aborted']),
+  "djUserId": zod.string().nullable().describe('Clerk account id that initiated the attempt'),
+  "startedAt": zod.coerce.date(),
+  "completedAt": zod.coerce.date().nullable()
+})).optional().describe('Owner-only download audit history; omitted for recipient responses')
+})
+export const ListReceivedDjTransfersResponse = zod.array(ListReceivedDjTransfersResponseItem)
+
+
+export const RevokeDjTransferParams = zod.object({
+  "transferId": zod.coerce.string().uuid()
+})
+
+export const RevokeDjTransferResponse = zod.object({
+  "id": zod.string().uuid(),
+  "revokedAt": zod.coerce.date()
+})
+
+
+export const GetDjTransferParams = zod.object({
+  "transferId": zod.coerce.string().uuid()
+})
+
+
+
+
+export const GetDjTransferResponse = zod.object({
+  "id": zod.string().uuid(),
+  "eventId": zod.string().uuid(),
+  "eventName": zod.string().describe('Event name snapshot retained for transfer history'),
+  "url": zod.string().describe('Copyable application URL /dj-transfers/{id}'),
+  "recipientEmail": zod.string().email(),
+  "recipientUserId": zod.string().nullable().describe('Bound Clerk user id; null until first verified-email access'),
+  "boundAt": zod.coerce.date().nullable(),
+  "rightsConfirmedAt": zod.coerce.date(),
+  "expiresAt": zod.coerce.date(),
+  "revokedAt": zod.coerce.date().nullable(),
+  "createdAt": zod.coerce.date(),
+  "status": zod.enum(['pending', 'active', 'expired', 'revoked']),
+  "tracks": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "title": zod.string(),
+  "artist": zod.string(),
+  "album": zod.string(),
+  "mimeType": zod.string(),
+  "byteSize": zod.number().int().min(1),
+  "downloadUrl": zod.string().describe('API download endpoint; never an object-storage URL')
+})),
+  "history": zod.array(zod.object({
+  "id": zod.string().uuid(),
+  "trackId": zod.string().uuid().nullable(),
+  "titleSnapshot": zod.string().nullable().describe('Transferred file title captured when the attempt was authorized'),
+  "status": zod.enum(['initiated', 'served', 'failed', 'aborted']),
+  "djUserId": zod.string().nullable().describe('Clerk account id that initiated the attempt'),
+  "startedAt": zod.coerce.date(),
+  "completedAt": zod.coerce.date().nullable()
+})).optional().describe('Owner-only download audit history; omitted for recipient responses')
+})
+
+
+/**
+ * Full private attachment only; Range headers are ignored and the endpoint never returns a signed storage URL.
+ */
+export const DownloadDjTransferTrackParams = zod.object({
+  "transferId": zod.coerce.string().uuid(),
+  "trackId": zod.coerce.string()
+})
+
+export const DownloadDjTransferTrackResponse = zod.unknown()
+
+

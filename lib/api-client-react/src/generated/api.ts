@@ -21,6 +21,8 @@ import type {
 
 import type {
   CreateFolderBody,
+  DjTransfer,
+  DjTransferCreate,
   Event,
   EventInput,
   GuestEvent,
@@ -35,6 +37,7 @@ import type {
   PrototypeImport,
   ReplaceMomentTracksBody,
   ReplacePlaylistTracksBody,
+  RevokeDjTransfer200,
   SearchCatalogue200,
   SearchCatalogueParams,
   SearchGuestCatalogueParams,
@@ -138,13 +141,6 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
 
   return withQueryKey(query, queryOptions.queryKey);
 }
-
-
-
-
-
-
-
 export const getGetOwnerStateUrl = () => {
 
 
@@ -2406,4 +2402,447 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
       > => {
       return useMutation(getModerateProposalMutationOptions(options));
     }
+
+export const getCreateDjTransferUrl = (eventId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/dj-transfers`
+}
+
+export const createDjTransfer = async (eventId: string,
+    djTransferCreate: DjTransferCreate, options?: Parameters<typeof customFetch>[1]): Promise<DjTransfer> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<DjTransfer>(getCreateDjTransferUrl(eventId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(djTransferCreate)
+  }
+);}
+
+
+
+
+
+export const getCreateDjTransferMutationKey = () => ['createDjTransfer'] as const;
+
+export const getCreateDjTransferMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createDjTransfer>>, TError,CreateDjTransferMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createDjTransfer>>, TError,CreateDjTransferMutationVariables, TContext> => {
+
+const mutationKey = getCreateDjTransferMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createDjTransfer>>, CreateDjTransferMutationVariables> = (props) => {
+          const {eventId,data} = props ?? {};
+
+          return  createDjTransfer(eventId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateDjTransferMutationResult = NonNullable<Awaited<ReturnType<typeof createDjTransfer>>>
+    export type CreateDjTransferMutationBody = BodyType<DjTransferCreate>
+    export type CreateDjTransferMutationError = ErrorType<unknown>
+    export type CreateDjTransferMutationVariables = {eventId: string;data: BodyType<DjTransferCreate>}
+
+    export const useCreateDjTransfer = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createDjTransfer>>, TError,CreateDjTransferMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createDjTransfer>>,
+        TError,
+        CreateDjTransferMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateDjTransferMutationOptions(options));
+    }
+
+export const getListDjTransfersUrl = (eventId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/dj-transfers`
+}
+
+export const listDjTransfers = async (eventId: string, options?: Parameters<typeof customFetch>[1]): Promise<DjTransfer[]> => {
+
+  return customFetch<DjTransfer[]>(getListDjTransfersUrl(eventId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListDjTransfersQueryKey = (eventId: string,) => {
+    return [
+    `/api/events/${eventId}/dj-transfers`
+    ] as const;
+    }
+
+
+export const getListDjTransfersQueryOptions = <TData = Awaited<ReturnType<typeof listDjTransfers>>, TError = ErrorType<unknown>>(eventId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listDjTransfers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListDjTransfersQueryKey(eventId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listDjTransfers>>> = ({ signal }) => listDjTransfers(eventId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: eventId !== null && eventId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listDjTransfers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListDjTransfersQueryResult = NonNullable<Awaited<ReturnType<typeof listDjTransfers>>>
+export type ListDjTransfersQueryError = ErrorType<unknown>
+
+
+
+export function useListDjTransfers<TData = Awaited<ReturnType<typeof listDjTransfers>>, TError = ErrorType<unknown>>(
+ eventId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listDjTransfers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListDjTransfersQueryOptions(eventId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListReceivedDjTransfersUrl = () => {
+
+
+
+
+  return `/api/dj-transfers/received`
+}
+
+export const listReceivedDjTransfers = async ( options?: Parameters<typeof customFetch>[1]): Promise<DjTransfer[]> => {
+
+  return customFetch<DjTransfer[]>(getListReceivedDjTransfersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListReceivedDjTransfersQueryKey = () => {
+    return [
+    `/api/dj-transfers/received`
+    ] as const;
+    }
+
+
+export const getListReceivedDjTransfersQueryOptions = <TData = Awaited<ReturnType<typeof listReceivedDjTransfers>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listReceivedDjTransfers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListReceivedDjTransfersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listReceivedDjTransfers>>> = ({ signal }) => listReceivedDjTransfers({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listReceivedDjTransfers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListReceivedDjTransfersQueryResult = NonNullable<Awaited<ReturnType<typeof listReceivedDjTransfers>>>
+export type ListReceivedDjTransfersQueryError = ErrorType<unknown>
+
+
+
+export function useListReceivedDjTransfers<TData = Awaited<ReturnType<typeof listReceivedDjTransfers>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listReceivedDjTransfers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListReceivedDjTransfersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getRevokeDjTransferUrl = (transferId: string,) => {
+
+
+
+
+  return `/api/dj-transfers/${transferId}/revoke`
+}
+
+export const revokeDjTransfer = async (transferId: string, options?: Parameters<typeof customFetch>[1]): Promise<RevokeDjTransfer200> => {
+
+  return customFetch<RevokeDjTransfer200>(getRevokeDjTransferUrl(transferId),
+  {
+    ...options,
+    method: 'POST'
+
+
+  }
+);}
+
+
+
+
+
+export const getRevokeDjTransferMutationKey = () => ['revokeDjTransfer'] as const;
+
+export const getRevokeDjTransferMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeDjTransfer>>, TError,RevokeDjTransferMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof revokeDjTransfer>>, TError,RevokeDjTransferMutationVariables, TContext> => {
+
+const mutationKey = getRevokeDjTransferMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof revokeDjTransfer>>, RevokeDjTransferMutationVariables> = (props) => {
+          const {transferId} = props ?? {};
+
+          return  revokeDjTransfer(transferId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RevokeDjTransferMutationResult = NonNullable<Awaited<ReturnType<typeof revokeDjTransfer>>>
+
+    export type RevokeDjTransferMutationError = ErrorType<unknown>
+    export type RevokeDjTransferMutationVariables = {transferId: string}
+
+    export const useRevokeDjTransfer = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof revokeDjTransfer>>, TError,RevokeDjTransferMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof revokeDjTransfer>>,
+        TError,
+        RevokeDjTransferMutationVariables,
+        TContext
+      > => {
+      return useMutation(getRevokeDjTransferMutationOptions(options));
+    }
+
+export const getGetDjTransferUrl = (transferId: string,) => {
+
+
+
+
+  return `/api/dj-transfers/${transferId}`
+}
+
+export const getDjTransfer = async (transferId: string, options?: Parameters<typeof customFetch>[1]): Promise<DjTransfer> => {
+
+  return customFetch<DjTransfer>(getGetDjTransferUrl(transferId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetDjTransferQueryKey = (transferId: string,) => {
+    return [
+    `/api/dj-transfers/${transferId}`
+    ] as const;
+    }
+
+
+export const getGetDjTransferQueryOptions = <TData = Awaited<ReturnType<typeof getDjTransfer>>, TError = ErrorType<unknown>>(transferId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDjTransfer>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetDjTransferQueryKey(transferId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getDjTransfer>>> = ({ signal }) => getDjTransfer(transferId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: transferId !== null && transferId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getDjTransfer>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetDjTransferQueryResult = NonNullable<Awaited<ReturnType<typeof getDjTransfer>>>
+export type GetDjTransferQueryError = ErrorType<unknown>
+
+
+
+export function useGetDjTransfer<TData = Awaited<ReturnType<typeof getDjTransfer>>, TError = ErrorType<unknown>>(
+ transferId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getDjTransfer>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetDjTransferQueryOptions(transferId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getDownloadDjTransferTrackUrl = (transferId: string,
+    trackId: string,) => {
+
+
+
+
+  return `/api/dj-transfers/${transferId}/tracks/${trackId}/download`
+}
+
+/**
+ * Full private attachment only; Range headers are ignored and the endpoint never returns a signed storage URL.
+ */
+export const downloadDjTransferTrack = async (transferId: string,
+    trackId: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getDownloadDjTransferTrackUrl(transferId,trackId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getDownloadDjTransferTrackQueryKey = (transferId: string,
+    trackId: string,) => {
+    return [
+    `/api/dj-transfers/${transferId}/tracks/${trackId}/download`
+    ] as const;
+    }
+
+
+export const getDownloadDjTransferTrackQueryOptions = <TData = Awaited<ReturnType<typeof downloadDjTransferTrack>>, TError = ErrorType<void>>(transferId: string,
+    trackId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof downloadDjTransferTrack>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDownloadDjTransferTrackQueryKey(transferId,trackId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadDjTransferTrack>>> = ({ signal }) => downloadDjTransferTrack(transferId,trackId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: transferId !== null && transferId !== undefined && trackId !== null && trackId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof downloadDjTransferTrack>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type DownloadDjTransferTrackQueryResult = NonNullable<Awaited<ReturnType<typeof downloadDjTransferTrack>>>
+export type DownloadDjTransferTrackQueryError = ErrorType<void>
+
+
+
+export function useDownloadDjTransferTrack<TData = Awaited<ReturnType<typeof downloadDjTransferTrack>>, TError = ErrorType<void>>(
+ transferId: string,
+    trackId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof downloadDjTransferTrack>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getDownloadDjTransferTrackQueryOptions(transferId,trackId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
 

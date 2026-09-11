@@ -82,3 +82,28 @@ export async function streamPrivateAudio(objectPath: string, range: string | und
   res.setHeader("Content-Length", end - start + 1);
   file.createReadStream({ start, end }).on("error", () => res.destroy()).pipe(res);
 }
+
+/**
+ * Opens a private object for an authenticated attachment response.
+ *
+ * DJ transfers intentionally use a full-body response instead of exposing
+ * object URLs or implementing byte ranges. The returned stream is owned by
+ * the caller and must be destroyed when the client disconnects.
+ */
+export async function openPrivateAudioDownload(objectPath: string) {
+  const { bucket, objectName } = pathParts(objectPath);
+  const file = objectStorageClient.bucket(bucket).file(objectName);
+  const [metadata] = await file.getMetadata();
+  const size = Number(metadata.size);
+  if (!Number.isSafeInteger(size) || size < 0) {
+    throw new Error("Les métadonnées du fichier audio sont invalides.");
+  }
+
+  const stream = file.createReadStream();
+  return {
+    stream,
+    size,
+    contentType: String(metadata.contentType || "application/octet-stream"),
+    cancel: () => stream.destroy(),
+  };
+}
