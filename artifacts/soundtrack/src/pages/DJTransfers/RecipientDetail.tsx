@@ -244,7 +244,7 @@ function TrackDownloadRow({ transferId, track, isActive }: { transferId: string,
             <span className="text-primary tabular-nums">{progress}%</span>
             <div className="w-16 h-1.5 bg-secondary rounded-full overflow-hidden">
               <div 
-                className="h-full bg-primary transition-all duration-300" 
+                className="h-full bg-gradient-to-r from-[hsl(var(--primary-gradient-from))] to-[hsl(var(--primary-gradient-to))] transition-all duration-300" 
                 style={{ width: `${progress}%` }} 
               />
             </div>

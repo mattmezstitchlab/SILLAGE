@@ -21,18 +21,31 @@ import type {
 
 import type {
   CreateFolderBody,
+  CreditNoteInput,
   DjTransfer,
   DjTransferCreate,
+  DownloadProfessionalDocumentParams,
   Event,
   EventInput,
   EventTheme,
   GuestEvent,
   HealthStatus,
+  IssueProfessionalDocumentInput,
   ModerateProposalBody,
   MomentInput,
   OwnerState,
   Playlist,
   PlaylistInput,
+  ProfessionalClient,
+  ProfessionalClientInput,
+  ProfessionalDocument,
+  ProfessionalDocumentInput,
+  ProfessionalDocumentRevision,
+  ProfessionalDossier,
+  ProfessionalDossierInput,
+  ProfessionalProfile,
+  ProfessionalProfileInput,
+  ProfessionalSources,
   Proposal,
   ProposalInput,
   PrototypeImport,
@@ -631,6 +644,9 @@ export const getUploadEventThemeImageUrl = (eventId: string,) => {
   return `/api/events/${eventId}/theme/images`
 }
 
+/**
+ * Accepts an image/jpeg, image/png, or image/webp binary body. Multipart/form-data with a single image field is also accepted.
+ */
 export const uploadEventThemeImage = async (eventId: string,
     uploadEventThemeImageBody: Blob, options?: Parameters<typeof customFetch>[1]): Promise<ThemeImageUploadResponse> => {
 
@@ -3369,6 +3385,1743 @@ export function useDownloadDjTransferTrack<TData = Awaited<ReturnType<typeof dow
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getDownloadDjTransferTrackQueryOptions(transferId,trackId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetProfessionalProfileUrl = () => {
+
+
+
+
+  return `/api/professional/profile`
+}
+
+export const getProfessionalProfile = async ( options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalProfile> => {
+
+  return customFetch<ProfessionalProfile>(getGetProfessionalProfileUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfessionalProfileQueryKey = () => {
+    return [
+    `/api/professional/profile`
+    ] as const;
+    }
+
+
+export const getGetProfessionalProfileQueryOptions = <TData = Awaited<ReturnType<typeof getProfessionalProfile>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfessionalProfileQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfessionalProfile>>> = ({ signal }) => getProfessionalProfile({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfessionalProfile>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfessionalProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getProfessionalProfile>>>
+export type GetProfessionalProfileQueryError = ErrorType<unknown>
+
+
+
+export function useGetProfessionalProfile<TData = Awaited<ReturnType<typeof getProfessionalProfile>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalProfile>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfessionalProfileQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getSaveProfessionalProfileUrl = () => {
+
+
+
+
+  return `/api/professional/profile`
+}
+
+export const saveProfessionalProfile = async (professionalProfileInput: ProfessionalProfileInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalProfile> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalProfile>(getSaveProfessionalProfileUrl(),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(professionalProfileInput)
+  }
+);}
+
+
+
+
+
+export const getSaveProfessionalProfileMutationKey = () => ['saveProfessionalProfile'] as const;
+
+export const getSaveProfessionalProfileMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveProfessionalProfile>>, TError,SaveProfessionalProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof saveProfessionalProfile>>, TError,SaveProfessionalProfileMutationVariables, TContext> => {
+
+const mutationKey = getSaveProfessionalProfileMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof saveProfessionalProfile>>, SaveProfessionalProfileMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  saveProfessionalProfile(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type SaveProfessionalProfileMutationResult = NonNullable<Awaited<ReturnType<typeof saveProfessionalProfile>>>
+    export type SaveProfessionalProfileMutationBody = BodyType<ProfessionalProfileInput>
+    export type SaveProfessionalProfileMutationError = ErrorType<unknown>
+    export type SaveProfessionalProfileMutationVariables = {data: BodyType<ProfessionalProfileInput>}
+
+    export const useSaveProfessionalProfile = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof saveProfessionalProfile>>, TError,SaveProfessionalProfileMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof saveProfessionalProfile>>,
+        TError,
+        SaveProfessionalProfileMutationVariables,
+        TContext
+      > => {
+      return useMutation(getSaveProfessionalProfileMutationOptions(options));
+    }
+
+export const getDeleteProfessionalProfileUrl = () => {
+
+
+
+
+  return `/api/professional/profile`
+}
+
+export const deleteProfessionalProfile = async ( options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteProfessionalProfileUrl(),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteProfessionalProfileMutationKey = () => ['deleteProfessionalProfile'] as const;
+
+export const getDeleteProfessionalProfileMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalProfile>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalProfile>>, TError,void, TContext> => {
+
+const mutationKey = getDeleteProfessionalProfileMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProfessionalProfile>>, void> = () => {
+
+
+          return  deleteProfessionalProfile(requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteProfessionalProfileMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProfessionalProfile>>>
+
+    export type DeleteProfessionalProfileMutationError = ErrorType<unknown>
+
+
+    export const useDeleteProfessionalProfile = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalProfile>>, TError,void, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteProfessionalProfile>>,
+        TError,
+        void,
+        TContext
+      > => {
+      return useMutation(getDeleteProfessionalProfileMutationOptions(options));
+    }
+
+export const getGetProfessionalSourcesUrl = () => {
+
+
+
+
+  return `/api/professional/sources`
+}
+
+export const getProfessionalSources = async ( options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalSources> => {
+
+  return customFetch<ProfessionalSources>(getGetProfessionalSourcesUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfessionalSourcesQueryKey = () => {
+    return [
+    `/api/professional/sources`
+    ] as const;
+    }
+
+
+export const getGetProfessionalSourcesQueryOptions = <TData = Awaited<ReturnType<typeof getProfessionalSources>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalSources>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfessionalSourcesQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfessionalSources>>> = ({ signal }) => getProfessionalSources({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfessionalSources>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfessionalSourcesQueryResult = NonNullable<Awaited<ReturnType<typeof getProfessionalSources>>>
+export type GetProfessionalSourcesQueryError = ErrorType<unknown>
+
+
+
+export function useGetProfessionalSources<TData = Awaited<ReturnType<typeof getProfessionalSources>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalSources>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfessionalSourcesQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getListProfessionalClientsUrl = () => {
+
+
+
+
+  return `/api/professional/clients`
+}
+
+export const listProfessionalClients = async ( options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalClient[]> => {
+
+  return customFetch<ProfessionalClient[]>(getListProfessionalClientsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListProfessionalClientsQueryKey = () => {
+    return [
+    `/api/professional/clients`
+    ] as const;
+    }
+
+
+export const getListProfessionalClientsQueryOptions = <TData = Awaited<ReturnType<typeof listProfessionalClients>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalClients>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListProfessionalClientsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listProfessionalClients>>> = ({ signal }) => listProfessionalClients({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listProfessionalClients>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListProfessionalClientsQueryResult = NonNullable<Awaited<ReturnType<typeof listProfessionalClients>>>
+export type ListProfessionalClientsQueryError = ErrorType<unknown>
+
+
+
+export function useListProfessionalClients<TData = Awaited<ReturnType<typeof listProfessionalClients>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalClients>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListProfessionalClientsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateProfessionalClientUrl = () => {
+
+
+
+
+  return `/api/professional/clients`
+}
+
+export const createProfessionalClient = async (professionalClientInput: ProfessionalClientInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalClient> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalClient>(getCreateProfessionalClientUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(professionalClientInput)
+  }
+);}
+
+
+
+
+
+export const getCreateProfessionalClientMutationKey = () => ['createProfessionalClient'] as const;
+
+export const getCreateProfessionalClientMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalClient>>, TError,CreateProfessionalClientMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createProfessionalClient>>, TError,CreateProfessionalClientMutationVariables, TContext> => {
+
+const mutationKey = getCreateProfessionalClientMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProfessionalClient>>, CreateProfessionalClientMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createProfessionalClient(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateProfessionalClientMutationResult = NonNullable<Awaited<ReturnType<typeof createProfessionalClient>>>
+    export type CreateProfessionalClientMutationBody = BodyType<ProfessionalClientInput>
+    export type CreateProfessionalClientMutationError = ErrorType<unknown>
+    export type CreateProfessionalClientMutationVariables = {data: BodyType<ProfessionalClientInput>}
+
+    export const useCreateProfessionalClient = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalClient>>, TError,CreateProfessionalClientMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createProfessionalClient>>,
+        TError,
+        CreateProfessionalClientMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateProfessionalClientMutationOptions(options));
+    }
+
+export const getGetProfessionalClientUrl = (clientId: string,) => {
+
+
+
+
+  return `/api/professional/clients/${clientId}`
+}
+
+export const getProfessionalClient = async (clientId: string, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalClient> => {
+
+  return customFetch<ProfessionalClient>(getGetProfessionalClientUrl(clientId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfessionalClientQueryKey = (clientId: string,) => {
+    return [
+    `/api/professional/clients/${clientId}`
+    ] as const;
+    }
+
+
+export const getGetProfessionalClientQueryOptions = <TData = Awaited<ReturnType<typeof getProfessionalClient>>, TError = ErrorType<unknown>>(clientId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalClient>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfessionalClientQueryKey(clientId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfessionalClient>>> = ({ signal }) => getProfessionalClient(clientId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: clientId !== null && clientId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfessionalClient>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfessionalClientQueryResult = NonNullable<Awaited<ReturnType<typeof getProfessionalClient>>>
+export type GetProfessionalClientQueryError = ErrorType<unknown>
+
+
+
+export function useGetProfessionalClient<TData = Awaited<ReturnType<typeof getProfessionalClient>>, TError = ErrorType<unknown>>(
+ clientId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalClient>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfessionalClientQueryOptions(clientId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateProfessionalClientUrl = (clientId: string,) => {
+
+
+
+
+  return `/api/professional/clients/${clientId}`
+}
+
+export const updateProfessionalClient = async (clientId: string,
+    professionalClientInput: ProfessionalClientInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalClient> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalClient>(getUpdateProfessionalClientUrl(clientId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(professionalClientInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateProfessionalClientMutationKey = () => ['updateProfessionalClient'] as const;
+
+export const getUpdateProfessionalClientMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalClient>>, TError,UpdateProfessionalClientMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalClient>>, TError,UpdateProfessionalClientMutationVariables, TContext> => {
+
+const mutationKey = getUpdateProfessionalClientMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProfessionalClient>>, UpdateProfessionalClientMutationVariables> = (props) => {
+          const {clientId,data} = props ?? {};
+
+          return  updateProfessionalClient(clientId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateProfessionalClientMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfessionalClient>>>
+    export type UpdateProfessionalClientMutationBody = BodyType<ProfessionalClientInput>
+    export type UpdateProfessionalClientMutationError = ErrorType<unknown>
+    export type UpdateProfessionalClientMutationVariables = {clientId: string;data: BodyType<ProfessionalClientInput>}
+
+    export const useUpdateProfessionalClient = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalClient>>, TError,UpdateProfessionalClientMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateProfessionalClient>>,
+        TError,
+        UpdateProfessionalClientMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateProfessionalClientMutationOptions(options));
+    }
+
+export const getDeleteProfessionalClientUrl = (clientId: string,) => {
+
+
+
+
+  return `/api/professional/clients/${clientId}`
+}
+
+export const deleteProfessionalClient = async (clientId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteProfessionalClientUrl(clientId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteProfessionalClientMutationKey = () => ['deleteProfessionalClient'] as const;
+
+export const getDeleteProfessionalClientMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalClient>>, TError,DeleteProfessionalClientMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalClient>>, TError,DeleteProfessionalClientMutationVariables, TContext> => {
+
+const mutationKey = getDeleteProfessionalClientMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProfessionalClient>>, DeleteProfessionalClientMutationVariables> = (props) => {
+          const {clientId} = props ?? {};
+
+          return  deleteProfessionalClient(clientId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteProfessionalClientMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProfessionalClient>>>
+
+    export type DeleteProfessionalClientMutationError = ErrorType<unknown>
+    export type DeleteProfessionalClientMutationVariables = {clientId: string}
+
+    export const useDeleteProfessionalClient = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalClient>>, TError,DeleteProfessionalClientMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteProfessionalClient>>,
+        TError,
+        DeleteProfessionalClientMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteProfessionalClientMutationOptions(options));
+    }
+
+export const getListProfessionalDossiersUrl = () => {
+
+
+
+
+  return `/api/professional/dossiers`
+}
+
+export const listProfessionalDossiers = async ( options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDossier[]> => {
+
+  return customFetch<ProfessionalDossier[]>(getListProfessionalDossiersUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListProfessionalDossiersQueryKey = () => {
+    return [
+    `/api/professional/dossiers`
+    ] as const;
+    }
+
+
+export const getListProfessionalDossiersQueryOptions = <TData = Awaited<ReturnType<typeof listProfessionalDossiers>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDossiers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListProfessionalDossiersQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listProfessionalDossiers>>> = ({ signal }) => listProfessionalDossiers({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDossiers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListProfessionalDossiersQueryResult = NonNullable<Awaited<ReturnType<typeof listProfessionalDossiers>>>
+export type ListProfessionalDossiersQueryError = ErrorType<unknown>
+
+
+
+export function useListProfessionalDossiers<TData = Awaited<ReturnType<typeof listProfessionalDossiers>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDossiers>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListProfessionalDossiersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateProfessionalDossierUrl = () => {
+
+
+
+
+  return `/api/professional/dossiers`
+}
+
+export const createProfessionalDossier = async (professionalDossierInput: ProfessionalDossierInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDossier> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalDossier>(getCreateProfessionalDossierUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(professionalDossierInput)
+  }
+);}
+
+
+
+
+
+export const getCreateProfessionalDossierMutationKey = () => ['createProfessionalDossier'] as const;
+
+export const getCreateProfessionalDossierMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalDossier>>, TError,CreateProfessionalDossierMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createProfessionalDossier>>, TError,CreateProfessionalDossierMutationVariables, TContext> => {
+
+const mutationKey = getCreateProfessionalDossierMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProfessionalDossier>>, CreateProfessionalDossierMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createProfessionalDossier(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateProfessionalDossierMutationResult = NonNullable<Awaited<ReturnType<typeof createProfessionalDossier>>>
+    export type CreateProfessionalDossierMutationBody = BodyType<ProfessionalDossierInput>
+    export type CreateProfessionalDossierMutationError = ErrorType<unknown>
+    export type CreateProfessionalDossierMutationVariables = {data: BodyType<ProfessionalDossierInput>}
+
+    export const useCreateProfessionalDossier = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalDossier>>, TError,CreateProfessionalDossierMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createProfessionalDossier>>,
+        TError,
+        CreateProfessionalDossierMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateProfessionalDossierMutationOptions(options));
+    }
+
+export const getGetProfessionalDossierUrl = (dossierId: string,) => {
+
+
+
+
+  return `/api/professional/dossiers/${dossierId}`
+}
+
+export const getProfessionalDossier = async (dossierId: string, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDossier> => {
+
+  return customFetch<ProfessionalDossier>(getGetProfessionalDossierUrl(dossierId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfessionalDossierQueryKey = (dossierId: string,) => {
+    return [
+    `/api/professional/dossiers/${dossierId}`
+    ] as const;
+    }
+
+
+export const getGetProfessionalDossierQueryOptions = <TData = Awaited<ReturnType<typeof getProfessionalDossier>>, TError = ErrorType<unknown>>(dossierId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalDossier>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfessionalDossierQueryKey(dossierId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfessionalDossier>>> = ({ signal }) => getProfessionalDossier(dossierId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: dossierId !== null && dossierId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfessionalDossier>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfessionalDossierQueryResult = NonNullable<Awaited<ReturnType<typeof getProfessionalDossier>>>
+export type GetProfessionalDossierQueryError = ErrorType<unknown>
+
+
+
+export function useGetProfessionalDossier<TData = Awaited<ReturnType<typeof getProfessionalDossier>>, TError = ErrorType<unknown>>(
+ dossierId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalDossier>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfessionalDossierQueryOptions(dossierId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateProfessionalDossierUrl = (dossierId: string,) => {
+
+
+
+
+  return `/api/professional/dossiers/${dossierId}`
+}
+
+export const updateProfessionalDossier = async (dossierId: string,
+    professionalDossierInput: ProfessionalDossierInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDossier> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalDossier>(getUpdateProfessionalDossierUrl(dossierId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(professionalDossierInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateProfessionalDossierMutationKey = () => ['updateProfessionalDossier'] as const;
+
+export const getUpdateProfessionalDossierMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalDossier>>, TError,UpdateProfessionalDossierMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalDossier>>, TError,UpdateProfessionalDossierMutationVariables, TContext> => {
+
+const mutationKey = getUpdateProfessionalDossierMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProfessionalDossier>>, UpdateProfessionalDossierMutationVariables> = (props) => {
+          const {dossierId,data} = props ?? {};
+
+          return  updateProfessionalDossier(dossierId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateProfessionalDossierMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfessionalDossier>>>
+    export type UpdateProfessionalDossierMutationBody = BodyType<ProfessionalDossierInput>
+    export type UpdateProfessionalDossierMutationError = ErrorType<unknown>
+    export type UpdateProfessionalDossierMutationVariables = {dossierId: string;data: BodyType<ProfessionalDossierInput>}
+
+    export const useUpdateProfessionalDossier = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalDossier>>, TError,UpdateProfessionalDossierMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateProfessionalDossier>>,
+        TError,
+        UpdateProfessionalDossierMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateProfessionalDossierMutationOptions(options));
+    }
+
+export const getDeleteProfessionalDossierUrl = (dossierId: string,) => {
+
+
+
+
+  return `/api/professional/dossiers/${dossierId}`
+}
+
+export const deleteProfessionalDossier = async (dossierId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteProfessionalDossierUrl(dossierId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteProfessionalDossierMutationKey = () => ['deleteProfessionalDossier'] as const;
+
+export const getDeleteProfessionalDossierMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalDossier>>, TError,DeleteProfessionalDossierMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalDossier>>, TError,DeleteProfessionalDossierMutationVariables, TContext> => {
+
+const mutationKey = getDeleteProfessionalDossierMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProfessionalDossier>>, DeleteProfessionalDossierMutationVariables> = (props) => {
+          const {dossierId} = props ?? {};
+
+          return  deleteProfessionalDossier(dossierId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteProfessionalDossierMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProfessionalDossier>>>
+
+    export type DeleteProfessionalDossierMutationError = ErrorType<unknown>
+    export type DeleteProfessionalDossierMutationVariables = {dossierId: string}
+
+    export const useDeleteProfessionalDossier = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalDossier>>, TError,DeleteProfessionalDossierMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteProfessionalDossier>>,
+        TError,
+        DeleteProfessionalDossierMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteProfessionalDossierMutationOptions(options));
+    }
+
+export const getListProfessionalDocumentsUrl = () => {
+
+
+
+
+  return `/api/professional/documents`
+}
+
+export const listProfessionalDocuments = async ( options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDocument[]> => {
+
+  return customFetch<ProfessionalDocument[]>(getListProfessionalDocumentsUrl(),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListProfessionalDocumentsQueryKey = () => {
+    return [
+    `/api/professional/documents`
+    ] as const;
+    }
+
+
+export const getListProfessionalDocumentsQueryOptions = <TData = Awaited<ReturnType<typeof listProfessionalDocuments>>, TError = ErrorType<unknown>>( options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDocuments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListProfessionalDocumentsQueryKey();
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listProfessionalDocuments>>> = ({ signal }) => listProfessionalDocuments({ signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDocuments>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListProfessionalDocumentsQueryResult = NonNullable<Awaited<ReturnType<typeof listProfessionalDocuments>>>
+export type ListProfessionalDocumentsQueryError = ErrorType<unknown>
+
+
+
+export function useListProfessionalDocuments<TData = Awaited<ReturnType<typeof listProfessionalDocuments>>, TError = ErrorType<unknown>>(
+  options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDocuments>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListProfessionalDocumentsQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getCreateProfessionalDocumentUrl = () => {
+
+
+
+
+  return `/api/professional/documents`
+}
+
+export const createProfessionalDocument = async (professionalDocumentInput: ProfessionalDocumentInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDocument> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalDocument>(getCreateProfessionalDocumentUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(professionalDocumentInput)
+  }
+);}
+
+
+
+
+
+export const getCreateProfessionalDocumentMutationKey = () => ['createProfessionalDocument'] as const;
+
+export const getCreateProfessionalDocumentMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalDocument>>, TError,CreateProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createProfessionalDocument>>, TError,CreateProfessionalDocumentMutationVariables, TContext> => {
+
+const mutationKey = getCreateProfessionalDocumentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProfessionalDocument>>, CreateProfessionalDocumentMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createProfessionalDocument(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateProfessionalDocumentMutationResult = NonNullable<Awaited<ReturnType<typeof createProfessionalDocument>>>
+    export type CreateProfessionalDocumentMutationBody = BodyType<ProfessionalDocumentInput>
+    export type CreateProfessionalDocumentMutationError = ErrorType<unknown>
+    export type CreateProfessionalDocumentMutationVariables = {data: BodyType<ProfessionalDocumentInput>}
+
+    export const useCreateProfessionalDocument = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalDocument>>, TError,CreateProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createProfessionalDocument>>,
+        TError,
+        CreateProfessionalDocumentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateProfessionalDocumentMutationOptions(options));
+    }
+
+export const getGetProfessionalDocumentUrl = (documentId: string,) => {
+
+
+
+
+  return `/api/professional/documents/${documentId}`
+}
+
+export const getProfessionalDocument = async (documentId: string, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDocument> => {
+
+  return customFetch<ProfessionalDocument>(getGetProfessionalDocumentUrl(documentId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetProfessionalDocumentQueryKey = (documentId: string,) => {
+    return [
+    `/api/professional/documents/${documentId}`
+    ] as const;
+    }
+
+
+export const getGetProfessionalDocumentQueryOptions = <TData = Awaited<ReturnType<typeof getProfessionalDocument>>, TError = ErrorType<unknown>>(documentId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalDocument>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProfessionalDocumentQueryKey(documentId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProfessionalDocument>>> = ({ signal }) => getProfessionalDocument(documentId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: documentId !== null && documentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProfessionalDocument>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetProfessionalDocumentQueryResult = NonNullable<Awaited<ReturnType<typeof getProfessionalDocument>>>
+export type GetProfessionalDocumentQueryError = ErrorType<unknown>
+
+
+
+export function useGetProfessionalDocument<TData = Awaited<ReturnType<typeof getProfessionalDocument>>, TError = ErrorType<unknown>>(
+ documentId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getProfessionalDocument>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetProfessionalDocumentQueryOptions(documentId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateProfessionalDocumentUrl = (documentId: string,) => {
+
+
+
+
+  return `/api/professional/documents/${documentId}`
+}
+
+export const updateProfessionalDocument = async (documentId: string,
+    professionalDocumentInput: ProfessionalDocumentInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDocument> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalDocument>(getUpdateProfessionalDocumentUrl(documentId),
+  {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(professionalDocumentInput)
+  }
+);}
+
+
+
+
+
+export const getUpdateProfessionalDocumentMutationKey = () => ['updateProfessionalDocument'] as const;
+
+export const getUpdateProfessionalDocumentMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalDocument>>, TError,UpdateProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalDocument>>, TError,UpdateProfessionalDocumentMutationVariables, TContext> => {
+
+const mutationKey = getUpdateProfessionalDocumentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateProfessionalDocument>>, UpdateProfessionalDocumentMutationVariables> = (props) => {
+          const {documentId,data} = props ?? {};
+
+          return  updateProfessionalDocument(documentId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateProfessionalDocumentMutationResult = NonNullable<Awaited<ReturnType<typeof updateProfessionalDocument>>>
+    export type UpdateProfessionalDocumentMutationBody = BodyType<ProfessionalDocumentInput>
+    export type UpdateProfessionalDocumentMutationError = ErrorType<void>
+    export type UpdateProfessionalDocumentMutationVariables = {documentId: string;data: BodyType<ProfessionalDocumentInput>}
+
+    export const useUpdateProfessionalDocument = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateProfessionalDocument>>, TError,UpdateProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateProfessionalDocument>>,
+        TError,
+        UpdateProfessionalDocumentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateProfessionalDocumentMutationOptions(options));
+    }
+
+export const getDeleteProfessionalDocumentUrl = (documentId: string,) => {
+
+
+
+
+  return `/api/professional/documents/${documentId}`
+}
+
+export const deleteProfessionalDocument = async (documentId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteProfessionalDocumentUrl(documentId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteProfessionalDocumentMutationKey = () => ['deleteProfessionalDocument'] as const;
+
+export const getDeleteProfessionalDocumentMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalDocument>>, TError,DeleteProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalDocument>>, TError,DeleteProfessionalDocumentMutationVariables, TContext> => {
+
+const mutationKey = getDeleteProfessionalDocumentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProfessionalDocument>>, DeleteProfessionalDocumentMutationVariables> = (props) => {
+          const {documentId} = props ?? {};
+
+          return  deleteProfessionalDocument(documentId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteProfessionalDocumentMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProfessionalDocument>>>
+
+    export type DeleteProfessionalDocumentMutationError = ErrorType<unknown>
+    export type DeleteProfessionalDocumentMutationVariables = {documentId: string}
+
+    export const useDeleteProfessionalDocument = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProfessionalDocument>>, TError,DeleteProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteProfessionalDocument>>,
+        TError,
+        DeleteProfessionalDocumentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteProfessionalDocumentMutationOptions(options));
+    }
+
+export const getIssueProfessionalDocumentUrl = (documentId: string,) => {
+
+
+
+
+  return `/api/professional/documents/${documentId}/issue`
+}
+
+export const issueProfessionalDocument = async (documentId: string,
+    issueProfessionalDocumentInput: IssueProfessionalDocumentInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDocument> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalDocument>(getIssueProfessionalDocumentUrl(documentId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(issueProfessionalDocumentInput)
+  }
+);}
+
+
+
+
+
+export const getIssueProfessionalDocumentMutationKey = () => ['issueProfessionalDocument'] as const;
+
+export const getIssueProfessionalDocumentMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof issueProfessionalDocument>>, TError,IssueProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof issueProfessionalDocument>>, TError,IssueProfessionalDocumentMutationVariables, TContext> => {
+
+const mutationKey = getIssueProfessionalDocumentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof issueProfessionalDocument>>, IssueProfessionalDocumentMutationVariables> = (props) => {
+          const {documentId,data} = props ?? {};
+
+          return  issueProfessionalDocument(documentId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type IssueProfessionalDocumentMutationResult = NonNullable<Awaited<ReturnType<typeof issueProfessionalDocument>>>
+    export type IssueProfessionalDocumentMutationBody = BodyType<IssueProfessionalDocumentInput>
+    export type IssueProfessionalDocumentMutationError = ErrorType<void>
+    export type IssueProfessionalDocumentMutationVariables = {documentId: string;data: BodyType<IssueProfessionalDocumentInput>}
+
+    export const useIssueProfessionalDocument = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof issueProfessionalDocument>>, TError,IssueProfessionalDocumentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof issueProfessionalDocument>>,
+        TError,
+        IssueProfessionalDocumentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getIssueProfessionalDocumentMutationOptions(options));
+    }
+
+export const getCreateProfessionalCreditNoteUrl = (documentId: string,) => {
+
+
+
+
+  return `/api/professional/documents/${documentId}/credit-notes`
+}
+
+export const createProfessionalCreditNote = async (documentId: string,
+    creditNoteInput: CreditNoteInput, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDocument> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ProfessionalDocument>(getCreateProfessionalCreditNoteUrl(documentId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(creditNoteInput)
+  }
+);}
+
+
+
+
+
+export const getCreateProfessionalCreditNoteMutationKey = () => ['createProfessionalCreditNote'] as const;
+
+export const getCreateProfessionalCreditNoteMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalCreditNote>>, TError,CreateProfessionalCreditNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createProfessionalCreditNote>>, TError,CreateProfessionalCreditNoteMutationVariables, TContext> => {
+
+const mutationKey = getCreateProfessionalCreditNoteMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createProfessionalCreditNote>>, CreateProfessionalCreditNoteMutationVariables> = (props) => {
+          const {documentId,data} = props ?? {};
+
+          return  createProfessionalCreditNote(documentId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateProfessionalCreditNoteMutationResult = NonNullable<Awaited<ReturnType<typeof createProfessionalCreditNote>>>
+    export type CreateProfessionalCreditNoteMutationBody = BodyType<CreditNoteInput>
+    export type CreateProfessionalCreditNoteMutationError = ErrorType<void>
+    export type CreateProfessionalCreditNoteMutationVariables = {documentId: string;data: BodyType<CreditNoteInput>}
+
+    export const useCreateProfessionalCreditNote = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createProfessionalCreditNote>>, TError,CreateProfessionalCreditNoteMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createProfessionalCreditNote>>,
+        TError,
+        CreateProfessionalCreditNoteMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateProfessionalCreditNoteMutationOptions(options));
+    }
+
+export const getListProfessionalDocumentRevisionsUrl = (documentId: string,) => {
+
+
+
+
+  return `/api/professional/documents/${documentId}/revisions`
+}
+
+export const listProfessionalDocumentRevisions = async (documentId: string, options?: Parameters<typeof customFetch>[1]): Promise<ProfessionalDocumentRevision[]> => {
+
+  return customFetch<ProfessionalDocumentRevision[]>(getListProfessionalDocumentRevisionsUrl(documentId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getListProfessionalDocumentRevisionsQueryKey = (documentId: string,) => {
+    return [
+    `/api/professional/documents/${documentId}/revisions`
+    ] as const;
+    }
+
+
+export const getListProfessionalDocumentRevisionsQueryOptions = <TData = Awaited<ReturnType<typeof listProfessionalDocumentRevisions>>, TError = ErrorType<unknown>>(documentId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDocumentRevisions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListProfessionalDocumentRevisionsQueryKey(documentId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listProfessionalDocumentRevisions>>> = ({ signal }) => listProfessionalDocumentRevisions(documentId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: documentId !== null && documentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDocumentRevisions>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type ListProfessionalDocumentRevisionsQueryResult = NonNullable<Awaited<ReturnType<typeof listProfessionalDocumentRevisions>>>
+export type ListProfessionalDocumentRevisionsQueryError = ErrorType<unknown>
+
+
+
+export function useListProfessionalDocumentRevisions<TData = Awaited<ReturnType<typeof listProfessionalDocumentRevisions>>, TError = ErrorType<unknown>>(
+ documentId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof listProfessionalDocumentRevisions>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getListProfessionalDocumentRevisionsQueryOptions(documentId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getDownloadProfessionalDocumentUrl = (documentId: string,
+    params?: DownloadProfessionalDocumentParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : String(value))
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/api/professional/documents/${documentId}/download?${stringifiedParams}` : `/api/professional/documents/${documentId}/download`
+}
+
+export const downloadProfessionalDocument = async (documentId: string,
+    params?: DownloadProfessionalDocumentParams, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getDownloadProfessionalDocumentUrl(documentId,params),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getDownloadProfessionalDocumentQueryKey = (documentId: string,
+    params?: DownloadProfessionalDocumentParams,) => {
+    return [
+    `/api/professional/documents/${documentId}/download`, ...(params ? [params] : [])
+    ] as const;
+    }
+
+
+export const getDownloadProfessionalDocumentQueryOptions = <TData = Awaited<ReturnType<typeof downloadProfessionalDocument>>, TError = ErrorType<unknown>>(documentId: string,
+    params?: DownloadProfessionalDocumentParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof downloadProfessionalDocument>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getDownloadProfessionalDocumentQueryKey(documentId,params);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof downloadProfessionalDocument>>> = ({ signal }) => downloadProfessionalDocument(documentId,params, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: documentId !== null && documentId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof downloadProfessionalDocument>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type DownloadProfessionalDocumentQueryResult = NonNullable<Awaited<ReturnType<typeof downloadProfessionalDocument>>>
+export type DownloadProfessionalDocumentQueryError = ErrorType<unknown>
+
+
+
+export function useDownloadProfessionalDocument<TData = Awaited<ReturnType<typeof downloadProfessionalDocument>>, TError = ErrorType<unknown>>(
+ documentId: string,
+    params?: DownloadProfessionalDocumentParams, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof downloadProfessionalDocument>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getDownloadProfessionalDocumentQueryOptions(documentId,params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

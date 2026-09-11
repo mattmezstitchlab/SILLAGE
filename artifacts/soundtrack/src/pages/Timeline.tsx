@@ -51,7 +51,7 @@ export default function TimelineView() {
           return (
             <div key={moment.id} className="relative pl-8">
               <div className="absolute -left-3 top-0 w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-primary" />
+                <div className="w-2 h-2 rounded-full bg-gradient-to-br from-[hsl(var(--primary-gradient-from))] to-[hsl(var(--primary-gradient-to))]" />
               </div>
               
               <div className="bg-card border border-border rounded-xl p-6 shadow-sm group">

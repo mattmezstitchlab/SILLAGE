@@ -11,6 +11,7 @@ tags:
   - name: guest
   - name: dj-transfer
   - name: theme
+  - name: professional
 paths:
   /healthz:
     get:
@@ -428,6 +429,193 @@ paths:
               schema: { type: string, format: binary }
         "404": { description: Grant inactive or track not selected }
         "416": { description: Reserved for clients that require byte ranges; this implementation ignores Range and returns a full attachment }
+  /professional/profile:
+    get:
+      operationId: getProfessionalProfile
+      tags: [professional]
+      responses:
+        "200": { description: Professional profile, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalProfile" } } } }
+    put:
+      operationId: saveProfessionalProfile
+      tags: [professional]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalProfileInput" } } }
+      responses:
+        "200": { description: Saved profile, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalProfile" } } } }
+    delete:
+      operationId: deleteProfessionalProfile
+      tags: [professional]
+      responses: { "204": { description: Deleted profile } }
+  /professional/sources:
+    get:
+      operationId: getProfessionalSources
+      tags: [professional]
+      responses:
+        "200": { description: Official-source review and product notices, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalSources" } } } }
+  /professional/clients:
+    get:
+      operationId: listProfessionalClients
+      tags: [professional]
+      responses:
+        "200":
+          description: Owner clients
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/ProfessionalClient" } }
+    post:
+      operationId: createProfessionalClient
+      tags: [professional]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalClientInput" } } }
+      responses:
+        "201": { description: Created client, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalClient" } } } }
+  /professional/clients/{clientId}:
+    get:
+      operationId: getProfessionalClient
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/ClientId" }]
+      responses: { "200": { description: Client, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalClient" } } } } }
+    patch:
+      operationId: updateProfessionalClient
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/ClientId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalClientInput" } } }
+      responses: { "200": { description: Updated client, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalClient" } } } } }
+    delete:
+      operationId: deleteProfessionalClient
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/ClientId" }]
+      responses: { "204": { description: Deleted client } }
+  /professional/dossiers:
+    get:
+      operationId: listProfessionalDossiers
+      tags: [professional]
+      responses:
+        "200":
+          description: Owner dossiers
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/ProfessionalDossier" } }
+    post:
+      operationId: createProfessionalDossier
+      tags: [professional]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDossierInput" } } }
+      responses: { "201": { description: Created dossier, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDossier" } } } } }
+  /professional/dossiers/{dossierId}:
+    get:
+      operationId: getProfessionalDossier
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DossierId" }]
+      responses: { "200": { description: Dossier, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDossier" } } } } }
+    patch:
+      operationId: updateProfessionalDossier
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DossierId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDossierInput" } } }
+      responses: { "200": { description: Updated dossier, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDossier" } } } } }
+    delete:
+      operationId: deleteProfessionalDossier
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DossierId" }]
+      responses: { "204": { description: Deleted dossier } }
+  /professional/documents:
+    get:
+      operationId: listProfessionalDocuments
+      tags: [professional]
+      responses:
+        "200":
+          description: Owner documents
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/ProfessionalDocument" } }
+    post:
+      operationId: createProfessionalDocument
+      tags: [professional]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDocumentInput" } } }
+      responses: { "201": { description: Draft document, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDocument" } } } } }
+  /professional/documents/{documentId}:
+    get:
+      operationId: getProfessionalDocument
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DocumentId" }]
+      responses: { "200": { description: Document, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDocument" } } } } }
+    patch:
+      operationId: updateProfessionalDocument
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DocumentId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDocumentInput" } } }
+      responses:
+        "200": { description: Updated draft, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDocument" } } } }
+        "409": { description: Revision conflict or issued document immutable }
+    delete:
+      operationId: deleteProfessionalDocument
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DocumentId" }]
+      responses: { "204": { description: Deleted draft } }
+  /professional/documents/{documentId}/issue:
+    post:
+      operationId: issueProfessionalDocument
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DocumentId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/IssueProfessionalDocumentInput" } } }
+      responses:
+        "200": { description: Issued immutable invoice, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDocument" } } } }
+        "400": { description: "Unsupported tax, foreign customer, incomplete statutory fields, or source notice not reviewed" }
+        "409": { description: Concurrent revision or existing issued document }
+  /professional/documents/{documentId}/credit-notes:
+    post:
+      operationId: createProfessionalCreditNote
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DocumentId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/CreditNoteInput" } } }
+      responses:
+        "201": { description: Issued credit note, content: { application/json: { schema: { $ref: "#/components/schemas/ProfessionalDocument" } } } }
+        "409": { description: Credit exceeds remaining invoice balance }
+  /professional/documents/{documentId}/revisions:
+    get:
+      operationId: listProfessionalDocumentRevisions
+      tags: [professional]
+      parameters: [{ $ref: "#/components/parameters/DocumentId" }]
+      responses:
+        "200":
+          description: Saved versions
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/ProfessionalDocumentRevision" } }
+  /professional/documents/{documentId}/download:
+    get:
+      operationId: downloadProfessionalDocument
+      tags: [professional]
+      parameters:
+        - { $ref: "#/components/parameters/DocumentId" }
+        - in: query
+          name: revision
+          required: false
+          schema: { type: integer, minimum: 1 }
+      responses:
+        "200":
+          description: Private server-generated PDF attachment
+          headers:
+            Cache-Control: { schema: { type: string, example: "private, no-store" } }
+            Content-Disposition: { schema: { type: string } }
+          content:
+            application/pdf: { schema: { type: string, format: binary } }
 components:
   parameters:
     EventId: { in: path, name: eventId, required: true, schema: { type: string } }
@@ -439,6 +627,9 @@ components:
     ProposalId: { in: path, name: proposalId, required: true, schema: { type: string } }
     Token: { in: path, name: token, required: true, schema: { type: string } }
     TransferId: { in: path, name: transferId, required: true, schema: { type: string, format: uuid } }
+    ClientId: { in: path, name: clientId, required: true, schema: { type: string, format: uuid } }
+    DossierId: { in: path, name: dossierId, required: true, schema: { type: string, format: uuid } }
+    DocumentId: { in: path, name: documentId, required: true, schema: { type: string, format: uuid } }
   schemas:
     HealthStatus: { type: object, required: [status], properties: { status: { type: string } } }
     EventInput: { type: object, required: [name], properties: { name: { type: string, minLength: 1, maxLength: 120 }, date: { type: string, nullable: true } } }
@@ -564,3 +755,205 @@ components:
         timeline: { type: array, items: { type: object } }
         proposals: { type: array, items: { $ref: "#/components/schemas/Proposal" } }
     PrototypeImport: { type: object, required: [state], properties: { state: { type: object }, eventName: { type: string } } }
+    ProfessionalAddress:
+      type: object
+      required: [line1, postalCode, city, country]
+      properties:
+        line1: { type: string, minLength: 1, maxLength: 200 }
+        line2: { type: string, nullable: true, maxLength: 200 }
+        postalCode: { type: string, minLength: 1, maxLength: 20 }
+        city: { type: string, minLength: 1, maxLength: 100 }
+        country: { type: string, minLength: 2, maxLength: 2, default: FR }
+    ProfessionalProfileInput:
+      type: object
+      required: [legalForm, legalName, companySize, address, email, vatRegime]
+      properties:
+        legalForm: { type: string, enum: [ei, company] }
+        legalName: { type: string, minLength: 1, maxLength: 200 }
+        companyLegalForm: { type: string, nullable: true, maxLength: 100, description: "Required when legalForm=company, e.g. SAS or SARL." }
+        companySize: { type: string, enum: [micro, pme, eti, large], description: "Declared size used to conservatively scope B2B electronic-invoicing rules." }
+        firstName: { type: string, nullable: true, maxLength: 100 }
+        lastName: { type: string, nullable: true, maxLength: 100 }
+        tradeName: { type: string, nullable: true, maxLength: 200 }
+        capitalSocialCents: { type: integer, minimum: 0, nullable: true }
+        registrationNumber: { type: string, nullable: true, maxLength: 100 }
+        siren: { type: string, nullable: true, pattern: "^[0-9]{9}$" }
+        siret: { type: string, nullable: true, pattern: "^[0-9]{14}$" }
+        address: { $ref: "#/components/schemas/ProfessionalAddress" }
+        email: { type: string, format: email, maxLength: 320 }
+        phone: { type: string, nullable: true, maxLength: 40 }
+        vatRegime: { type: string, enum: [franchise, standard] }
+        vatNumber: { type: string, nullable: true, maxLength: 40 }
+        revision: { type: integer, minimum: 1 }
+    ProfessionalProfile:
+      allOf:
+        - $ref: "#/components/schemas/ProfessionalProfileInput"
+        - type: object
+          required: [id, revision]
+          properties:
+            id: { type: string, format: uuid }
+            revision: { type: integer }
+    ProfessionalClientInput:
+      type: object
+      required: [kind, address]
+      properties:
+        kind: { type: string, enum: [individual, business] }
+        firstName: { type: string, nullable: true, maxLength: 100 }
+        lastName: { type: string, nullable: true, maxLength: 100 }
+        companyName: { type: string, nullable: true, maxLength: 200 }
+        contactName: { type: string, nullable: true, maxLength: 200 }
+        email: { type: string, format: email, nullable: true }
+        phone: { type: string, nullable: true, maxLength: 40 }
+        address: { $ref: "#/components/schemas/ProfessionalAddress" }
+        vatNumber: { type: string, nullable: true, maxLength: 40 }
+    ProfessionalClient:
+      allOf:
+        - $ref: "#/components/schemas/ProfessionalClientInput"
+        - type: object
+          required: [id, revision]
+          properties:
+            id: { type: string, format: uuid }
+            revision: { type: integer }
+    ProfessionalContact:
+      type: object
+      required: [name, role]
+      properties:
+        name: { type: string, maxLength: 200 }
+        role: { type: string, maxLength: 100 }
+        email: { type: string, format: email, nullable: true }
+        phone: { type: string, nullable: true, maxLength: 40 }
+    ProfessionalFee:
+      type: object
+      required: [label]
+      properties:
+        label: { type: string, maxLength: 200 }
+        amountCents: { type: integer, minimum: 0 }
+        grossFeeCents: { type: integer, minimum: 0 }
+        cachets: { type: integer, minimum: 0 }
+        hours: { type: integer, minimum: 0 }
+    ProfessionalChecklistItem:
+      type: object
+      required: [key, label, checked]
+      properties:
+        key: { type: string, maxLength: 100 }
+        label: { type: string, maxLength: 300 }
+        checked: { type: boolean }
+        sourceUrl: { type: string, format: uri, nullable: true }
+    ProfessionalDossierInput:
+      type: object
+      required: [name, startDate, pathway]
+      properties:
+        name: { type: string, minLength: 1, maxLength: 200 }
+        clientId: { type: string, format: uuid, nullable: true }
+        startDate: { type: string, format: date }
+        endDate: { type: string, format: date, nullable: true }
+        pathway: { type: string, enum: [invoiced_service, salaried_employment] }
+        preparatoryContacts: { type: array, maxItems: 30, items: { $ref: "#/components/schemas/ProfessionalContact" } }
+        fees: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/ProfessionalFee" } }
+        checklist: { type: array, maxItems: 50, items: { $ref: "#/components/schemas/ProfessionalChecklistItem" } }
+        revision: { type: integer, minimum: 1 }
+    ProfessionalDossier:
+      allOf:
+        - $ref: "#/components/schemas/ProfessionalDossierInput"
+        - type: object
+          required: [id, revision]
+          properties:
+            id: { type: string, format: uuid }
+            revision: { type: integer }
+    ProfessionalLineItem:
+      type: object
+      required: [description, quantity, unitAmountCents]
+      properties:
+        description: { type: string, minLength: 1, maxLength: 300 }
+        quantity: { type: integer, minimum: 1, maximum: 1000000 }
+        unitAmountCents: { type: integer, minimum: 0, maximum: 1000000000 }
+        taxRateBps: { type: integer, minimum: 0, maximum: 2500 }
+    ProfessionalDocumentInput:
+      type: object
+      required: [type, title, lineItems]
+      properties:
+        type: { type: string, enum: [quote, contract, invoice] }
+        title: { type: string, minLength: 1, maxLength: 200 }
+        clientId: { type: string, format: uuid, nullable: true }
+        dossierId: { type: string, format: uuid, nullable: true }
+        lineItems: { type: array, maxItems: 100, items: { $ref: "#/components/schemas/ProfessionalLineItem" } }
+        serviceDate: { type: string, format: date, nullable: true }
+        dueDate: { type: string, format: date, nullable: true }
+        validUntil: { type: string, format: date, nullable: true }
+        discountTerms: { type: string, nullable: true, maxLength: 500 }
+        latePaymentRate: { type: string, nullable: true, maxLength: 200 }
+        serviceType: { type: string, nullable: true, maxLength: 100 }
+        orderNumber: { type: string, nullable: true, maxLength: 100 }
+        paymentTerms: { type: string, nullable: true, maxLength: 2000 }
+        contractText: { type: string, nullable: true, maxLength: 20000 }
+        notes: { type: string, nullable: true, maxLength: 5000 }
+        revision: { type: integer, minimum: 1 }
+    ProfessionalDocument:
+      allOf:
+        - $ref: "#/components/schemas/ProfessionalDocumentInput"
+        - type: object
+          required: [id, status, revision, subtotalCents, taxCents, totalCents]
+          properties:
+            id: { type: string, format: uuid }
+            status: { type: string, enum: [draft, issued] }
+            documentNumber: { type: string, nullable: true }
+            issueDate: { type: string, nullable: true }
+            currency: { type: string, enum: [EUR] }
+            identitySnapshot: { type: object, nullable: true }
+            clientSnapshot: { type: object, nullable: true }
+            originalInvoiceId: { type: string, format: uuid, nullable: true }
+            subtotalCents: { type: integer }
+            taxCents: { type: integer }
+            totalCents: { type: integer }
+            issuedAt: { type: string, format: date-time, nullable: true }
+    IssueProfessionalDocumentInput:
+      type: object
+      required: [revision, idempotencyKey, sourcesReviewed]
+      properties:
+        revision: { type: integer, minimum: 1 }
+        idempotencyKey: { type: string, minLength: 8, maxLength: 120 }
+        sourcesReviewed: { type: boolean, const: true }
+    CreditNoteInput:
+      type: object
+      required: [amountCents, title, idempotencyKey, sourcesReviewed]
+      properties:
+        amountCents: { type: integer, minimum: 1 }
+        title: { type: string, minLength: 1, maxLength: 200 }
+        reason: { type: string, maxLength: 1000 }
+        idempotencyKey: { type: string, minLength: 8, maxLength: 120 }
+        sourcesReviewed: { type: boolean, const: true }
+    ProfessionalDocumentRevision:
+      type: object
+      required: [revision, status, snapshot, createdAt]
+      properties:
+        revision: { type: integer }
+        status: { type: string, enum: [draft, issued] }
+        snapshot: { type: object }
+        createdAt: { type: string, format: date-time }
+    ProfessionalSources:
+      type: object
+      required: [sourceReviewDate, sources, actions, notices]
+      properties:
+        sourceReviewDate: { type: string, format: date, nullable: true }
+        sources:
+          type: array
+          items:
+            type: object
+            required: [url, official]
+            properties:
+              title: { type: string }
+              url: { type: string, format: uri }
+              reviewedAt: { type: string, format: date, nullable: true }
+              summary: { type: string }
+              official: { type: boolean }
+        actions:
+          type: array
+          items:
+            type: object
+            required: [key, label, pathway, sourceRefs]
+            properties:
+              key: { type: string }
+              label: { type: string }
+              pathway: { type: string, enum: [invoiced_service, salaried_employment] }
+              sourceRefs: { type: array, items: { type: string, format: uri } }
+        notices: { type: array, items: { type: string } }

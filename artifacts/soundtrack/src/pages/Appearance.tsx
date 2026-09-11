@@ -135,7 +135,7 @@ export default function Appearance() {
                     <div className="h-2 w-10 bg-foreground/10 rounded" />
                   </div>
                 </div>
-                <div className="h-8 w-full bg-foreground/5 rounded" />
+                <div className="h-8 w-full bg-gradient-to-r from-[hsl(var(--primary-gradient-from))] to-[hsl(var(--primary-gradient-to))] rounded opacity-90" />
               </div>
               <div className="p-4 bg-card">
                 <h3 className="font-medium text-foreground">Studio</h3>
@@ -155,7 +155,7 @@ export default function Appearance() {
                     <div className="h-2 w-10 bg-black/10 rounded" />
                   </div>
                 </div>
-                <div className="h-8 w-full bg-white shadow-sm border border-black/5 rounded" />
+                <div className="h-8 w-full bg-gradient-to-r from-[hsl(var(--primary-gradient-from))] to-[hsl(var(--primary-gradient-to))] shadow-sm rounded opacity-90" />
               </div>
               <div className="p-4 bg-card">
                 <h3 className="font-medium text-foreground">Éditorial</h3>
@@ -176,7 +176,7 @@ export default function Appearance() {
                     <div className="h-2 w-10 bg-white/20 rounded backdrop-blur-sm" />
                   </div>
                 </div>
-                <div className="relative h-8 w-full bg-foreground/10 border border-white/20 backdrop-blur-md rounded" />
+                <div className="relative h-8 w-full bg-gradient-to-r from-[hsl(var(--primary-gradient-from))] to-[hsl(var(--primary-gradient-to))] shadow-sm rounded opacity-90" />
               </div>
               <div className="p-4 bg-card">
                 <h3 className="font-medium text-foreground">Signature</h3>

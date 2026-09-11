@@ -307,6 +307,358 @@ export interface PrototypeImport {
   eventName?: string;
 }
 
+export interface ProfessionalAddress {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  line1: string;
+  /** @maxLength 200 */
+  line2?: string | null;
+  /**
+     * @minLength 1
+     * @maxLength 20
+     */
+  postalCode: string;
+  /**
+     * @minLength 1
+     * @maxLength 100
+     */
+  city: string;
+  /**
+     * @minLength 2
+     * @maxLength 2
+     */
+  country: string;
+}
+
+export type ProfessionalProfileInputLegalForm = typeof ProfessionalProfileInputLegalForm[keyof typeof ProfessionalProfileInputLegalForm];
+
+
+export const ProfessionalProfileInputLegalForm = {
+  ei: 'ei',
+  company: 'company',
+} as const;
+
+export type ProfessionalProfileInputVatRegime = typeof ProfessionalProfileInputVatRegime[keyof typeof ProfessionalProfileInputVatRegime];
+
+
+export const ProfessionalProfileInputVatRegime = {
+  franchise: 'franchise',
+  standard: 'standard',
+} as const;
+
+export interface ProfessionalProfileInput {
+  legalForm: ProfessionalProfileInputLegalForm;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  legalName: string;
+  /** @maxLength 100 */
+  firstName?: string | null;
+  /** @maxLength 100 */
+  lastName?: string | null;
+  /** @maxLength 200 */
+  tradeName?: string | null;
+  /** @minimum 0 */
+  capitalSocialCents?: number | null;
+  /** @maxLength 100 */
+  registrationNumber?: string | null;
+  /** @pattern ^[0-9]{9}$ */
+  siren?: string | null;
+  /** @pattern ^[0-9]{14}$ */
+  siret?: string | null;
+  address: ProfessionalAddress;
+  /** @maxLength 320 */
+  email: string;
+  /** @maxLength 40 */
+  phone?: string | null;
+  vatRegime: ProfessionalProfileInputVatRegime;
+  /** @maxLength 40 */
+  vatNumber?: string | null;
+  /**
+     * @maxItems 10
+     * @items.minimum 0
+     * @items.maximum 2500
+     */
+  vatRatesBps?: number[];
+  /** @minimum 1 */
+  revision?: number;
+}
+
+export type ProfessionalProfile = ProfessionalProfileInput & {
+  id: string;
+  revision: number;
+};
+
+export type ProfessionalClientInputKind = typeof ProfessionalClientInputKind[keyof typeof ProfessionalClientInputKind];
+
+
+export const ProfessionalClientInputKind = {
+  individual: 'individual',
+  business: 'business',
+} as const;
+
+export interface ProfessionalClientInput {
+  kind: ProfessionalClientInputKind;
+  /** @maxLength 100 */
+  firstName?: string | null;
+  /** @maxLength 100 */
+  lastName?: string | null;
+  /** @maxLength 200 */
+  companyName?: string | null;
+  /** @maxLength 200 */
+  contactName?: string | null;
+  email?: string | null;
+  /** @maxLength 40 */
+  phone?: string | null;
+  address: ProfessionalAddress;
+  /** @maxLength 40 */
+  vatNumber?: string | null;
+}
+
+export type ProfessionalClient = ProfessionalClientInput & {
+  id: string;
+  revision: number;
+};
+
+export interface ProfessionalContact {
+  /** @maxLength 200 */
+  name: string;
+  /** @maxLength 100 */
+  role: string;
+  email?: string | null;
+  /** @maxLength 40 */
+  phone?: string | null;
+}
+
+export interface ProfessionalFee {
+  /** @maxLength 200 */
+  label: string;
+  /** @minimum 0 */
+  amountCents?: number;
+  /** @minimum 0 */
+  grossFeeCents?: number;
+  /** @minimum 0 */
+  cachets?: number;
+  /** @minimum 0 */
+  hours?: number;
+}
+
+export interface ProfessionalChecklistItem {
+  /** @maxLength 100 */
+  key: string;
+  /** @maxLength 300 */
+  label: string;
+  checked: boolean;
+  sourceUrl?: string | null;
+}
+
+export type ProfessionalDossierInputPathway = typeof ProfessionalDossierInputPathway[keyof typeof ProfessionalDossierInputPathway];
+
+
+export const ProfessionalDossierInputPathway = {
+  invoiced_service: 'invoiced_service',
+  salaried_employment: 'salaried_employment',
+} as const;
+
+export interface ProfessionalDossierInput {
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  name: string;
+  clientId?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  pathway: ProfessionalDossierInputPathway;
+  /** @maxItems 30 */
+  preparatoryContacts?: ProfessionalContact[];
+  /** @maxItems 50 */
+  fees?: ProfessionalFee[];
+  /** @maxItems 50 */
+  checklist?: ProfessionalChecklistItem[];
+  /** @minimum 1 */
+  revision?: number;
+}
+
+export type ProfessionalDossier = ProfessionalDossierInput & {
+  id: string;
+  revision: number;
+};
+
+export interface ProfessionalLineItem {
+  /**
+     * @minLength 1
+     * @maxLength 300
+     */
+  description: string;
+  /**
+     * @minimum 1
+     * @maximum 1000000
+     */
+  quantity: number;
+  /**
+     * @minimum 0
+     * @maximum 1000000000
+     */
+  unitAmountCents: number;
+  /**
+     * @minimum 0
+     * @maximum 2500
+     */
+  taxRateBps?: number;
+}
+
+export type ProfessionalDocumentInputType = typeof ProfessionalDocumentInputType[keyof typeof ProfessionalDocumentInputType];
+
+
+export const ProfessionalDocumentInputType = {
+  quote: 'quote',
+  contract: 'contract',
+  invoice: 'invoice',
+} as const;
+
+export interface ProfessionalDocumentInput {
+  type: ProfessionalDocumentInputType;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  clientId?: string | null;
+  dossierId?: string | null;
+  /** @maxItems 100 */
+  lineItems: ProfessionalLineItem[];
+  serviceDate?: string | null;
+  dueDate?: string | null;
+  validUntil?: string | null;
+  /** @maxLength 500 */
+  discountTerms?: string | null;
+  /** @maxLength 200 */
+  latePaymentRate?: string | null;
+  /** @maxLength 100 */
+  serviceType?: string | null;
+  /** @maxLength 100 */
+  orderNumber?: string | null;
+  /** @maxLength 2000 */
+  paymentTerms?: string | null;
+  /** @maxLength 20000 */
+  contractText?: string | null;
+  /** @maxLength 5000 */
+  notes?: string | null;
+  /** @minimum 1 */
+  revision?: number;
+}
+
+export type ProfessionalDocumentStatus = typeof ProfessionalDocumentStatus[keyof typeof ProfessionalDocumentStatus];
+
+
+export const ProfessionalDocumentStatus = {
+  draft: 'draft',
+  issued: 'issued',
+} as const;
+
+export type ProfessionalDocumentCurrency = typeof ProfessionalDocumentCurrency[keyof typeof ProfessionalDocumentCurrency];
+
+
+export const ProfessionalDocumentCurrency = {
+  EUR: 'EUR',
+} as const;
+
+export type ProfessionalDocumentIdentitySnapshot = { [key: string]: unknown } | null;
+
+export type ProfessionalDocumentClientSnapshot = { [key: string]: unknown } | null;
+
+export type ProfessionalDocument = ProfessionalDocumentInput & ({
+  id: string;
+  status: ProfessionalDocumentStatus;
+  documentNumber?: string | null;
+  issueDate?: string | null;
+  currency?: ProfessionalDocumentCurrency;
+  identitySnapshot?: ProfessionalDocumentIdentitySnapshot;
+  clientSnapshot?: ProfessionalDocumentClientSnapshot;
+  originalInvoiceId?: string | null;
+  subtotalCents: number;
+  taxCents: number;
+  totalCents: number;
+  issuedAt?: string | null;
+}) & Required<Pick<ProfessionalDocumentInput & ({
+  id: string;
+  status: ProfessionalDocumentStatus;
+  documentNumber?: string | null;
+  issueDate?: string | null;
+  currency?: ProfessionalDocumentCurrency;
+  identitySnapshot?: ProfessionalDocumentIdentitySnapshot;
+  clientSnapshot?: ProfessionalDocumentClientSnapshot;
+  originalInvoiceId?: string | null;
+  subtotalCents: number;
+  taxCents: number;
+  totalCents: number;
+  issuedAt?: string | null;
+}), 'revision'>>;
+
+export interface IssueProfessionalDocumentInput {
+  /** @minimum 1 */
+  revision: number;
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  idempotencyKey: string;
+  sourcesReviewed: true;
+}
+
+export interface CreditNoteInput {
+  /** @minimum 1 */
+  amountCents: number;
+  /**
+     * @minLength 1
+     * @maxLength 200
+     */
+  title: string;
+  /** @maxLength 1000 */
+  reason?: string;
+  /**
+     * @minLength 8
+     * @maxLength 120
+     */
+  idempotencyKey: string;
+  sourcesReviewed: true;
+}
+
+export type ProfessionalDocumentRevisionStatus = typeof ProfessionalDocumentRevisionStatus[keyof typeof ProfessionalDocumentRevisionStatus];
+
+
+export const ProfessionalDocumentRevisionStatus = {
+  draft: 'draft',
+  issued: 'issued',
+} as const;
+
+export type ProfessionalDocumentRevisionSnapshot = { [key: string]: unknown };
+
+export interface ProfessionalDocumentRevision {
+  revision: number;
+  status: ProfessionalDocumentRevisionStatus;
+  snapshot: ProfessionalDocumentRevisionSnapshot;
+  createdAt: string;
+}
+
+export type ProfessionalSourcesSourcesItem = {
+  title?: string;
+  url: string;
+  reviewedAt?: string | null;
+  summary?: string;
+  official: boolean;
+};
+
+export interface ProfessionalSources {
+  sourceReviewDate: string | null;
+  sources: ProfessionalSourcesSourcesItem[];
+  notices: string[];
+}
+
 export type UpdateTrackMetadataBody = {
   title: string;
   artist: string;
@@ -365,5 +717,12 @@ export type ModerateProposalBody = {
 export type RevokeDjTransfer200 = {
   id: string;
   revokedAt: string;
+};
+
+export type DownloadProfessionalDocumentParams = {
+/**
+ * @minimum 1
+ */
+revision?: number;
 };
 

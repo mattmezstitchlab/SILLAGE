@@ -338,6 +338,9 @@ export const UpdateEventThemeResponse = zod.object({
 })
 
 
+/**
+ * Accepts an image/jpeg, image/png, or image/webp binary body. Multipart/form-data with a single image field is also accepted.
+ */
 export const UploadEventThemeImageParams = zod.object({
   "eventId": zod.coerce.string()
 })
@@ -1079,5 +1082,1537 @@ export const DownloadDjTransferTrackParams = zod.object({
 })
 
 export const DownloadDjTransferTrackResponse = zod.unknown()
+
+
+export const getProfessionalProfileResponseOneLegalNameMax = 200;
+
+export const getProfessionalProfileResponseOneFirstNameMax = 100;
+
+export const getProfessionalProfileResponseOneLastNameMax = 100;
+
+export const getProfessionalProfileResponseOneTradeNameMax = 200;
+
+export const getProfessionalProfileResponseOneCapitalSocialCentsMin = 0;
+
+export const getProfessionalProfileResponseOneRegistrationNumberMax = 100;
+
+export const getProfessionalProfileResponseOneSirenRegExp = new RegExp('^[0-9]{9}$');
+export const getProfessionalProfileResponseOneSiretRegExp = new RegExp('^[0-9]{14}$');
+export const getProfessionalProfileResponseOneAddressLine1Max = 200;
+
+export const getProfessionalProfileResponseOneAddressLine2Max = 200;
+
+export const getProfessionalProfileResponseOneAddressPostalCodeMax = 20;
+
+export const getProfessionalProfileResponseOneAddressCityMax = 100;
+
+export const getProfessionalProfileResponseOneAddressCountryDefault = `FR`;
+export const getProfessionalProfileResponseOneAddressCountryMin = 2;
+export const getProfessionalProfileResponseOneAddressCountryMax = 2;
+
+export const getProfessionalProfileResponseOneEmailMax = 320;
+
+export const getProfessionalProfileResponseOnePhoneMax = 40;
+
+export const getProfessionalProfileResponseOneVatNumberMax = 40;
+
+export const getProfessionalProfileResponseOneVatRatesBpsItemMin = 0;
+export const getProfessionalProfileResponseOneVatRatesBpsItemMax = 2500;
+
+export const getProfessionalProfileResponseOneVatRatesBpsMax = 10;
+
+
+
+
+export const GetProfessionalProfileResponse = zod.object({
+  "legalForm": zod.enum(['ei', 'company']),
+  "legalName": zod.string().min(1).max(getProfessionalProfileResponseOneLegalNameMax),
+  "firstName": zod.string().max(getProfessionalProfileResponseOneFirstNameMax).nullish(),
+  "lastName": zod.string().max(getProfessionalProfileResponseOneLastNameMax).nullish(),
+  "tradeName": zod.string().max(getProfessionalProfileResponseOneTradeNameMax).nullish(),
+  "capitalSocialCents": zod.number().int().min(getProfessionalProfileResponseOneCapitalSocialCentsMin).nullish(),
+  "registrationNumber": zod.string().max(getProfessionalProfileResponseOneRegistrationNumberMax).nullish(),
+  "siren": zod.string().regex(getProfessionalProfileResponseOneSirenRegExp).nullish(),
+  "siret": zod.string().regex(getProfessionalProfileResponseOneSiretRegExp).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(getProfessionalProfileResponseOneAddressLine1Max),
+  "line2": zod.string().max(getProfessionalProfileResponseOneAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(getProfessionalProfileResponseOneAddressPostalCodeMax),
+  "city": zod.string().min(1).max(getProfessionalProfileResponseOneAddressCityMax),
+  "country": zod.string().min(getProfessionalProfileResponseOneAddressCountryMin).max(getProfessionalProfileResponseOneAddressCountryMax).default(getProfessionalProfileResponseOneAddressCountryDefault)
+}),
+  "email": zod.string().email().max(getProfessionalProfileResponseOneEmailMax),
+  "phone": zod.string().max(getProfessionalProfileResponseOnePhoneMax).nullish(),
+  "vatRegime": zod.enum(['franchise', 'standard']),
+  "vatNumber": zod.string().max(getProfessionalProfileResponseOneVatNumberMax).nullish(),
+  "vatRatesBps": zod.array(zod.number().int().min(getProfessionalProfileResponseOneVatRatesBpsItemMin).max(getProfessionalProfileResponseOneVatRatesBpsItemMax)).max(getProfessionalProfileResponseOneVatRatesBpsMax).optional(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const saveProfessionalProfileBodyLegalNameMax = 200;
+
+export const saveProfessionalProfileBodyFirstNameMax = 100;
+
+export const saveProfessionalProfileBodyLastNameMax = 100;
+
+export const saveProfessionalProfileBodyTradeNameMax = 200;
+
+export const saveProfessionalProfileBodyCapitalSocialCentsMin = 0;
+
+export const saveProfessionalProfileBodyRegistrationNumberMax = 100;
+
+export const saveProfessionalProfileBodySirenRegExp = new RegExp('^[0-9]{9}$');
+export const saveProfessionalProfileBodySiretRegExp = new RegExp('^[0-9]{14}$');
+export const saveProfessionalProfileBodyAddressLine1Max = 200;
+
+export const saveProfessionalProfileBodyAddressLine2Max = 200;
+
+export const saveProfessionalProfileBodyAddressPostalCodeMax = 20;
+
+export const saveProfessionalProfileBodyAddressCityMax = 100;
+
+export const saveProfessionalProfileBodyAddressCountryDefault = `FR`;
+export const saveProfessionalProfileBodyAddressCountryMin = 2;
+export const saveProfessionalProfileBodyAddressCountryMax = 2;
+
+export const saveProfessionalProfileBodyEmailMax = 320;
+
+export const saveProfessionalProfileBodyPhoneMax = 40;
+
+export const saveProfessionalProfileBodyVatNumberMax = 40;
+
+export const saveProfessionalProfileBodyVatRatesBpsItemMin = 0;
+export const saveProfessionalProfileBodyVatRatesBpsItemMax = 2500;
+
+export const saveProfessionalProfileBodyVatRatesBpsMax = 10;
+
+
+
+
+export const SaveProfessionalProfileBody = zod.object({
+  "legalForm": zod.enum(['ei', 'company']),
+  "legalName": zod.string().min(1).max(saveProfessionalProfileBodyLegalNameMax),
+  "firstName": zod.string().max(saveProfessionalProfileBodyFirstNameMax).nullish(),
+  "lastName": zod.string().max(saveProfessionalProfileBodyLastNameMax).nullish(),
+  "tradeName": zod.string().max(saveProfessionalProfileBodyTradeNameMax).nullish(),
+  "capitalSocialCents": zod.number().int().min(saveProfessionalProfileBodyCapitalSocialCentsMin).nullish(),
+  "registrationNumber": zod.string().max(saveProfessionalProfileBodyRegistrationNumberMax).nullish(),
+  "siren": zod.string().regex(saveProfessionalProfileBodySirenRegExp).nullish(),
+  "siret": zod.string().regex(saveProfessionalProfileBodySiretRegExp).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(saveProfessionalProfileBodyAddressLine1Max),
+  "line2": zod.string().max(saveProfessionalProfileBodyAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(saveProfessionalProfileBodyAddressPostalCodeMax),
+  "city": zod.string().min(1).max(saveProfessionalProfileBodyAddressCityMax),
+  "country": zod.string().min(saveProfessionalProfileBodyAddressCountryMin).max(saveProfessionalProfileBodyAddressCountryMax).default(saveProfessionalProfileBodyAddressCountryDefault)
+}),
+  "email": zod.string().email().max(saveProfessionalProfileBodyEmailMax),
+  "phone": zod.string().max(saveProfessionalProfileBodyPhoneMax).nullish(),
+  "vatRegime": zod.enum(['franchise', 'standard']),
+  "vatNumber": zod.string().max(saveProfessionalProfileBodyVatNumberMax).nullish(),
+  "vatRatesBps": zod.array(zod.number().int().min(saveProfessionalProfileBodyVatRatesBpsItemMin).max(saveProfessionalProfileBodyVatRatesBpsItemMax)).max(saveProfessionalProfileBodyVatRatesBpsMax).optional(),
+  "revision": zod.number().int().min(1).optional()
+})
+
+export const saveProfessionalProfileResponseOneLegalNameMax = 200;
+
+export const saveProfessionalProfileResponseOneFirstNameMax = 100;
+
+export const saveProfessionalProfileResponseOneLastNameMax = 100;
+
+export const saveProfessionalProfileResponseOneTradeNameMax = 200;
+
+export const saveProfessionalProfileResponseOneCapitalSocialCentsMin = 0;
+
+export const saveProfessionalProfileResponseOneRegistrationNumberMax = 100;
+
+export const saveProfessionalProfileResponseOneSirenRegExp = new RegExp('^[0-9]{9}$');
+export const saveProfessionalProfileResponseOneSiretRegExp = new RegExp('^[0-9]{14}$');
+export const saveProfessionalProfileResponseOneAddressLine1Max = 200;
+
+export const saveProfessionalProfileResponseOneAddressLine2Max = 200;
+
+export const saveProfessionalProfileResponseOneAddressPostalCodeMax = 20;
+
+export const saveProfessionalProfileResponseOneAddressCityMax = 100;
+
+export const saveProfessionalProfileResponseOneAddressCountryDefault = `FR`;
+export const saveProfessionalProfileResponseOneAddressCountryMin = 2;
+export const saveProfessionalProfileResponseOneAddressCountryMax = 2;
+
+export const saveProfessionalProfileResponseOneEmailMax = 320;
+
+export const saveProfessionalProfileResponseOnePhoneMax = 40;
+
+export const saveProfessionalProfileResponseOneVatNumberMax = 40;
+
+export const saveProfessionalProfileResponseOneVatRatesBpsItemMin = 0;
+export const saveProfessionalProfileResponseOneVatRatesBpsItemMax = 2500;
+
+export const saveProfessionalProfileResponseOneVatRatesBpsMax = 10;
+
+
+
+
+export const SaveProfessionalProfileResponse = zod.object({
+  "legalForm": zod.enum(['ei', 'company']),
+  "legalName": zod.string().min(1).max(saveProfessionalProfileResponseOneLegalNameMax),
+  "firstName": zod.string().max(saveProfessionalProfileResponseOneFirstNameMax).nullish(),
+  "lastName": zod.string().max(saveProfessionalProfileResponseOneLastNameMax).nullish(),
+  "tradeName": zod.string().max(saveProfessionalProfileResponseOneTradeNameMax).nullish(),
+  "capitalSocialCents": zod.number().int().min(saveProfessionalProfileResponseOneCapitalSocialCentsMin).nullish(),
+  "registrationNumber": zod.string().max(saveProfessionalProfileResponseOneRegistrationNumberMax).nullish(),
+  "siren": zod.string().regex(saveProfessionalProfileResponseOneSirenRegExp).nullish(),
+  "siret": zod.string().regex(saveProfessionalProfileResponseOneSiretRegExp).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(saveProfessionalProfileResponseOneAddressLine1Max),
+  "line2": zod.string().max(saveProfessionalProfileResponseOneAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(saveProfessionalProfileResponseOneAddressPostalCodeMax),
+  "city": zod.string().min(1).max(saveProfessionalProfileResponseOneAddressCityMax),
+  "country": zod.string().min(saveProfessionalProfileResponseOneAddressCountryMin).max(saveProfessionalProfileResponseOneAddressCountryMax).default(saveProfessionalProfileResponseOneAddressCountryDefault)
+}),
+  "email": zod.string().email().max(saveProfessionalProfileResponseOneEmailMax),
+  "phone": zod.string().max(saveProfessionalProfileResponseOnePhoneMax).nullish(),
+  "vatRegime": zod.enum(['franchise', 'standard']),
+  "vatNumber": zod.string().max(saveProfessionalProfileResponseOneVatNumberMax).nullish(),
+  "vatRatesBps": zod.array(zod.number().int().min(saveProfessionalProfileResponseOneVatRatesBpsItemMin).max(saveProfessionalProfileResponseOneVatRatesBpsItemMax)).max(saveProfessionalProfileResponseOneVatRatesBpsMax).optional(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const DeleteProfessionalProfileResponse = zod.void()
+
+
+export const GetProfessionalSourcesResponse = zod.object({
+  "sourceReviewDate": zod.coerce.date().nullable(),
+  "sources": zod.array(zod.object({
+  "title": zod.string().optional(),
+  "url": zod.string().url(),
+  "reviewedAt": zod.coerce.date().nullish(),
+  "summary": zod.string().optional(),
+  "official": zod.boolean()
+})),
+  "notices": zod.array(zod.string())
+})
+
+
+export const listProfessionalClientsResponseOneFirstNameMax = 100;
+
+export const listProfessionalClientsResponseOneLastNameMax = 100;
+
+export const listProfessionalClientsResponseOneCompanyNameMax = 200;
+
+export const listProfessionalClientsResponseOneContactNameMax = 200;
+
+export const listProfessionalClientsResponseOnePhoneMax = 40;
+
+export const listProfessionalClientsResponseOneAddressLine1Max = 200;
+
+export const listProfessionalClientsResponseOneAddressLine2Max = 200;
+
+export const listProfessionalClientsResponseOneAddressPostalCodeMax = 20;
+
+export const listProfessionalClientsResponseOneAddressCityMax = 100;
+
+export const listProfessionalClientsResponseOneAddressCountryDefault = `FR`;
+export const listProfessionalClientsResponseOneAddressCountryMin = 2;
+export const listProfessionalClientsResponseOneAddressCountryMax = 2;
+
+export const listProfessionalClientsResponseOneVatNumberMax = 40;
+
+
+
+export const ListProfessionalClientsResponseItem = zod.object({
+  "kind": zod.enum(['individual', 'business']),
+  "firstName": zod.string().max(listProfessionalClientsResponseOneFirstNameMax).nullish(),
+  "lastName": zod.string().max(listProfessionalClientsResponseOneLastNameMax).nullish(),
+  "companyName": zod.string().max(listProfessionalClientsResponseOneCompanyNameMax).nullish(),
+  "contactName": zod.string().max(listProfessionalClientsResponseOneContactNameMax).nullish(),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(listProfessionalClientsResponseOnePhoneMax).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(listProfessionalClientsResponseOneAddressLine1Max),
+  "line2": zod.string().max(listProfessionalClientsResponseOneAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(listProfessionalClientsResponseOneAddressPostalCodeMax),
+  "city": zod.string().min(1).max(listProfessionalClientsResponseOneAddressCityMax),
+  "country": zod.string().min(listProfessionalClientsResponseOneAddressCountryMin).max(listProfessionalClientsResponseOneAddressCountryMax).default(listProfessionalClientsResponseOneAddressCountryDefault)
+}),
+  "vatNumber": zod.string().max(listProfessionalClientsResponseOneVatNumberMax).nullish()
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+export const ListProfessionalClientsResponse = zod.array(ListProfessionalClientsResponseItem)
+
+
+export const createProfessionalClientBodyFirstNameMax = 100;
+
+export const createProfessionalClientBodyLastNameMax = 100;
+
+export const createProfessionalClientBodyCompanyNameMax = 200;
+
+export const createProfessionalClientBodyContactNameMax = 200;
+
+export const createProfessionalClientBodyPhoneMax = 40;
+
+export const createProfessionalClientBodyAddressLine1Max = 200;
+
+export const createProfessionalClientBodyAddressLine2Max = 200;
+
+export const createProfessionalClientBodyAddressPostalCodeMax = 20;
+
+export const createProfessionalClientBodyAddressCityMax = 100;
+
+export const createProfessionalClientBodyAddressCountryDefault = `FR`;
+export const createProfessionalClientBodyAddressCountryMin = 2;
+export const createProfessionalClientBodyAddressCountryMax = 2;
+
+export const createProfessionalClientBodyVatNumberMax = 40;
+
+
+
+export const CreateProfessionalClientBody = zod.object({
+  "kind": zod.enum(['individual', 'business']),
+  "firstName": zod.string().max(createProfessionalClientBodyFirstNameMax).nullish(),
+  "lastName": zod.string().max(createProfessionalClientBodyLastNameMax).nullish(),
+  "companyName": zod.string().max(createProfessionalClientBodyCompanyNameMax).nullish(),
+  "contactName": zod.string().max(createProfessionalClientBodyContactNameMax).nullish(),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(createProfessionalClientBodyPhoneMax).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(createProfessionalClientBodyAddressLine1Max),
+  "line2": zod.string().max(createProfessionalClientBodyAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(createProfessionalClientBodyAddressPostalCodeMax),
+  "city": zod.string().min(1).max(createProfessionalClientBodyAddressCityMax),
+  "country": zod.string().min(createProfessionalClientBodyAddressCountryMin).max(createProfessionalClientBodyAddressCountryMax).default(createProfessionalClientBodyAddressCountryDefault)
+}),
+  "vatNumber": zod.string().max(createProfessionalClientBodyVatNumberMax).nullish()
+})
+
+export const createProfessionalClientResponseOneFirstNameMax = 100;
+
+export const createProfessionalClientResponseOneLastNameMax = 100;
+
+export const createProfessionalClientResponseOneCompanyNameMax = 200;
+
+export const createProfessionalClientResponseOneContactNameMax = 200;
+
+export const createProfessionalClientResponseOnePhoneMax = 40;
+
+export const createProfessionalClientResponseOneAddressLine1Max = 200;
+
+export const createProfessionalClientResponseOneAddressLine2Max = 200;
+
+export const createProfessionalClientResponseOneAddressPostalCodeMax = 20;
+
+export const createProfessionalClientResponseOneAddressCityMax = 100;
+
+export const createProfessionalClientResponseOneAddressCountryDefault = `FR`;
+export const createProfessionalClientResponseOneAddressCountryMin = 2;
+export const createProfessionalClientResponseOneAddressCountryMax = 2;
+
+export const createProfessionalClientResponseOneVatNumberMax = 40;
+
+
+
+export const CreateProfessionalClientResponse = zod.object({
+  "kind": zod.enum(['individual', 'business']),
+  "firstName": zod.string().max(createProfessionalClientResponseOneFirstNameMax).nullish(),
+  "lastName": zod.string().max(createProfessionalClientResponseOneLastNameMax).nullish(),
+  "companyName": zod.string().max(createProfessionalClientResponseOneCompanyNameMax).nullish(),
+  "contactName": zod.string().max(createProfessionalClientResponseOneContactNameMax).nullish(),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(createProfessionalClientResponseOnePhoneMax).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(createProfessionalClientResponseOneAddressLine1Max),
+  "line2": zod.string().max(createProfessionalClientResponseOneAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(createProfessionalClientResponseOneAddressPostalCodeMax),
+  "city": zod.string().min(1).max(createProfessionalClientResponseOneAddressCityMax),
+  "country": zod.string().min(createProfessionalClientResponseOneAddressCountryMin).max(createProfessionalClientResponseOneAddressCountryMax).default(createProfessionalClientResponseOneAddressCountryDefault)
+}),
+  "vatNumber": zod.string().max(createProfessionalClientResponseOneVatNumberMax).nullish()
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const GetProfessionalClientParams = zod.object({
+  "clientId": zod.coerce.string().uuid()
+})
+
+export const getProfessionalClientResponseOneFirstNameMax = 100;
+
+export const getProfessionalClientResponseOneLastNameMax = 100;
+
+export const getProfessionalClientResponseOneCompanyNameMax = 200;
+
+export const getProfessionalClientResponseOneContactNameMax = 200;
+
+export const getProfessionalClientResponseOnePhoneMax = 40;
+
+export const getProfessionalClientResponseOneAddressLine1Max = 200;
+
+export const getProfessionalClientResponseOneAddressLine2Max = 200;
+
+export const getProfessionalClientResponseOneAddressPostalCodeMax = 20;
+
+export const getProfessionalClientResponseOneAddressCityMax = 100;
+
+export const getProfessionalClientResponseOneAddressCountryDefault = `FR`;
+export const getProfessionalClientResponseOneAddressCountryMin = 2;
+export const getProfessionalClientResponseOneAddressCountryMax = 2;
+
+export const getProfessionalClientResponseOneVatNumberMax = 40;
+
+
+
+export const GetProfessionalClientResponse = zod.object({
+  "kind": zod.enum(['individual', 'business']),
+  "firstName": zod.string().max(getProfessionalClientResponseOneFirstNameMax).nullish(),
+  "lastName": zod.string().max(getProfessionalClientResponseOneLastNameMax).nullish(),
+  "companyName": zod.string().max(getProfessionalClientResponseOneCompanyNameMax).nullish(),
+  "contactName": zod.string().max(getProfessionalClientResponseOneContactNameMax).nullish(),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(getProfessionalClientResponseOnePhoneMax).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(getProfessionalClientResponseOneAddressLine1Max),
+  "line2": zod.string().max(getProfessionalClientResponseOneAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(getProfessionalClientResponseOneAddressPostalCodeMax),
+  "city": zod.string().min(1).max(getProfessionalClientResponseOneAddressCityMax),
+  "country": zod.string().min(getProfessionalClientResponseOneAddressCountryMin).max(getProfessionalClientResponseOneAddressCountryMax).default(getProfessionalClientResponseOneAddressCountryDefault)
+}),
+  "vatNumber": zod.string().max(getProfessionalClientResponseOneVatNumberMax).nullish()
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const UpdateProfessionalClientParams = zod.object({
+  "clientId": zod.coerce.string().uuid()
+})
+
+export const updateProfessionalClientBodyFirstNameMax = 100;
+
+export const updateProfessionalClientBodyLastNameMax = 100;
+
+export const updateProfessionalClientBodyCompanyNameMax = 200;
+
+export const updateProfessionalClientBodyContactNameMax = 200;
+
+export const updateProfessionalClientBodyPhoneMax = 40;
+
+export const updateProfessionalClientBodyAddressLine1Max = 200;
+
+export const updateProfessionalClientBodyAddressLine2Max = 200;
+
+export const updateProfessionalClientBodyAddressPostalCodeMax = 20;
+
+export const updateProfessionalClientBodyAddressCityMax = 100;
+
+export const updateProfessionalClientBodyAddressCountryDefault = `FR`;
+export const updateProfessionalClientBodyAddressCountryMin = 2;
+export const updateProfessionalClientBodyAddressCountryMax = 2;
+
+export const updateProfessionalClientBodyVatNumberMax = 40;
+
+
+
+export const UpdateProfessionalClientBody = zod.object({
+  "kind": zod.enum(['individual', 'business']),
+  "firstName": zod.string().max(updateProfessionalClientBodyFirstNameMax).nullish(),
+  "lastName": zod.string().max(updateProfessionalClientBodyLastNameMax).nullish(),
+  "companyName": zod.string().max(updateProfessionalClientBodyCompanyNameMax).nullish(),
+  "contactName": zod.string().max(updateProfessionalClientBodyContactNameMax).nullish(),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(updateProfessionalClientBodyPhoneMax).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(updateProfessionalClientBodyAddressLine1Max),
+  "line2": zod.string().max(updateProfessionalClientBodyAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(updateProfessionalClientBodyAddressPostalCodeMax),
+  "city": zod.string().min(1).max(updateProfessionalClientBodyAddressCityMax),
+  "country": zod.string().min(updateProfessionalClientBodyAddressCountryMin).max(updateProfessionalClientBodyAddressCountryMax).default(updateProfessionalClientBodyAddressCountryDefault)
+}),
+  "vatNumber": zod.string().max(updateProfessionalClientBodyVatNumberMax).nullish()
+})
+
+export const updateProfessionalClientResponseOneFirstNameMax = 100;
+
+export const updateProfessionalClientResponseOneLastNameMax = 100;
+
+export const updateProfessionalClientResponseOneCompanyNameMax = 200;
+
+export const updateProfessionalClientResponseOneContactNameMax = 200;
+
+export const updateProfessionalClientResponseOnePhoneMax = 40;
+
+export const updateProfessionalClientResponseOneAddressLine1Max = 200;
+
+export const updateProfessionalClientResponseOneAddressLine2Max = 200;
+
+export const updateProfessionalClientResponseOneAddressPostalCodeMax = 20;
+
+export const updateProfessionalClientResponseOneAddressCityMax = 100;
+
+export const updateProfessionalClientResponseOneAddressCountryDefault = `FR`;
+export const updateProfessionalClientResponseOneAddressCountryMin = 2;
+export const updateProfessionalClientResponseOneAddressCountryMax = 2;
+
+export const updateProfessionalClientResponseOneVatNumberMax = 40;
+
+
+
+export const UpdateProfessionalClientResponse = zod.object({
+  "kind": zod.enum(['individual', 'business']),
+  "firstName": zod.string().max(updateProfessionalClientResponseOneFirstNameMax).nullish(),
+  "lastName": zod.string().max(updateProfessionalClientResponseOneLastNameMax).nullish(),
+  "companyName": zod.string().max(updateProfessionalClientResponseOneCompanyNameMax).nullish(),
+  "contactName": zod.string().max(updateProfessionalClientResponseOneContactNameMax).nullish(),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(updateProfessionalClientResponseOnePhoneMax).nullish(),
+  "address": zod.object({
+  "line1": zod.string().min(1).max(updateProfessionalClientResponseOneAddressLine1Max),
+  "line2": zod.string().max(updateProfessionalClientResponseOneAddressLine2Max).nullish(),
+  "postalCode": zod.string().min(1).max(updateProfessionalClientResponseOneAddressPostalCodeMax),
+  "city": zod.string().min(1).max(updateProfessionalClientResponseOneAddressCityMax),
+  "country": zod.string().min(updateProfessionalClientResponseOneAddressCountryMin).max(updateProfessionalClientResponseOneAddressCountryMax).default(updateProfessionalClientResponseOneAddressCountryDefault)
+}),
+  "vatNumber": zod.string().max(updateProfessionalClientResponseOneVatNumberMax).nullish()
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const DeleteProfessionalClientParams = zod.object({
+  "clientId": zod.coerce.string().uuid()
+})
+
+export const DeleteProfessionalClientResponse = zod.void()
+
+
+export const listProfessionalDossiersResponseOneNameMax = 200;
+
+export const listProfessionalDossiersResponseOnePreparatoryContactsItemNameMax = 200;
+
+export const listProfessionalDossiersResponseOnePreparatoryContactsItemRoleMax = 100;
+
+export const listProfessionalDossiersResponseOnePreparatoryContactsItemPhoneMax = 40;
+
+export const listProfessionalDossiersResponseOnePreparatoryContactsMax = 30;
+
+export const listProfessionalDossiersResponseOneFeesItemLabelMax = 200;
+
+export const listProfessionalDossiersResponseOneFeesItemAmountCentsMin = 0;
+
+export const listProfessionalDossiersResponseOneFeesItemGrossFeeCentsMin = 0;
+
+export const listProfessionalDossiersResponseOneFeesItemCachetsMin = 0;
+
+export const listProfessionalDossiersResponseOneFeesItemHoursMin = 0;
+
+export const listProfessionalDossiersResponseOneFeesMax = 50;
+
+export const listProfessionalDossiersResponseOneChecklistItemKeyMax = 100;
+
+export const listProfessionalDossiersResponseOneChecklistItemLabelMax = 300;
+
+export const listProfessionalDossiersResponseOneChecklistMax = 50;
+
+
+
+
+export const ListProfessionalDossiersResponseItem = zod.object({
+  "name": zod.string().min(1).max(listProfessionalDossiersResponseOneNameMax),
+  "clientId": zod.string().uuid().nullish(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date().nullish(),
+  "pathway": zod.enum(['invoiced_service', 'salaried_employment']),
+  "preparatoryContacts": zod.array(zod.object({
+  "name": zod.string().max(listProfessionalDossiersResponseOnePreparatoryContactsItemNameMax),
+  "role": zod.string().max(listProfessionalDossiersResponseOnePreparatoryContactsItemRoleMax),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(listProfessionalDossiersResponseOnePreparatoryContactsItemPhoneMax).nullish()
+})).max(listProfessionalDossiersResponseOnePreparatoryContactsMax).optional(),
+  "fees": zod.array(zod.object({
+  "label": zod.string().max(listProfessionalDossiersResponseOneFeesItemLabelMax),
+  "amountCents": zod.number().int().min(listProfessionalDossiersResponseOneFeesItemAmountCentsMin).optional(),
+  "grossFeeCents": zod.number().int().min(listProfessionalDossiersResponseOneFeesItemGrossFeeCentsMin).optional(),
+  "cachets": zod.number().int().min(listProfessionalDossiersResponseOneFeesItemCachetsMin).optional(),
+  "hours": zod.number().int().min(listProfessionalDossiersResponseOneFeesItemHoursMin).optional()
+})).max(listProfessionalDossiersResponseOneFeesMax).optional(),
+  "checklist": zod.array(zod.object({
+  "key": zod.string().max(listProfessionalDossiersResponseOneChecklistItemKeyMax),
+  "label": zod.string().max(listProfessionalDossiersResponseOneChecklistItemLabelMax),
+  "checked": zod.boolean(),
+  "sourceUrl": zod.string().url().nullish()
+})).max(listProfessionalDossiersResponseOneChecklistMax).optional(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+export const ListProfessionalDossiersResponse = zod.array(ListProfessionalDossiersResponseItem)
+
+
+export const createProfessionalDossierBodyNameMax = 200;
+
+export const createProfessionalDossierBodyPreparatoryContactsItemNameMax = 200;
+
+export const createProfessionalDossierBodyPreparatoryContactsItemRoleMax = 100;
+
+export const createProfessionalDossierBodyPreparatoryContactsItemPhoneMax = 40;
+
+export const createProfessionalDossierBodyPreparatoryContactsMax = 30;
+
+export const createProfessionalDossierBodyFeesItemLabelMax = 200;
+
+export const createProfessionalDossierBodyFeesItemAmountCentsMin = 0;
+
+export const createProfessionalDossierBodyFeesItemGrossFeeCentsMin = 0;
+
+export const createProfessionalDossierBodyFeesItemCachetsMin = 0;
+
+export const createProfessionalDossierBodyFeesItemHoursMin = 0;
+
+export const createProfessionalDossierBodyFeesMax = 50;
+
+export const createProfessionalDossierBodyChecklistItemKeyMax = 100;
+
+export const createProfessionalDossierBodyChecklistItemLabelMax = 300;
+
+export const createProfessionalDossierBodyChecklistMax = 50;
+
+
+
+
+export const CreateProfessionalDossierBody = zod.object({
+  "name": zod.string().min(1).max(createProfessionalDossierBodyNameMax),
+  "clientId": zod.string().uuid().nullish(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date().nullish(),
+  "pathway": zod.enum(['invoiced_service', 'salaried_employment']),
+  "preparatoryContacts": zod.array(zod.object({
+  "name": zod.string().max(createProfessionalDossierBodyPreparatoryContactsItemNameMax),
+  "role": zod.string().max(createProfessionalDossierBodyPreparatoryContactsItemRoleMax),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(createProfessionalDossierBodyPreparatoryContactsItemPhoneMax).nullish()
+})).max(createProfessionalDossierBodyPreparatoryContactsMax).optional(),
+  "fees": zod.array(zod.object({
+  "label": zod.string().max(createProfessionalDossierBodyFeesItemLabelMax),
+  "amountCents": zod.number().int().min(createProfessionalDossierBodyFeesItemAmountCentsMin).optional(),
+  "grossFeeCents": zod.number().int().min(createProfessionalDossierBodyFeesItemGrossFeeCentsMin).optional(),
+  "cachets": zod.number().int().min(createProfessionalDossierBodyFeesItemCachetsMin).optional(),
+  "hours": zod.number().int().min(createProfessionalDossierBodyFeesItemHoursMin).optional()
+})).max(createProfessionalDossierBodyFeesMax).optional(),
+  "checklist": zod.array(zod.object({
+  "key": zod.string().max(createProfessionalDossierBodyChecklistItemKeyMax),
+  "label": zod.string().max(createProfessionalDossierBodyChecklistItemLabelMax),
+  "checked": zod.boolean(),
+  "sourceUrl": zod.string().url().nullish()
+})).max(createProfessionalDossierBodyChecklistMax).optional(),
+  "revision": zod.number().int().min(1).optional()
+})
+
+export const createProfessionalDossierResponseOneNameMax = 200;
+
+export const createProfessionalDossierResponseOnePreparatoryContactsItemNameMax = 200;
+
+export const createProfessionalDossierResponseOnePreparatoryContactsItemRoleMax = 100;
+
+export const createProfessionalDossierResponseOnePreparatoryContactsItemPhoneMax = 40;
+
+export const createProfessionalDossierResponseOnePreparatoryContactsMax = 30;
+
+export const createProfessionalDossierResponseOneFeesItemLabelMax = 200;
+
+export const createProfessionalDossierResponseOneFeesItemAmountCentsMin = 0;
+
+export const createProfessionalDossierResponseOneFeesItemGrossFeeCentsMin = 0;
+
+export const createProfessionalDossierResponseOneFeesItemCachetsMin = 0;
+
+export const createProfessionalDossierResponseOneFeesItemHoursMin = 0;
+
+export const createProfessionalDossierResponseOneFeesMax = 50;
+
+export const createProfessionalDossierResponseOneChecklistItemKeyMax = 100;
+
+export const createProfessionalDossierResponseOneChecklistItemLabelMax = 300;
+
+export const createProfessionalDossierResponseOneChecklistMax = 50;
+
+
+
+
+export const CreateProfessionalDossierResponse = zod.object({
+  "name": zod.string().min(1).max(createProfessionalDossierResponseOneNameMax),
+  "clientId": zod.string().uuid().nullish(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date().nullish(),
+  "pathway": zod.enum(['invoiced_service', 'salaried_employment']),
+  "preparatoryContacts": zod.array(zod.object({
+  "name": zod.string().max(createProfessionalDossierResponseOnePreparatoryContactsItemNameMax),
+  "role": zod.string().max(createProfessionalDossierResponseOnePreparatoryContactsItemRoleMax),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(createProfessionalDossierResponseOnePreparatoryContactsItemPhoneMax).nullish()
+})).max(createProfessionalDossierResponseOnePreparatoryContactsMax).optional(),
+  "fees": zod.array(zod.object({
+  "label": zod.string().max(createProfessionalDossierResponseOneFeesItemLabelMax),
+  "amountCents": zod.number().int().min(createProfessionalDossierResponseOneFeesItemAmountCentsMin).optional(),
+  "grossFeeCents": zod.number().int().min(createProfessionalDossierResponseOneFeesItemGrossFeeCentsMin).optional(),
+  "cachets": zod.number().int().min(createProfessionalDossierResponseOneFeesItemCachetsMin).optional(),
+  "hours": zod.number().int().min(createProfessionalDossierResponseOneFeesItemHoursMin).optional()
+})).max(createProfessionalDossierResponseOneFeesMax).optional(),
+  "checklist": zod.array(zod.object({
+  "key": zod.string().max(createProfessionalDossierResponseOneChecklistItemKeyMax),
+  "label": zod.string().max(createProfessionalDossierResponseOneChecklistItemLabelMax),
+  "checked": zod.boolean(),
+  "sourceUrl": zod.string().url().nullish()
+})).max(createProfessionalDossierResponseOneChecklistMax).optional(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const GetProfessionalDossierParams = zod.object({
+  "dossierId": zod.coerce.string().uuid()
+})
+
+export const getProfessionalDossierResponseOneNameMax = 200;
+
+export const getProfessionalDossierResponseOnePreparatoryContactsItemNameMax = 200;
+
+export const getProfessionalDossierResponseOnePreparatoryContactsItemRoleMax = 100;
+
+export const getProfessionalDossierResponseOnePreparatoryContactsItemPhoneMax = 40;
+
+export const getProfessionalDossierResponseOnePreparatoryContactsMax = 30;
+
+export const getProfessionalDossierResponseOneFeesItemLabelMax = 200;
+
+export const getProfessionalDossierResponseOneFeesItemAmountCentsMin = 0;
+
+export const getProfessionalDossierResponseOneFeesItemGrossFeeCentsMin = 0;
+
+export const getProfessionalDossierResponseOneFeesItemCachetsMin = 0;
+
+export const getProfessionalDossierResponseOneFeesItemHoursMin = 0;
+
+export const getProfessionalDossierResponseOneFeesMax = 50;
+
+export const getProfessionalDossierResponseOneChecklistItemKeyMax = 100;
+
+export const getProfessionalDossierResponseOneChecklistItemLabelMax = 300;
+
+export const getProfessionalDossierResponseOneChecklistMax = 50;
+
+
+
+
+export const GetProfessionalDossierResponse = zod.object({
+  "name": zod.string().min(1).max(getProfessionalDossierResponseOneNameMax),
+  "clientId": zod.string().uuid().nullish(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date().nullish(),
+  "pathway": zod.enum(['invoiced_service', 'salaried_employment']),
+  "preparatoryContacts": zod.array(zod.object({
+  "name": zod.string().max(getProfessionalDossierResponseOnePreparatoryContactsItemNameMax),
+  "role": zod.string().max(getProfessionalDossierResponseOnePreparatoryContactsItemRoleMax),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(getProfessionalDossierResponseOnePreparatoryContactsItemPhoneMax).nullish()
+})).max(getProfessionalDossierResponseOnePreparatoryContactsMax).optional(),
+  "fees": zod.array(zod.object({
+  "label": zod.string().max(getProfessionalDossierResponseOneFeesItemLabelMax),
+  "amountCents": zod.number().int().min(getProfessionalDossierResponseOneFeesItemAmountCentsMin).optional(),
+  "grossFeeCents": zod.number().int().min(getProfessionalDossierResponseOneFeesItemGrossFeeCentsMin).optional(),
+  "cachets": zod.number().int().min(getProfessionalDossierResponseOneFeesItemCachetsMin).optional(),
+  "hours": zod.number().int().min(getProfessionalDossierResponseOneFeesItemHoursMin).optional()
+})).max(getProfessionalDossierResponseOneFeesMax).optional(),
+  "checklist": zod.array(zod.object({
+  "key": zod.string().max(getProfessionalDossierResponseOneChecklistItemKeyMax),
+  "label": zod.string().max(getProfessionalDossierResponseOneChecklistItemLabelMax),
+  "checked": zod.boolean(),
+  "sourceUrl": zod.string().url().nullish()
+})).max(getProfessionalDossierResponseOneChecklistMax).optional(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const UpdateProfessionalDossierParams = zod.object({
+  "dossierId": zod.coerce.string().uuid()
+})
+
+export const updateProfessionalDossierBodyNameMax = 200;
+
+export const updateProfessionalDossierBodyPreparatoryContactsItemNameMax = 200;
+
+export const updateProfessionalDossierBodyPreparatoryContactsItemRoleMax = 100;
+
+export const updateProfessionalDossierBodyPreparatoryContactsItemPhoneMax = 40;
+
+export const updateProfessionalDossierBodyPreparatoryContactsMax = 30;
+
+export const updateProfessionalDossierBodyFeesItemLabelMax = 200;
+
+export const updateProfessionalDossierBodyFeesItemAmountCentsMin = 0;
+
+export const updateProfessionalDossierBodyFeesItemGrossFeeCentsMin = 0;
+
+export const updateProfessionalDossierBodyFeesItemCachetsMin = 0;
+
+export const updateProfessionalDossierBodyFeesItemHoursMin = 0;
+
+export const updateProfessionalDossierBodyFeesMax = 50;
+
+export const updateProfessionalDossierBodyChecklistItemKeyMax = 100;
+
+export const updateProfessionalDossierBodyChecklistItemLabelMax = 300;
+
+export const updateProfessionalDossierBodyChecklistMax = 50;
+
+
+
+
+export const UpdateProfessionalDossierBody = zod.object({
+  "name": zod.string().min(1).max(updateProfessionalDossierBodyNameMax),
+  "clientId": zod.string().uuid().nullish(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date().nullish(),
+  "pathway": zod.enum(['invoiced_service', 'salaried_employment']),
+  "preparatoryContacts": zod.array(zod.object({
+  "name": zod.string().max(updateProfessionalDossierBodyPreparatoryContactsItemNameMax),
+  "role": zod.string().max(updateProfessionalDossierBodyPreparatoryContactsItemRoleMax),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(updateProfessionalDossierBodyPreparatoryContactsItemPhoneMax).nullish()
+})).max(updateProfessionalDossierBodyPreparatoryContactsMax).optional(),
+  "fees": zod.array(zod.object({
+  "label": zod.string().max(updateProfessionalDossierBodyFeesItemLabelMax),
+  "amountCents": zod.number().int().min(updateProfessionalDossierBodyFeesItemAmountCentsMin).optional(),
+  "grossFeeCents": zod.number().int().min(updateProfessionalDossierBodyFeesItemGrossFeeCentsMin).optional(),
+  "cachets": zod.number().int().min(updateProfessionalDossierBodyFeesItemCachetsMin).optional(),
+  "hours": zod.number().int().min(updateProfessionalDossierBodyFeesItemHoursMin).optional()
+})).max(updateProfessionalDossierBodyFeesMax).optional(),
+  "checklist": zod.array(zod.object({
+  "key": zod.string().max(updateProfessionalDossierBodyChecklistItemKeyMax),
+  "label": zod.string().max(updateProfessionalDossierBodyChecklistItemLabelMax),
+  "checked": zod.boolean(),
+  "sourceUrl": zod.string().url().nullish()
+})).max(updateProfessionalDossierBodyChecklistMax).optional(),
+  "revision": zod.number().int().min(1).optional()
+})
+
+export const updateProfessionalDossierResponseOneNameMax = 200;
+
+export const updateProfessionalDossierResponseOnePreparatoryContactsItemNameMax = 200;
+
+export const updateProfessionalDossierResponseOnePreparatoryContactsItemRoleMax = 100;
+
+export const updateProfessionalDossierResponseOnePreparatoryContactsItemPhoneMax = 40;
+
+export const updateProfessionalDossierResponseOnePreparatoryContactsMax = 30;
+
+export const updateProfessionalDossierResponseOneFeesItemLabelMax = 200;
+
+export const updateProfessionalDossierResponseOneFeesItemAmountCentsMin = 0;
+
+export const updateProfessionalDossierResponseOneFeesItemGrossFeeCentsMin = 0;
+
+export const updateProfessionalDossierResponseOneFeesItemCachetsMin = 0;
+
+export const updateProfessionalDossierResponseOneFeesItemHoursMin = 0;
+
+export const updateProfessionalDossierResponseOneFeesMax = 50;
+
+export const updateProfessionalDossierResponseOneChecklistItemKeyMax = 100;
+
+export const updateProfessionalDossierResponseOneChecklistItemLabelMax = 300;
+
+export const updateProfessionalDossierResponseOneChecklistMax = 50;
+
+
+
+
+export const UpdateProfessionalDossierResponse = zod.object({
+  "name": zod.string().min(1).max(updateProfessionalDossierResponseOneNameMax),
+  "clientId": zod.string().uuid().nullish(),
+  "startDate": zod.coerce.date(),
+  "endDate": zod.coerce.date().nullish(),
+  "pathway": zod.enum(['invoiced_service', 'salaried_employment']),
+  "preparatoryContacts": zod.array(zod.object({
+  "name": zod.string().max(updateProfessionalDossierResponseOnePreparatoryContactsItemNameMax),
+  "role": zod.string().max(updateProfessionalDossierResponseOnePreparatoryContactsItemRoleMax),
+  "email": zod.string().email().nullish(),
+  "phone": zod.string().max(updateProfessionalDossierResponseOnePreparatoryContactsItemPhoneMax).nullish()
+})).max(updateProfessionalDossierResponseOnePreparatoryContactsMax).optional(),
+  "fees": zod.array(zod.object({
+  "label": zod.string().max(updateProfessionalDossierResponseOneFeesItemLabelMax),
+  "amountCents": zod.number().int().min(updateProfessionalDossierResponseOneFeesItemAmountCentsMin).optional(),
+  "grossFeeCents": zod.number().int().min(updateProfessionalDossierResponseOneFeesItemGrossFeeCentsMin).optional(),
+  "cachets": zod.number().int().min(updateProfessionalDossierResponseOneFeesItemCachetsMin).optional(),
+  "hours": zod.number().int().min(updateProfessionalDossierResponseOneFeesItemHoursMin).optional()
+})).max(updateProfessionalDossierResponseOneFeesMax).optional(),
+  "checklist": zod.array(zod.object({
+  "key": zod.string().max(updateProfessionalDossierResponseOneChecklistItemKeyMax),
+  "label": zod.string().max(updateProfessionalDossierResponseOneChecklistItemLabelMax),
+  "checked": zod.boolean(),
+  "sourceUrl": zod.string().url().nullish()
+})).max(updateProfessionalDossierResponseOneChecklistMax).optional(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "revision": zod.number().int()
+}))
+
+
+export const DeleteProfessionalDossierParams = zod.object({
+  "dossierId": zod.coerce.string().uuid()
+})
+
+export const DeleteProfessionalDossierResponse = zod.void()
+
+
+export const listProfessionalDocumentsResponseOneTitleMax = 200;
+
+export const listProfessionalDocumentsResponseOneLineItemsItemDescriptionMax = 300;
+
+export const listProfessionalDocumentsResponseOneLineItemsItemQuantityMax = 1000000;
+
+export const listProfessionalDocumentsResponseOneLineItemsItemUnitAmountCentsMin = 0;
+export const listProfessionalDocumentsResponseOneLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const listProfessionalDocumentsResponseOneLineItemsItemTaxRateBpsMin = 0;
+export const listProfessionalDocumentsResponseOneLineItemsItemTaxRateBpsMax = 2500;
+
+export const listProfessionalDocumentsResponseOneLineItemsMax = 100;
+
+export const listProfessionalDocumentsResponseOneDiscountTermsMax = 500;
+
+export const listProfessionalDocumentsResponseOneLatePaymentRateMax = 200;
+
+export const listProfessionalDocumentsResponseOneServiceTypeMax = 100;
+
+export const listProfessionalDocumentsResponseOneOrderNumberMax = 100;
+
+export const listProfessionalDocumentsResponseOnePaymentTermsMax = 2000;
+
+export const listProfessionalDocumentsResponseOneContractTextMax = 20000;
+
+export const listProfessionalDocumentsResponseOneNotesMax = 5000;
+
+
+
+
+export const ListProfessionalDocumentsResponseItem = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(listProfessionalDocumentsResponseOneTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(listProfessionalDocumentsResponseOneLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(listProfessionalDocumentsResponseOneLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(listProfessionalDocumentsResponseOneLineItemsItemUnitAmountCentsMin).max(listProfessionalDocumentsResponseOneLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(listProfessionalDocumentsResponseOneLineItemsItemTaxRateBpsMin).max(listProfessionalDocumentsResponseOneLineItemsItemTaxRateBpsMax).optional()
+})).max(listProfessionalDocumentsResponseOneLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(listProfessionalDocumentsResponseOneDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(listProfessionalDocumentsResponseOneLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(listProfessionalDocumentsResponseOneServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(listProfessionalDocumentsResponseOneOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(listProfessionalDocumentsResponseOnePaymentTermsMax).nullish(),
+  "contractText": zod.string().max(listProfessionalDocumentsResponseOneContractTextMax).nullish(),
+  "notes": zod.string().max(listProfessionalDocumentsResponseOneNotesMax).nullish(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "status": zod.enum(['draft', 'issued']),
+  "documentNumber": zod.string().nullish(),
+  "issueDate": zod.string().nullish(),
+  "currency": zod.enum(['EUR']).optional(),
+  "identitySnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "clientSnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "originalInvoiceId": zod.string().uuid().nullish(),
+  "subtotalCents": zod.number().int(),
+  "taxCents": zod.number().int(),
+  "totalCents": zod.number().int(),
+  "issuedAt": zod.coerce.date().nullish()
+}))
+export const ListProfessionalDocumentsResponse = zod.array(ListProfessionalDocumentsResponseItem)
+
+
+export const createProfessionalDocumentBodyTitleMax = 200;
+
+export const createProfessionalDocumentBodyLineItemsItemDescriptionMax = 300;
+
+export const createProfessionalDocumentBodyLineItemsItemQuantityMax = 1000000;
+
+export const createProfessionalDocumentBodyLineItemsItemUnitAmountCentsMin = 0;
+export const createProfessionalDocumentBodyLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const createProfessionalDocumentBodyLineItemsItemTaxRateBpsMin = 0;
+export const createProfessionalDocumentBodyLineItemsItemTaxRateBpsMax = 2500;
+
+export const createProfessionalDocumentBodyLineItemsMax = 100;
+
+export const createProfessionalDocumentBodyDiscountTermsMax = 500;
+
+export const createProfessionalDocumentBodyLatePaymentRateMax = 200;
+
+export const createProfessionalDocumentBodyServiceTypeMax = 100;
+
+export const createProfessionalDocumentBodyOrderNumberMax = 100;
+
+export const createProfessionalDocumentBodyPaymentTermsMax = 2000;
+
+export const createProfessionalDocumentBodyContractTextMax = 20000;
+
+export const createProfessionalDocumentBodyNotesMax = 5000;
+
+
+
+
+export const CreateProfessionalDocumentBody = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(createProfessionalDocumentBodyTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(createProfessionalDocumentBodyLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(createProfessionalDocumentBodyLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(createProfessionalDocumentBodyLineItemsItemUnitAmountCentsMin).max(createProfessionalDocumentBodyLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(createProfessionalDocumentBodyLineItemsItemTaxRateBpsMin).max(createProfessionalDocumentBodyLineItemsItemTaxRateBpsMax).optional()
+})).max(createProfessionalDocumentBodyLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(createProfessionalDocumentBodyDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(createProfessionalDocumentBodyLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(createProfessionalDocumentBodyServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(createProfessionalDocumentBodyOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(createProfessionalDocumentBodyPaymentTermsMax).nullish(),
+  "contractText": zod.string().max(createProfessionalDocumentBodyContractTextMax).nullish(),
+  "notes": zod.string().max(createProfessionalDocumentBodyNotesMax).nullish(),
+  "revision": zod.number().int().min(1).optional()
+})
+
+export const createProfessionalDocumentResponseOneTitleMax = 200;
+
+export const createProfessionalDocumentResponseOneLineItemsItemDescriptionMax = 300;
+
+export const createProfessionalDocumentResponseOneLineItemsItemQuantityMax = 1000000;
+
+export const createProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin = 0;
+export const createProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const createProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin = 0;
+export const createProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax = 2500;
+
+export const createProfessionalDocumentResponseOneLineItemsMax = 100;
+
+export const createProfessionalDocumentResponseOneDiscountTermsMax = 500;
+
+export const createProfessionalDocumentResponseOneLatePaymentRateMax = 200;
+
+export const createProfessionalDocumentResponseOneServiceTypeMax = 100;
+
+export const createProfessionalDocumentResponseOneOrderNumberMax = 100;
+
+export const createProfessionalDocumentResponseOnePaymentTermsMax = 2000;
+
+export const createProfessionalDocumentResponseOneContractTextMax = 20000;
+
+export const createProfessionalDocumentResponseOneNotesMax = 5000;
+
+
+
+
+export const CreateProfessionalDocumentResponse = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(createProfessionalDocumentResponseOneTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(createProfessionalDocumentResponseOneLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(createProfessionalDocumentResponseOneLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(createProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin).max(createProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(createProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin).max(createProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax).optional()
+})).max(createProfessionalDocumentResponseOneLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(createProfessionalDocumentResponseOneDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(createProfessionalDocumentResponseOneLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(createProfessionalDocumentResponseOneServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(createProfessionalDocumentResponseOneOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(createProfessionalDocumentResponseOnePaymentTermsMax).nullish(),
+  "contractText": zod.string().max(createProfessionalDocumentResponseOneContractTextMax).nullish(),
+  "notes": zod.string().max(createProfessionalDocumentResponseOneNotesMax).nullish(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "status": zod.enum(['draft', 'issued']),
+  "documentNumber": zod.string().nullish(),
+  "issueDate": zod.string().nullish(),
+  "currency": zod.enum(['EUR']).optional(),
+  "identitySnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "clientSnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "originalInvoiceId": zod.string().uuid().nullish(),
+  "subtotalCents": zod.number().int(),
+  "taxCents": zod.number().int(),
+  "totalCents": zod.number().int(),
+  "issuedAt": zod.coerce.date().nullish()
+}))
+
+
+export const GetProfessionalDocumentParams = zod.object({
+  "documentId": zod.coerce.string().uuid()
+})
+
+export const getProfessionalDocumentResponseOneTitleMax = 200;
+
+export const getProfessionalDocumentResponseOneLineItemsItemDescriptionMax = 300;
+
+export const getProfessionalDocumentResponseOneLineItemsItemQuantityMax = 1000000;
+
+export const getProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin = 0;
+export const getProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const getProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin = 0;
+export const getProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax = 2500;
+
+export const getProfessionalDocumentResponseOneLineItemsMax = 100;
+
+export const getProfessionalDocumentResponseOneDiscountTermsMax = 500;
+
+export const getProfessionalDocumentResponseOneLatePaymentRateMax = 200;
+
+export const getProfessionalDocumentResponseOneServiceTypeMax = 100;
+
+export const getProfessionalDocumentResponseOneOrderNumberMax = 100;
+
+export const getProfessionalDocumentResponseOnePaymentTermsMax = 2000;
+
+export const getProfessionalDocumentResponseOneContractTextMax = 20000;
+
+export const getProfessionalDocumentResponseOneNotesMax = 5000;
+
+
+
+
+export const GetProfessionalDocumentResponse = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(getProfessionalDocumentResponseOneTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(getProfessionalDocumentResponseOneLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(getProfessionalDocumentResponseOneLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(getProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin).max(getProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(getProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin).max(getProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax).optional()
+})).max(getProfessionalDocumentResponseOneLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(getProfessionalDocumentResponseOneDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(getProfessionalDocumentResponseOneLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(getProfessionalDocumentResponseOneServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(getProfessionalDocumentResponseOneOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(getProfessionalDocumentResponseOnePaymentTermsMax).nullish(),
+  "contractText": zod.string().max(getProfessionalDocumentResponseOneContractTextMax).nullish(),
+  "notes": zod.string().max(getProfessionalDocumentResponseOneNotesMax).nullish(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "status": zod.enum(['draft', 'issued']),
+  "documentNumber": zod.string().nullish(),
+  "issueDate": zod.string().nullish(),
+  "currency": zod.enum(['EUR']).optional(),
+  "identitySnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "clientSnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "originalInvoiceId": zod.string().uuid().nullish(),
+  "subtotalCents": zod.number().int(),
+  "taxCents": zod.number().int(),
+  "totalCents": zod.number().int(),
+  "issuedAt": zod.coerce.date().nullish()
+}))
+
+
+export const UpdateProfessionalDocumentParams = zod.object({
+  "documentId": zod.coerce.string().uuid()
+})
+
+export const updateProfessionalDocumentBodyTitleMax = 200;
+
+export const updateProfessionalDocumentBodyLineItemsItemDescriptionMax = 300;
+
+export const updateProfessionalDocumentBodyLineItemsItemQuantityMax = 1000000;
+
+export const updateProfessionalDocumentBodyLineItemsItemUnitAmountCentsMin = 0;
+export const updateProfessionalDocumentBodyLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const updateProfessionalDocumentBodyLineItemsItemTaxRateBpsMin = 0;
+export const updateProfessionalDocumentBodyLineItemsItemTaxRateBpsMax = 2500;
+
+export const updateProfessionalDocumentBodyLineItemsMax = 100;
+
+export const updateProfessionalDocumentBodyDiscountTermsMax = 500;
+
+export const updateProfessionalDocumentBodyLatePaymentRateMax = 200;
+
+export const updateProfessionalDocumentBodyServiceTypeMax = 100;
+
+export const updateProfessionalDocumentBodyOrderNumberMax = 100;
+
+export const updateProfessionalDocumentBodyPaymentTermsMax = 2000;
+
+export const updateProfessionalDocumentBodyContractTextMax = 20000;
+
+export const updateProfessionalDocumentBodyNotesMax = 5000;
+
+
+
+
+export const UpdateProfessionalDocumentBody = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(updateProfessionalDocumentBodyTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(updateProfessionalDocumentBodyLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(updateProfessionalDocumentBodyLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(updateProfessionalDocumentBodyLineItemsItemUnitAmountCentsMin).max(updateProfessionalDocumentBodyLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(updateProfessionalDocumentBodyLineItemsItemTaxRateBpsMin).max(updateProfessionalDocumentBodyLineItemsItemTaxRateBpsMax).optional()
+})).max(updateProfessionalDocumentBodyLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(updateProfessionalDocumentBodyDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(updateProfessionalDocumentBodyLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(updateProfessionalDocumentBodyServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(updateProfessionalDocumentBodyOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(updateProfessionalDocumentBodyPaymentTermsMax).nullish(),
+  "contractText": zod.string().max(updateProfessionalDocumentBodyContractTextMax).nullish(),
+  "notes": zod.string().max(updateProfessionalDocumentBodyNotesMax).nullish(),
+  "revision": zod.number().int().min(1).optional()
+})
+
+export const updateProfessionalDocumentResponseOneTitleMax = 200;
+
+export const updateProfessionalDocumentResponseOneLineItemsItemDescriptionMax = 300;
+
+export const updateProfessionalDocumentResponseOneLineItemsItemQuantityMax = 1000000;
+
+export const updateProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin = 0;
+export const updateProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const updateProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin = 0;
+export const updateProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax = 2500;
+
+export const updateProfessionalDocumentResponseOneLineItemsMax = 100;
+
+export const updateProfessionalDocumentResponseOneDiscountTermsMax = 500;
+
+export const updateProfessionalDocumentResponseOneLatePaymentRateMax = 200;
+
+export const updateProfessionalDocumentResponseOneServiceTypeMax = 100;
+
+export const updateProfessionalDocumentResponseOneOrderNumberMax = 100;
+
+export const updateProfessionalDocumentResponseOnePaymentTermsMax = 2000;
+
+export const updateProfessionalDocumentResponseOneContractTextMax = 20000;
+
+export const updateProfessionalDocumentResponseOneNotesMax = 5000;
+
+
+
+
+export const UpdateProfessionalDocumentResponse = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(updateProfessionalDocumentResponseOneTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(updateProfessionalDocumentResponseOneLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(updateProfessionalDocumentResponseOneLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(updateProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin).max(updateProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(updateProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin).max(updateProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax).optional()
+})).max(updateProfessionalDocumentResponseOneLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(updateProfessionalDocumentResponseOneDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(updateProfessionalDocumentResponseOneLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(updateProfessionalDocumentResponseOneServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(updateProfessionalDocumentResponseOneOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(updateProfessionalDocumentResponseOnePaymentTermsMax).nullish(),
+  "contractText": zod.string().max(updateProfessionalDocumentResponseOneContractTextMax).nullish(),
+  "notes": zod.string().max(updateProfessionalDocumentResponseOneNotesMax).nullish(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "status": zod.enum(['draft', 'issued']),
+  "documentNumber": zod.string().nullish(),
+  "issueDate": zod.string().nullish(),
+  "currency": zod.enum(['EUR']).optional(),
+  "identitySnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "clientSnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "originalInvoiceId": zod.string().uuid().nullish(),
+  "subtotalCents": zod.number().int(),
+  "taxCents": zod.number().int(),
+  "totalCents": zod.number().int(),
+  "issuedAt": zod.coerce.date().nullish()
+}))
+
+
+export const DeleteProfessionalDocumentParams = zod.object({
+  "documentId": zod.coerce.string().uuid()
+})
+
+export const DeleteProfessionalDocumentResponse = zod.void()
+
+
+export const IssueProfessionalDocumentParams = zod.object({
+  "documentId": zod.coerce.string().uuid()
+})
+
+
+export const issueProfessionalDocumentBodyIdempotencyKeyMin = 8;
+export const issueProfessionalDocumentBodyIdempotencyKeyMax = 120;
+
+
+
+export const IssueProfessionalDocumentBody = zod.object({
+  "revision": zod.number().int().min(1),
+  "idempotencyKey": zod.string().min(issueProfessionalDocumentBodyIdempotencyKeyMin).max(issueProfessionalDocumentBodyIdempotencyKeyMax),
+  "sourcesReviewed": zod.literal(true)
+})
+
+export const issueProfessionalDocumentResponseOneTitleMax = 200;
+
+export const issueProfessionalDocumentResponseOneLineItemsItemDescriptionMax = 300;
+
+export const issueProfessionalDocumentResponseOneLineItemsItemQuantityMax = 1000000;
+
+export const issueProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin = 0;
+export const issueProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const issueProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin = 0;
+export const issueProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax = 2500;
+
+export const issueProfessionalDocumentResponseOneLineItemsMax = 100;
+
+export const issueProfessionalDocumentResponseOneDiscountTermsMax = 500;
+
+export const issueProfessionalDocumentResponseOneLatePaymentRateMax = 200;
+
+export const issueProfessionalDocumentResponseOneServiceTypeMax = 100;
+
+export const issueProfessionalDocumentResponseOneOrderNumberMax = 100;
+
+export const issueProfessionalDocumentResponseOnePaymentTermsMax = 2000;
+
+export const issueProfessionalDocumentResponseOneContractTextMax = 20000;
+
+export const issueProfessionalDocumentResponseOneNotesMax = 5000;
+
+
+
+
+export const IssueProfessionalDocumentResponse = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(issueProfessionalDocumentResponseOneTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(issueProfessionalDocumentResponseOneLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(issueProfessionalDocumentResponseOneLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(issueProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMin).max(issueProfessionalDocumentResponseOneLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(issueProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMin).max(issueProfessionalDocumentResponseOneLineItemsItemTaxRateBpsMax).optional()
+})).max(issueProfessionalDocumentResponseOneLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(issueProfessionalDocumentResponseOneDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(issueProfessionalDocumentResponseOneLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(issueProfessionalDocumentResponseOneServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(issueProfessionalDocumentResponseOneOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(issueProfessionalDocumentResponseOnePaymentTermsMax).nullish(),
+  "contractText": zod.string().max(issueProfessionalDocumentResponseOneContractTextMax).nullish(),
+  "notes": zod.string().max(issueProfessionalDocumentResponseOneNotesMax).nullish(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "status": zod.enum(['draft', 'issued']),
+  "documentNumber": zod.string().nullish(),
+  "issueDate": zod.string().nullish(),
+  "currency": zod.enum(['EUR']).optional(),
+  "identitySnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "clientSnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "originalInvoiceId": zod.string().uuid().nullish(),
+  "subtotalCents": zod.number().int(),
+  "taxCents": zod.number().int(),
+  "totalCents": zod.number().int(),
+  "issuedAt": zod.coerce.date().nullish()
+}))
+
+
+export const CreateProfessionalCreditNoteParams = zod.object({
+  "documentId": zod.coerce.string().uuid()
+})
+
+
+export const createProfessionalCreditNoteBodyTitleMax = 200;
+
+export const createProfessionalCreditNoteBodyReasonMax = 1000;
+
+export const createProfessionalCreditNoteBodyIdempotencyKeyMin = 8;
+export const createProfessionalCreditNoteBodyIdempotencyKeyMax = 120;
+
+
+
+export const CreateProfessionalCreditNoteBody = zod.object({
+  "amountCents": zod.number().int().min(1),
+  "title": zod.string().min(1).max(createProfessionalCreditNoteBodyTitleMax),
+  "reason": zod.string().max(createProfessionalCreditNoteBodyReasonMax).optional(),
+  "idempotencyKey": zod.string().min(createProfessionalCreditNoteBodyIdempotencyKeyMin).max(createProfessionalCreditNoteBodyIdempotencyKeyMax),
+  "sourcesReviewed": zod.literal(true)
+})
+
+export const createProfessionalCreditNoteResponseOneTitleMax = 200;
+
+export const createProfessionalCreditNoteResponseOneLineItemsItemDescriptionMax = 300;
+
+export const createProfessionalCreditNoteResponseOneLineItemsItemQuantityMax = 1000000;
+
+export const createProfessionalCreditNoteResponseOneLineItemsItemUnitAmountCentsMin = 0;
+export const createProfessionalCreditNoteResponseOneLineItemsItemUnitAmountCentsMax = 1000000000;
+
+export const createProfessionalCreditNoteResponseOneLineItemsItemTaxRateBpsMin = 0;
+export const createProfessionalCreditNoteResponseOneLineItemsItemTaxRateBpsMax = 2500;
+
+export const createProfessionalCreditNoteResponseOneLineItemsMax = 100;
+
+export const createProfessionalCreditNoteResponseOneDiscountTermsMax = 500;
+
+export const createProfessionalCreditNoteResponseOneLatePaymentRateMax = 200;
+
+export const createProfessionalCreditNoteResponseOneServiceTypeMax = 100;
+
+export const createProfessionalCreditNoteResponseOneOrderNumberMax = 100;
+
+export const createProfessionalCreditNoteResponseOnePaymentTermsMax = 2000;
+
+export const createProfessionalCreditNoteResponseOneContractTextMax = 20000;
+
+export const createProfessionalCreditNoteResponseOneNotesMax = 5000;
+
+
+
+
+export const CreateProfessionalCreditNoteResponse = zod.object({
+  "type": zod.enum(['quote', 'contract', 'invoice']),
+  "title": zod.string().min(1).max(createProfessionalCreditNoteResponseOneTitleMax),
+  "clientId": zod.string().uuid().nullish(),
+  "dossierId": zod.string().uuid().nullish(),
+  "lineItems": zod.array(zod.object({
+  "description": zod.string().min(1).max(createProfessionalCreditNoteResponseOneLineItemsItemDescriptionMax),
+  "quantity": zod.number().int().min(1).max(createProfessionalCreditNoteResponseOneLineItemsItemQuantityMax),
+  "unitAmountCents": zod.number().int().min(createProfessionalCreditNoteResponseOneLineItemsItemUnitAmountCentsMin).max(createProfessionalCreditNoteResponseOneLineItemsItemUnitAmountCentsMax),
+  "taxRateBps": zod.number().int().min(createProfessionalCreditNoteResponseOneLineItemsItemTaxRateBpsMin).max(createProfessionalCreditNoteResponseOneLineItemsItemTaxRateBpsMax).optional()
+})).max(createProfessionalCreditNoteResponseOneLineItemsMax),
+  "serviceDate": zod.coerce.date().nullish(),
+  "dueDate": zod.coerce.date().nullish(),
+  "validUntil": zod.coerce.date().nullish(),
+  "discountTerms": zod.string().max(createProfessionalCreditNoteResponseOneDiscountTermsMax).nullish(),
+  "latePaymentRate": zod.string().max(createProfessionalCreditNoteResponseOneLatePaymentRateMax).nullish(),
+  "serviceType": zod.string().max(createProfessionalCreditNoteResponseOneServiceTypeMax).nullish(),
+  "orderNumber": zod.string().max(createProfessionalCreditNoteResponseOneOrderNumberMax).nullish(),
+  "paymentTerms": zod.string().max(createProfessionalCreditNoteResponseOnePaymentTermsMax).nullish(),
+  "contractText": zod.string().max(createProfessionalCreditNoteResponseOneContractTextMax).nullish(),
+  "notes": zod.string().max(createProfessionalCreditNoteResponseOneNotesMax).nullish(),
+  "revision": zod.number().int().min(1)
+}).and(zod.object({
+  "id": zod.string().uuid(),
+  "status": zod.enum(['draft', 'issued']),
+  "documentNumber": zod.string().nullish(),
+  "issueDate": zod.string().nullish(),
+  "currency": zod.enum(['EUR']).optional(),
+  "identitySnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "clientSnapshot": zod.object({
+
+}).passthrough().nullish(),
+  "originalInvoiceId": zod.string().uuid().nullish(),
+  "subtotalCents": zod.number().int(),
+  "taxCents": zod.number().int(),
+  "totalCents": zod.number().int(),
+  "issuedAt": zod.coerce.date().nullish()
+}))
+
+
+export const ListProfessionalDocumentRevisionsParams = zod.object({
+  "documentId": zod.coerce.string().uuid()
+})
+
+export const ListProfessionalDocumentRevisionsResponseItem = zod.object({
+  "revision": zod.number().int(),
+  "status": zod.enum(['draft', 'issued']),
+  "snapshot": zod.object({
+
+}).passthrough(),
+  "createdAt": zod.coerce.date()
+})
+export const ListProfessionalDocumentRevisionsResponse = zod.array(ListProfessionalDocumentRevisionsResponseItem)
+
+
+export const DownloadProfessionalDocumentParams = zod.object({
+  "documentId": zod.coerce.string().uuid()
+})
+
+
+
+
+export const DownloadProfessionalDocumentQueryParams = zod.object({
+  "revision": zod.coerce.number().int().min(1).optional()
+})
+
+export const DownloadProfessionalDocumentResponse = zod.unknown()
 
 

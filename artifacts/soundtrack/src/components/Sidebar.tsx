@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'wouter';
 import { 
   Library, Search, Clock, ListMusic, Users, Radio,
-  Plus, MoreHorizontal, FolderPlus, Disc3, Mic2, Home, Send, Palette
+  Plus, MoreHorizontal, FolderPlus, Disc3, Mic2, Home, Send, Palette, Briefcase
 } from 'lucide-react';
 import { useSillage } from '@/lib/store';
 import { Button } from '@/components/ui/button';
@@ -44,6 +44,7 @@ export function Sidebar() {
     { href: '/app/dj', icon: Disc3, label: 'Vue DJ' },
     { href: '/app/collaborate', icon: Users, label: 'Collaboratif' },
     { href: '/app/dj-transfers', icon: Send, label: 'Transferts DJ' },
+    { href: '/professional', icon: Briefcase, label: 'Espace Pro' },
     { href: '/app/appearance', icon: Palette, label: 'Ambiance' },
   ];
 
