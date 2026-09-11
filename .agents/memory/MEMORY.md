@@ -1,0 +1,1 @@
+- [Design delegation paths](design-delegation-paths.md) — Confirm the actual output directory after delegated builds; outputDir alone may not constrain file writes.

@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Sillage — La bande-son de votre histoire"
+description = "Prototype musical premium en français pour composer la bande-son d’un mariage : recherche, playlists, Timeline, mode DJ et collaboration simulée."
+version = "1.0.0"
+id = "artifacts/soundtrack"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23428
+
+[services.development]
+run = "pnpm --filter @workspace/soundtrack run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/soundtrack", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/soundtrack/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23428"
+BASE_PATH = "/"

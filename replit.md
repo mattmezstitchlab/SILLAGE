@@ -1,6 +1,6 @@
-# [Project name]
+# Sillage
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Prototype en français pour composer, organiser et partager la bande-son complète d'un mariage.
 
 ## Run & Operate
 
@@ -26,7 +26,9 @@ _Populate as you build — short repo map plus pointers to the source-of-truth f
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- La première version est volontairement un prototype côté interface avec sauvegarde locale : le brief demande des données de démonstration et une collaboration simulée, pas un service multiutilisateur.
+- Les extraits et les transitions sont des simulations explicitement signalées. Ne pas ajouter de téléchargement ou de redistribution musicale sans source autorisée.
+- Garder les services de recherche, prévisualisation, bibliothèque, collaboration, Timeline et compatibilité remplaçables pour de futures intégrations officielles.
 
 ## Product
 
@@ -34,7 +36,9 @@ _Describe the high-level user-facing capabilities of this app once they exist._
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- Priorité à la boucle rechercher → écouter → ajouter → placer dans la Timeline → construire l'enchaînement → partager.
+- Identité musicale premium originale, noir/anthracite/blanc cassé, couleurs subtiles issues des pochettes ; pas de copie Spotify/Apple Music ni de tableau de bord administratif.
+- Préserver la qualité des interactions avant d'ajouter des fonctions secondaires ; mobile particulièrement adapté aux invités.
 
 ## Gotchas
 
