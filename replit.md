@@ -1,6 +1,6 @@
 # Sillage
 
-Prototype en français pour composer, organiser et partager la bande-son complète d'un mariage.
+Application en français pour composer, organiser et partager la bande-son complète d'un mariage.
 
 ## Run & Operate
 
@@ -26,8 +26,9 @@ _Populate as you build — short repo map plus pointers to the source-of-truth f
 
 ## Architecture decisions
 
-- La première version est volontairement un prototype côté interface avec sauvegarde locale : le brief demande des données de démonstration et une collaboration simulée, pas un service multiutilisateur.
-- Les extraits et les transitions sont des simulations explicitement signalées. Ne pas ajouter de téléchargement ou de redistribution musicale sans source autorisée.
+- La version connectée utilise des comptes organisateurs et une sauvegarde serveur ; les anciennes données locales ne doivent être importées que sur action explicite.
+- Les extraits du catalogue servent à découvrir la musique, sans téléchargement. Les fichiers audio importés restent privés au propriétaire ; les liens invités ne donnent jamais accès à leur lecture.
+- Ne pas inventer de BPM, tonalité ou énergie lorsque la source ne fournit pas ces informations. Les transitions sur fichiers importés ne constituent pas un moteur de beatmatching professionnel.
 - Garder les services de recherche, prévisualisation, bibliothèque, collaboration, Timeline et compatibilité remplaçables pour de futures intégrations officielles.
 
 ## Product
@@ -38,6 +39,7 @@ _Describe the high-level user-facing capabilities of this app once they exist._
 
 - Priorité à la boucle rechercher → écouter → ajouter → placer dans la Timeline → construire l'enchaînement → partager.
 - Identité musicale premium originale, noir/anthracite/blanc cassé, couleurs subtiles issues des pochettes ; pas de copie Spotify/Apple Music ni de tableau de bord administratif.
+- Titres sans empattement, en capitales, légers et resserrés, d'après la référence fournie.
 - Préserver la qualité des interactions avant d'ajouter des fonctions secondaires ; mobile particulièrement adapté aux invités.
 
 ## Gotchas

@@ -4,14 +4,20 @@ export type Track = {
   artist: string;
   album: string;
   cover: string;
-  duration: number; // in seconds
-  year: number;
-  genre: string;
-  bpm: number;
-  key: string;
-  energy: number; // 1 to 10
-  moods: string[];
-  momentTags: string[]; // e.g. "Cérémonie", "Cocktail"
+  duration: number | null;
+  year?: number;
+  genre?: string;
+  bpm: number | null;
+  key: string | null;
+  energy: number | null;
+  moods?: string[];
+  momentTags?: string[];
+  source?: 'catalogue' | 'upload' | 'import';
+  previewUrl?: string | null;
+  storeUrl?: string | null;
+  streamUrl?: string;
+  excluded?: boolean;
+  locked?: boolean;
   colorHue?: number; // for subtle UI tinting
 };
 
@@ -22,6 +28,8 @@ export type Playlist = {
   tracks: Track[];
   cover?: string;
   type: 'collection' | 'dj-set';
+  revision?: number;
+  folderId?: string | null;
 };
 
 export type Folder = {
@@ -38,6 +46,7 @@ export type Moment = {
   expectedEnergy: number; // 1-10
   tracks: Track[];
   notes?: string;
+  revision?: number;
 };
 
 export type Proposal = {

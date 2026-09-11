@@ -1,124 +1,19 @@
-import { useState } from 'react';
-import { useSillage } from '@/lib/store';
+import { useEffect, useState } from 'react';
+import { useRoute } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Music, Heart } from 'lucide-react';
+import { Heart, Search, ThumbsUp } from 'lucide-react';
+import type { Proposal, Track } from '@/lib/types';
 import { toast } from 'sonner';
 
+const call = async (path:string, init?:RequestInit) => { const r=await fetch(`/api${path}`,{credentials:'include',headers:{'Content-Type':'application/json'},...init});const b=await r.json().catch(()=>({}));if(!r.ok)throw new Error(b.error||'Erreur réseau.');return b; };
 export default function GuestView() {
-  const { library, addProposal } = useSillage();
-  const [query, setQuery] = useState('');
-  const [selectedTrack, setSelectedTrack] = useState<any>(null);
-  const [name, setName] = useState('');
-  const [message, setMessage] = useState('');
-  const [submitted, setSubmitted] = useState(false);
-
-  const results = query.length > 1 
-    ? library.filter(t => t.title.toLowerCase().includes(query.toLowerCase()) || t.artist.toLowerCase().includes(query.toLowerCase())).slice(0, 5)
-    : [];
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedTrack || !name) return;
-    
-    addProposal({
-      guestName: name,
-      message,
-      track: selectedTrack
-    });
-    
-    setSubmitted(true);
-    toast.success("Suggestion envoyée !");
-  };
-
-  if (submitted) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center">
-        <Heart className="w-12 h-12 text-primary mb-4" />
-        <h1 className="text-2xl font-serif mb-2">Merci pour votre suggestion !</h1>
-        <p className="text-muted-foreground mb-8">Les futurs mariés l'écouteront avec attention.</p>
-        <Button variant="outline" onClick={() => { setSubmitted(false); setSelectedTrack(null); setQuery(''); }}>
-          Proposer un autre titre
-        </Button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-background flex flex-col items-center p-6 sm:p-12">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-serif text-white mb-2">Alice & Thomas</h1>
-          <p className="text-muted-foreground">Quelle chanson vous ferait vibrer le jour J ?</p>
-        </div>
-
-        {!selectedTrack ? (
-          <div className="space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input 
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Rechercher un titre ou un artiste..."
-                className="pl-10 h-14 text-lg bg-card border-border"
-              />
-            </div>
-            
-            {results.length > 0 && (
-              <div className="bg-card border border-border rounded-xl overflow-hidden">
-                {results.map((track, i) => (
-                  <div 
-                    key={track.id} 
-                    className={`flex items-center gap-4 p-3 hover:bg-white/5 cursor-pointer ${i !== results.length - 1 ? 'border-b border-border' : ''}`}
-                    onClick={() => setSelectedTrack(track)}
-                  >
-                    <img src={track.cover} className="w-10 h-10 rounded object-cover" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">{track.title}</p>
-                      <p className="text-xs text-muted-foreground truncate">{track.artist}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="bg-card border border-border p-4 rounded-xl flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <img src={selectedTrack.cover} className="w-12 h-12 rounded object-cover" />
-                <div>
-                  <p className="text-sm font-medium text-white">{selectedTrack.title}</p>
-                  <p className="text-xs text-muted-foreground">{selectedTrack.artist}</p>
-                </div>
-              </div>
-              <Button variant="ghost" size="sm" type="button" onClick={() => setSelectedTrack(null)}>
-                Changer
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-muted-foreground block mb-1">Votre nom</label>
-                <Input required value={name} onChange={e => setName(e.target.value)} className="bg-card" />
-              </div>
-              <div>
-                <label className="text-sm text-muted-foreground block mb-1">Un petit mot ? (optionnel)</label>
-                <textarea 
-                  className="w-full bg-card border border-border rounded-md p-3 text-sm min-h-[100px] focus:outline-none focus:ring-2 focus:ring-ring"
-                  value={message}
-                  onChange={e => setMessage(e.target.value)}
-                  placeholder="Pour l'ouverture du bal, pour le cocktail..."
-                />
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full h-12 text-lg">
-              Envoyer la suggestion
-            </Button>
-          </form>
-        )}
-      </div>
-    </div>
-  );
+  const [,params]=useRoute('/guest/:token'); const token=params?.token; const [event,setEvent]=useState<{name:string;proposals:Proposal[]}|null>(null); const [query,setQuery]=useState(''); const [results,setResults]=useState<Track[]>([]); const [selected,setSelected]=useState<Track|null>(null); const [name,setName]=useState(''); const [message,setMessage]=useState(''); const [error,setError]=useState<string|null>(null); const [sent,setSent]=useState(false);
+  const load=async()=>{if(!token)return;try{setEvent(await call(`/guest/${token}`));setError(null);}catch(e){setError(e instanceof Error?e.message:'Lien invalide.');}};
+  useEffect(()=>{void load();const poll=window.setInterval(()=>void load(),15_000);return()=>clearInterval(poll);},[token]);
+  useEffect(()=>{const timer=window.setTimeout(async()=>{if(!token||query.trim().length<2){setResults([]);return;}try{const d=await call(`/guest/${token}/catalogue?q=${encodeURIComponent(query)}`);setResults(d.results);}catch(e){toast.error(e instanceof Error?e.message:'Recherche impossible');}},350);return()=>clearTimeout(timer);},[query,token]);
+  const submit=async(e:React.FormEvent)=>{e.preventDefault();if(!token||!selected)return;try{const catalogueId=Number(selected.id?.replace('itunes:',''));if(!Number.isInteger(catalogueId))throw new Error('Ce titre doit provenir du catalogue.');await call(`/guest/${token}/proposals`,{method:'POST',body:JSON.stringify({guestName:name,message,catalogueId})});setSent(true);setSelected(null);setQuery('');await load();}catch(e){toast.error(e instanceof Error?e.message:'Envoi impossible');}};
+  const vote=async(id:string)=>{if(!token)return;try{await call(`/guest/${token}/proposals/${id}/vote`,{method:'POST'});await load();}catch(e){toast.error(e instanceof Error?e.message:'Vote impossible');}};
+  if(error)return <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6 text-center"><div><h1 className="font-serif text-3xl text-white mb-3">Lien indisponible</h1><p className="text-muted-foreground">{error}</p></div></div>;
+  return <div className="min-h-screen bg-background flex flex-col items-center p-6 sm:p-12"><div className="w-full max-w-md"><div className="text-center mb-8"><p className="text-primary tracking-[.25em] text-xs mb-3">SILLAGE</p><h1 className="text-3xl font-serif text-white mb-2">{event?.name||'Chargement…'}</h1><p className="text-muted-foreground">Quelle chanson vous ferait vibrer le jour J ?</p></div>{sent&&<div className="p-3 bg-primary/10 border border-primary/30 rounded mb-5 text-sm text-primary flex gap-2"><Heart className="w-4 h-4"/>Suggestion envoyée — merci !</div>} {!selected?<><div className="relative"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground"/><Input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Titre ou artiste…" className="pl-10 h-14 text-lg bg-card border-border"/></div><p className="text-xs text-muted-foreground my-3">Aperçus fournis par iTunes Store.</p>{results.map((track,i)=><button type="button" key={`${track.title}-${i}`} className="w-full flex text-left items-center gap-3 p-3 border-b border-border hover:bg-white/5" onClick={()=>setSelected(track)}><img src={track.cover} className="w-10 h-10 rounded object-cover" alt=""/><span className="flex-1"><b className="block text-sm text-white">{track.title}</b><span className="text-xs text-muted-foreground">{track.artist}</span></span></button>)}</>:<form onSubmit={submit} className="space-y-4"><div className="bg-card border border-border p-4 rounded-xl flex justify-between"><div><p className="text-white text-sm">{selected.title}</p><p className="text-muted-foreground text-xs">{selected.artist}</p></div><Button type="button" variant="ghost" size="sm" onClick={()=>setSelected(null)}>Changer</Button></div><Input required value={name} onChange={e=>setName(e.target.value)} placeholder="Votre nom" className="bg-card"/><textarea value={message} onChange={e=>setMessage(e.target.value)} maxLength={500} placeholder="Un petit mot ? (facultatif)" className="w-full bg-card border border-border rounded-md p-3 text-sm min-h-[100px]"/><Button type="submit" className="w-full">Envoyer la suggestion</Button></form>}<section className="mt-10"><h2 className="font-serif text-xl text-white mb-3">Suggestions</h2>{event?.proposals.map(p=><div className="border border-border bg-card rounded-lg p-3 mb-2" key={p.id}><p className="text-sm text-white">{p.track.title} <span className="text-muted-foreground">— {p.track.artist}</span></p><p className="text-xs text-muted-foreground mt-1">par {p.guestName} · {p.status==='approved'?'acceptée':p.status==='rejected'?'non retenue':'en attente'}</p>{p.status==='proposed'&&<Button variant="ghost" size="sm" className="mt-1" onClick={()=>void vote(p.id)}><ThumbsUp className="w-3 h-3 mr-1"/>{p.votes}</Button>}</div>)}</section></div></div>;
 }

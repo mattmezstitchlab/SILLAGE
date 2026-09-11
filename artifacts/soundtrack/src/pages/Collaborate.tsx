@@ -1,104 +1,30 @@
+import { useEffect, useState } from 'react';
 import { useSillage } from '@/lib/store';
 import { Button } from '@/components/ui/button';
-import { Users, Check, X, MessageSquare, ThumbsUp } from 'lucide-react';
-import { TrackRow } from '@/components/TrackRow';
+import { Check, Copy, Plus, Users, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 
 export default function Collaborate() {
-  const { proposals, updateProposalStatus, playlists, addTrackToPlaylist } = useSillage();
-  
-  const pendingProposals = proposals.filter(p => p.status === 'proposed');
-  const approvedProposals = proposals.filter(p => p.status === 'approved');
-
-  const handleApprove = (proposal: typeof proposals[0]) => {
-    updateProposalStatus(proposal.id, 'approved');
-    // Just add to first playlist for demo
-    if (playlists.length > 0) {
-      addTrackToPlaylist(playlists[0].id, proposal.track);
-    }
+  const { proposals, playlists, createPlaylist, moderateProposal, activeEventId, refresh } = useSillage();
+  const [link, setLink] = useState<{url:string;id:string}|null>(null);
+  const [links, setLinks] = useState<Array<{id:string;createdAt:string;url:string}>>([]);
+  const [destination, setDestination] = useState(''); const [newPlaylist, setNewPlaylist] = useState('');
+  const [busy, setBusy] = useState(false); const [approvalError, setApprovalError] = useState<string | null>(null);
+  const loadLinks = async () => { if (!activeEventId) return; const response=await fetch(`/api/events/${activeEventId}/share`,{credentials:'include'}); if(response.ok) setLinks(await response.json()); };
+  useEffect(()=>{ if(!destination && playlists[0]) setDestination(playlists[0].id); },[playlists,destination]);
+  useEffect(()=>{ void loadLinks().catch(()=>toast.error('Impossible de charger les liens invités.')); },[activeEventId]);
+  const createLink=async()=>{if(!activeEventId)return;try{setBusy(true);const response=await fetch(`/api/events/${activeEventId}/share`,{method:'POST',credentials:'include'});const data=await response.json();if(!response.ok)throw new Error(data.error);const url=`${window.location.origin}${data.url}`;setLink({url,id:data.id});await navigator.clipboard.writeText(url);await loadLinks();toast.success('Lien invité copié.');}catch(error){toast.error(error instanceof Error?error.message:'Création impossible');}finally{setBusy(false);}};
+  const revoke=async(id:string)=>{try{const response=await fetch(`/api/share/${id}`,{method:'DELETE',credentials:'include'});if(!response.ok)throw new Error('Révocation impossible.');if(link?.id===id)setLink(null);await loadLinks();toast.success('Lien invité révoqué.');}catch(error){toast.error(error instanceof Error?error.message:'Révocation impossible');}};
+  const addPlaylist = async () => { if(!newPlaylist.trim()) return; await createPlaylist(newPlaylist.trim(),'','collection'); setNewPlaylist(''); };
+  const approve = async (proposalId:string) => {
+    setApprovalError(null);
+    if (!destination) { setApprovalError('Créez ou sélectionnez une playlist de destination avant d’accepter.'); return; }
+    setBusy(true);
+    await moderateProposal(proposalId,'approved',destination);
+    await refresh();
+    setBusy(false);
   };
-
-  const handleReject = (id: string) => {
-    updateProposalStatus(id, 'rejected');
-  };
-
-  return (
-    <div className="p-8 pb-32 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-4xl font-serif text-gradient mb-2">Collaboratif</h1>
-          <p className="text-muted-foreground">Modérez les suggestions de vos invités (mode simulé).</p>
-        </div>
-        <Button variant="outline" onClick={() => window.open('#/guest', '_blank')}>
-          <Users className="w-4 h-4 mr-2" />
-          Ouvrir la vue Invité
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <section>
-          <h2 className="text-xl font-serif mb-4 text-white flex items-center gap-2">
-            En attente
-            <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full font-sans">
-              {pendingProposals.length}
-            </span>
-          </h2>
-          
-          <div className="space-y-4">
-            {pendingProposals.map(proposal => (
-              <div key={proposal.id} className="bg-card border border-border rounded-xl p-4">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="font-medium text-white">{proposal.guestName}</h3>
-                    <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                      <MessageSquare className="w-3.5 h-3.5" />
-                      "{proposal.message}"
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1 text-xs text-primary bg-primary/10 px-2 py-1 rounded">
-                    <ThumbsUp className="w-3.5 h-3.5" />
-                    {proposal.votes}
-                  </div>
-                </div>
-                
-                <div className="bg-background rounded-lg border border-border p-2 mb-4">
-                  <TrackRow track={proposal.track} showCover={true} />
-                </div>
-                
-                <div className="flex gap-2">
-                  <Button className="flex-1 bg-white text-black hover:bg-white/90" onClick={() => handleApprove(proposal)}>
-                    <Check className="w-4 h-4 mr-2" /> Approuver
-                  </Button>
-                  <Button variant="outline" className="flex-1 text-destructive hover:bg-destructive/10" onClick={() => handleReject(proposal.id)}>
-                    <X className="w-4 h-4 mr-2" /> Refuser
-                  </Button>
-                </div>
-              </div>
-            ))}
-            {pendingProposals.length === 0 && (
-              <p className="text-muted-foreground text-sm">Aucune suggestion en attente.</p>
-            )}
-          </div>
-        </section>
-
-        <section>
-          <h2 className="text-xl font-serif mb-4 text-muted-foreground">Approuvées</h2>
-          <div className="space-y-4 opacity-70">
-            {approvedProposals.map(proposal => (
-              <div key={proposal.id} className="bg-card border border-border rounded-xl p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-white">{proposal.guestName}</h3>
-                  <span className="text-xs text-primary flex items-center gap-1">
-                    <Check className="w-3 h-3" /> Approuvé
-                  </span>
-                </div>
-                <div className="bg-background rounded-lg border border-border p-2">
-                  <TrackRow track={proposal.track} showCover={true} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+  const pending=proposals.filter(p=>p.status==='proposed');
+  return <div className="p-8 pb-32 max-w-5xl mx-auto"><div className="flex items-center justify-between mb-8"><div><h1 className="text-4xl font-serif text-gradient mb-2">Collaboratif</h1><p className="text-muted-foreground">Les invités suggèrent ; vous choisissez la playlist de destination.</p></div><Button variant="outline" onClick={()=>void createLink()} disabled={busy}><Users className="w-4 h-4 mr-2"/>Créer un lien invité</Button></div>{link&&<div className="mb-4 p-4 bg-primary/10 border border-primary/30 rounded-xl flex items-center gap-3"><code className="flex-1 text-xs text-primary break-all">{link.url}</code><Button size="sm" onClick={()=>void navigator.clipboard.writeText(link.url).then(()=>toast.success('Copié')).catch(()=>toast.error('Copie impossible.'))}><Copy className="w-4 h-4"/></Button><Button variant="outline" size="sm" onClick={()=>void revoke(link.id)}>Révoquer</Button></div>}<section className="mb-8"><h2 className="font-serif text-lg text-white mb-2">Liens invités actifs</h2>{links.length?links.map(item=><div className="flex items-center gap-3 py-2 border-b border-border text-sm" key={item.id}><code className="flex-1 text-muted-foreground truncate">{window.location.origin}{item.url}</code><Button size="sm" variant="ghost" onClick={()=>void navigator.clipboard.writeText(`${window.location.origin}${item.url}`).then(()=>toast.success('Copié')).catch(()=>toast.error('Copie impossible.'))}><Copy className="w-4 h-4"/></Button><Button size="sm" variant="outline" onClick={()=>void revoke(item.id)}>Révoquer</Button></div>):<p className="text-sm text-muted-foreground">Aucun lien actif.</p>}</section><section className="bg-card border border-border rounded-xl p-4 mb-7"><label className="text-sm text-white block mb-2">Playlist de destination des suggestions acceptées</label>{playlists.length?<select value={destination} onChange={(e)=>setDestination(e.target.value)} className="w-full rounded bg-background border border-border p-2 text-sm text-white">{playlists.map(p=><option value={p.id} key={p.id}>{p.name}</option>)}</select>:<div className="flex gap-2"><Input value={newPlaylist} onChange={e=>setNewPlaylist(e.target.value)} placeholder="Ex. Suggestions des invités" className="bg-background"/><Button onClick={()=>void addPlaylist()}><Plus className="w-4 h-4 mr-1"/>Créer</Button></div>}{approvalError&&<p role="alert" className="text-sm text-destructive mt-2">{approvalError}</p>}</section><div className="grid grid-cols-1 md:grid-cols-2 gap-8"><section><h2 className="text-xl font-serif mb-4 text-white">En attente <span className="text-primary text-sm">({pending.length})</span></h2>{pending.map(p=><div key={p.id} className="bg-card border border-border rounded-xl p-4 mb-3"><p className="font-medium text-white">{p.track.title} <span className="text-muted-foreground">— {p.track.artist}</span></p><p className="text-sm text-muted-foreground mt-2">{p.guestName}{p.message&&` · “${p.message}”`}</p><p className="text-xs text-primary mt-2">{p.votes} vote{p.votes!==1?'s':''}</p><div className="flex gap-2 mt-4"><Button className="flex-1" disabled={busy||!destination} onClick={()=>void approve(p.id)}><Check className="w-4 h-4 mr-2"/>Accepter</Button><Button variant="outline" className="flex-1 text-destructive" disabled={busy} onClick={()=>void moderateProposal(p.id,'rejected')}><X className="w-4 h-4 mr-2"/>Refuser</Button></div></div>)}{!pending.length&&<p className="text-muted-foreground">Aucune suggestion en attente.</p>}</section><section><h2 className="text-xl font-serif mb-4 text-muted-foreground">Historique synchronisé</h2>{proposals.filter(p=>p.status!=='proposed').map(p=><div className="bg-card border border-border rounded-xl p-4 mb-3 opacity-70" key={p.id}><p className="text-white">{p.track.title}</p><p className="text-xs text-muted-foreground mt-1">{p.status==='approved'?'Acceptée':'Refusée'} · {p.guestName}</p></div>)}</section></div></div>;
 }

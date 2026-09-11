@@ -2,15 +2,16 @@ import { useState } from 'react';
 import { useSillage } from '@/lib/store';
 import { computeDNA } from '@/lib/utils';
 import { TrackRow } from '@/components/TrackRow';
-import { Clock, Zap, Settings2 } from 'lucide-react';
+import { Clock, Zap, Settings2, Plus, Trash2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 export default function TimelineView() {
-  const { timeline, removeTrackFromMoment, updateMoment } = useSillage();
+  const { timeline, removeTrackFromMoment, updateMoment, createMoment, deleteMoment } = useSillage();
   const [editingMoment, setEditingMoment] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   const handleUpdate = (e: React.FormEvent<HTMLFormElement>, id: string) => {
     e.preventDefault();
@@ -24,19 +25,26 @@ export default function TimelineView() {
     });
     setEditingMoment(null);
   };
+  const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    void createMoment({ title: String(data.get('title') || ''), time: String(data.get('time') || '18:00'), duration: Number(data.get('duration') || 60), expectedEnergy: Number(data.get('energy') || 5), notes: String(data.get('notes') || '') }).then(() => setCreating(false));
+  };
 
   return (
     <div className="p-8 pb-32 max-w-4xl mx-auto">
-      <div className="mb-12">
-        <h1 className="text-4xl font-serif text-gradient mb-4">Chronologie du Jour J</h1>
+      <div className="mb-12 flex items-start justify-between gap-4">
+        <div><h1 className="text-4xl font-serif text-gradient mb-4">Chronologie du Jour J</h1>
         <p className="text-muted-foreground text-lg">
           Orchestrez le rythme de la journée. Chaque moment a son énergie et sa couleur musicale.
         </p>
+        </div>
+        <Dialog open={creating} onOpenChange={setCreating}><DialogTrigger asChild><Button><Plus className="w-4 h-4 mr-2"/>Ajouter</Button></DialogTrigger><DialogContent className="bg-card border-border"><DialogHeader><DialogTitle className="text-white font-serif">Nouveau moment</DialogTitle></DialogHeader><form onSubmit={handleCreate} className="space-y-3"><Input name="title" required placeholder="Ex. Cocktail" className="bg-background"/><div className="grid grid-cols-2 gap-3"><Input name="time" type="time" defaultValue="18:00" className="bg-background"/><Input name="duration" type="number" min="1" defaultValue="60" className="bg-background"/></div><Input name="energy" type="number" min="1" max="10" defaultValue="5" className="bg-background"/><textarea name="notes" className="w-full bg-background border border-border rounded p-3" placeholder="Notes (facultatif)"/><Button type="submit" className="w-full">Créer le moment</Button></form></DialogContent></Dialog>
       </div>
 
       <div className="relative border-l border-border ml-4 space-y-12">
         {timeline.map((moment, i) => {
-          const totalDuration = moment.tracks.reduce((acc, t) => acc + t.duration, 0) / 60; // in minutes
+          const totalDuration = moment.tracks.reduce((acc, t) => acc + (t.duration || 0), 0) / 60; // in minutes
           const coverage = Math.min(100, Math.round((totalDuration / moment.duration) * 100));
           const dna = computeDNA(moment.tracks);
 
@@ -103,6 +111,7 @@ export default function TimelineView() {
                           </form>
                         </DialogContent>
                       </Dialog>
+                      <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 text-destructive" title="Supprimer ce moment" onClick={() => { if (confirm(`Supprimer définitivement « ${moment.title} » et ses titres ?`)) void deleteMoment(moment.id); }}><Trash2 className="w-4 h-4"/></Button>
                     </h2>
                     <p className="text-muted-foreground text-sm mt-2 max-w-lg">{moment.notes}</p>
                   </div>

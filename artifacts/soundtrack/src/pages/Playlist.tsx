@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 
 export default function PlaylistView() {
-  const [match, params] = useRoute('/playlist/:id');
+  const [match, params] = useRoute('/app/playlist/:id');
   const [, setLocation] = useLocation();
   const { playlists, setPlaying, removeTrackFromPlaylist, deletePlaylist, reorderPlaylist, updatePlaylist } = useSillage();
   
@@ -25,11 +25,11 @@ export default function PlaylistView() {
   }
 
   const dna = computeDNA(playlist.tracks);
-  const totalDuration = playlist.tracks.reduce((acc, t) => acc + t.duration, 0);
+  const totalDuration = playlist.tracks.reduce((acc, t) => acc + (t.duration || 0), 0);
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.origin + window.location.pathname + '#/guest');
-    toast.success("Lien copié", { description: "Lien vers la vue invité copié dans le presse-papier." });
+    setLocation('/app/collaborate');
+    toast.message("Créez un lien invité sécurisé depuis l’espace Collaboratif.");
   };
 
   const handleDownloadJSON = () => {
@@ -45,7 +45,7 @@ export default function PlaylistView() {
   const handleDelete = () => {
     if (confirm("Supprimer cette playlist ?")) {
       deletePlaylist(playlist.id);
-      setLocation('/');
+      setLocation('/app');
       toast.success("Playlist supprimée");
     }
   };
@@ -156,7 +156,10 @@ export default function PlaylistView() {
           >
             <Play className="w-6 h-6 fill-current ml-1" />
           </Button>
-          <Button variant="ghost" size="icon" className="rounded-full" title="Lecture aléatoire">
+          <Button variant="ghost" size="icon" className="rounded-full" title="Lecture aléatoire" disabled={!playlist.tracks.some(t => t.streamUrl || t.previewUrl)} onClick={() => {
+            const playable = playlist.tracks.filter(t => !t.excluded && (t.streamUrl || t.previewUrl));
+            if (playable.length) setPlaying(playable[Math.floor(Math.random() * playable.length)]);
+          }}>
             <Shuffle className="w-5 h-5" />
           </Button>
           <div className="flex-1" />
@@ -179,8 +182,8 @@ export default function PlaylistView() {
               <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg text-sm text-muted-foreground mb-6">
                 <Info className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <p>
-                  Sillage est un prototype fonctionnel qui tourne entièrement dans votre navigateur. 
-                  Il n'y a pas de base de données ni de synchronisation. Les envois des invités sont simulés.
+                  Utilisez l’espace Collaboratif pour générer et révoquer un lien invité sécurisé.
+                  Les invités ne peuvent pas modifier cette playlist.
                 </p>
               </div>
 
@@ -188,7 +191,7 @@ export default function PlaylistView() {
                 <Button className="w-full flex justify-between h-14 bg-white text-black hover:bg-white/90" onClick={handleCopyLink}>
                   <span className="flex items-center">
                     <LinkIcon className="w-5 h-5 mr-3" />
-                    Copier le lien pour les invités
+                    Gérer les liens invités
                   </span>
                 </Button>
                 
@@ -223,7 +226,7 @@ export default function PlaylistView() {
           ) : (
             <div className="text-center py-20 border border-dashed border-border rounded-xl">
               <p className="text-muted-foreground mb-2">Cette playlist est vide.</p>
-              <Button variant="link" onClick={() => setLocation('/search')}>
+                <Button variant="link" onClick={() => setLocation('/app/search')}>
                 Rechercher des titres
               </Button>
             </div>

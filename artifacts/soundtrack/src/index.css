@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -58,7 +58,7 @@
   --color-sidebar-ring: hsl(var(--sidebar-ring));
 
   --font-sans: 'Outfit', sans-serif;
-  --font-serif: 'Playfair Display', serif;
+  --font-serif: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   --radius-sm: 2px;
   --radius-md: 4px;
@@ -127,8 +127,26 @@
     color: hsl(var(--foreground));
   }
   
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-serif font-normal tracking-wide;
+  h1, h2, h3, h4, h5, h6,
+  .font-serif {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: 0.025em;
+    text-transform: uppercase;
+  }
+
+  h1.font-serif, h2.font-serif, h3.font-serif,
+  h4.font-serif, h5.font-serif, h6.font-serif {
+    font-weight: 300;
+  }
+}
+
+@media (max-width: 640px) {
+  h1, h2, h3, h4, h5, h6,
+  .font-serif {
+    line-height: 0.96;
+    letter-spacing: 0.015em;
   }
 }
 

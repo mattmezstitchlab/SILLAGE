@@ -8,7 +8,7 @@ export default function Library() {
   
   const featuredPlaylist = playlists[0];
   const recentTracks = library.slice(0, 10);
-  const djPicks = library.filter(t => t.energy > 7).slice(0, 6);
+  const djPicks = library.filter(t => (t.energy ?? 0) > 7).slice(0, 6);
 
   return (
     <div className="p-8 pb-32">
@@ -40,6 +40,12 @@ export default function Library() {
               <Play className="w-6 h-6 fill-current ml-1" />
             </Button>
           </div>
+        </section>
+      )}
+      {!featuredPlaylist && (
+        <section className="mb-10 rounded-xl border border-dashed border-border p-8 text-center">
+          <h2 className="font-serif text-2xl text-white mb-2">Votre espace commence ici</h2>
+          <p className="text-muted-foreground">Aucun contenu n’est prérempli : ajoutez vos propres morceaux ou des aperçus autorisés.</p>
         </section>
       )}
 

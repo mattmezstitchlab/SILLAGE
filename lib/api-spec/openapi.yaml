@@ -1,36 +1,311 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
-  version: 0.1.0
-  description: API specification
+  version: 1.0.0
+  description: Sillage owner, library, sharing and guest proposal API.
 servers:
   - url: /api
-    description: Base API path
 tags:
   - name: health
-    description: Health operations
+  - name: owner
+  - name: guest
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
-      summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
+          content: { application/json: { schema: { $ref: "#/components/schemas/HealthStatus" } } }
+  /owner/state:
+    get:
+      operationId: getOwnerState
+      tags: [owner]
+      responses:
+        "200":
+          description: Owner state
+          content: { application/json: { schema: { $ref: "#/components/schemas/OwnerState" } } }
+  /owner/import:
+    post:
+      operationId: importPrototype
+      tags: [owner]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/PrototypeImport" } } }
+      responses:
+        "200": { description: Imported, content: { application/json: { schema: { $ref: "#/components/schemas/OwnerState" } } } }
+  /events:
+    post:
+      operationId: createEvent
+      tags: [owner]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/EventInput" } } }
+      responses:
+        "201": { description: Created, content: { application/json: { schema: { $ref: "#/components/schemas/Event" } } } }
+  /events/{eventId}:
+    patch:
+      operationId: updateEvent
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/EventInput" } } }
+      responses:
+        "200": { description: Updated, content: { application/json: { schema: { $ref: "#/components/schemas/Event" } } } }
+  /events/{eventId}/tracks:
+    post:
+      operationId: createTrack
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/TrackInput" } } }
+      responses:
+        "201": { description: Created, content: { application/json: { schema: { $ref: "#/components/schemas/Track" } } } }
+  /tracks/{trackId}:
+    patch:
+      operationId: updateTrackMetadata
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/TrackId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [title, artist], properties: { title: { type: string }, artist: { type: string }, album: { type: string } } } } }
+      responses: { "200": { description: Updated } }
+  /events/{eventId}/catalogue:
+    get:
+      operationId: searchCatalogue
+      tags: [owner]
+      parameters:
+        - { $ref: "#/components/parameters/EventId" }
+        - in: query
+          name: q
+          required: true
+          schema: { type: string, minLength: 2, maxLength: 120 }
+      responses:
+        "200": { description: iTunes preview results, content: { application/json: { schema: { type: object, required: [results, attribution], properties: { results: { type: array, items: { $ref: "#/components/schemas/Track" } }, attribution: { type: string } } } } } }
+  /events/{eventId}/uploads/request:
+    post:
+      operationId: requestAudioUpload
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/UploadRequest" } } }
+      responses:
+        "200": { description: Signed PUT URL, content: { application/json: { schema: { $ref: "#/components/schemas/UploadResponse" } } } }
+  /events/{eventId}/uploads/finalize:
+    post:
+      operationId: finalizeAudioUpload
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/UploadFinalize" } } }
+      responses:
+        "201": { description: Uploaded track, content: { application/json: { schema: { $ref: "#/components/schemas/Track" } } } }
+  /tracks/{trackId}/stream:
+    get:
+      operationId: streamOwnedAudio
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/TrackId" }]
+      responses:
+        "200": { description: Audio stream }
+        "206": { description: Partial audio stream }
+  /events/{eventId}/playlists:
+    post:
+      operationId: createPlaylist
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/PlaylistInput" } } }
+      responses:
+        "201": { description: Created, content: { application/json: { schema: { $ref: "#/components/schemas/Playlist" } } } }
+  /events/{eventId}/folders:
+    post:
+      operationId: createFolder
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [name], properties: { name: { type: string } } } } }
+      responses: { "201": { description: Created } }
+  /folders/{folderId}:
+    delete:
+      operationId: deleteFolder
+      tags: [owner]
+      parameters: [{ in: path, name: folderId, required: true, schema: { type: string } }]
+      responses: { "204": { description: Deleted } }
+  /playlists/{playlistId}:
+    patch:
+      operationId: updatePlaylist
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/PlaylistId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/PlaylistInput" } } }
+      responses: { "200": { description: Updated } }
+    delete:
+      operationId: deletePlaylist
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/PlaylistId" }]
+      responses: { "204": { description: Deleted } }
+  /playlists/{playlistId}/tracks:
+    put:
+      operationId: replacePlaylistTracks
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/PlaylistId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [trackIds, revision], properties: { trackIds: { type: array, items: { type: string } }, revision: { type: integer } } } } }
+      responses: { "200": { description: Reordered } }
+  /playlists/{playlistId}/tracks/{trackId}:
+    delete:
+      operationId: removePlaylistTrack
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/PlaylistId" }, { $ref: "#/components/parameters/TrackId" }]
+      responses: { "204": { description: Removed } }
+  /events/{eventId}/moments/{momentId}:
+    delete:
+      operationId: deleteMoment
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }, { $ref: "#/components/parameters/MomentId" }]
+      responses: { "204": { description: Deleted } }
+    patch:
+      operationId: updateMoment
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }, { $ref: "#/components/parameters/MomentId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/MomentInput" } } }
+      responses: { "200": { description: Updated } }
+  /events/{eventId}/moments:
+    post:
+      operationId: createMoment
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/MomentInput" } } }
+      responses: { "201": { description: Created } }
+  /events/{eventId}/moments/{momentId}/tracks:
+    put:
+      operationId: replaceMomentTracks
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }, { $ref: "#/components/parameters/MomentId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [trackIds, revision], properties: { trackIds: { type: array, items: { type: string } }, revision: { type: integer } } } } }
+      responses: { "200": { description: Updated } }
+  /events/{eventId}/share:
+    get:
+      operationId: listShareLinks
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      responses:
+        "200":
+          description: Links
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HealthStatus"
+                type: array
+                items: { $ref: "#/components/schemas/ShareLink" }
+    post:
+      operationId: createShareLink
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      responses:
+        "201": { description: Link created, content: { application/json: { schema: { $ref: "#/components/schemas/ShareLink" } } } }
+  /share/{shareId}:
+    delete:
+      operationId: revokeShareLink
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/ShareId" }]
+      responses: { "204": { description: Revoked } }
+  /guest/{token}:
+    get:
+      operationId: getGuestEvent
+      tags: [guest]
+      parameters: [{ $ref: "#/components/parameters/Token" }]
+      responses:
+        "200": { description: Guest-safe event, content: { application/json: { schema: { $ref: "#/components/schemas/GuestEvent" } } } }
+  /guest/{token}/catalogue:
+    get:
+      operationId: searchGuestCatalogue
+      tags: [guest]
+      parameters: [{ $ref: "#/components/parameters/Token" }, { in: query, name: q, required: true, schema: { type: string, minLength: 2, maxLength: 120 } }]
+      responses: { "200": { description: Search results } }
+  /guest/{token}/proposals:
+    post:
+      operationId: submitGuestProposal
+      tags: [guest]
+      parameters: [{ $ref: "#/components/parameters/Token" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/ProposalInput" } } }
+      responses: { "201": { description: Proposal submitted, content: { application/json: { schema: { $ref: "#/components/schemas/Proposal" } } } } }
+  /guest/{token}/proposals/{proposalId}/vote:
+    post:
+      operationId: voteGuestProposal
+      tags: [guest]
+      parameters: [{ $ref: "#/components/parameters/Token" }, { $ref: "#/components/parameters/ProposalId" }]
+      responses: { "200": { description: Vote saved } }
+  /proposals/{proposalId}:
+    patch:
+      operationId: moderateProposal
+      tags: [owner]
+      parameters: [{ $ref: "#/components/parameters/ProposalId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: object, required: [status], properties: { status: { type: string, enum: [approved, rejected] }, playlistId: { type: string }, revision: { type: integer } } } } }
+      responses: { "200": { description: Moderated } }
 components:
+  parameters:
+    EventId: { in: path, name: eventId, required: true, schema: { type: string } }
+    TrackId: { in: path, name: trackId, required: true, schema: { type: string } }
+    PlaylistId: { in: path, name: playlistId, required: true, schema: { type: string } }
+    MomentId: { in: path, name: momentId, required: true, schema: { type: string } }
+    ShareId: { in: path, name: shareId, required: true, schema: { type: string } }
+    ProposalId: { in: path, name: proposalId, required: true, schema: { type: string } }
+    Token: { in: path, name: token, required: true, schema: { type: string } }
   schemas:
-    HealthStatus:
+    HealthStatus: { type: object, required: [status], properties: { status: { type: string } } }
+    EventInput: { type: object, required: [name], properties: { name: { type: string, minLength: 1, maxLength: 120 }, date: { type: string, nullable: true } } }
+    Event: { allOf: [{ $ref: "#/components/schemas/EventInput" }, { type: object, required: [id, revision], properties: { id: { type: string }, revision: { type: integer } } }] }
+    TrackInput:
       type: object
+      required: [title, artist, source]
       properties:
-        status:
-          type: string
-      required:
-        - status
-
+        title: { type: string, maxLength: 200 }
+        artist: { type: string, maxLength: 200 }
+        album: { type: string }
+        cover: { type: string, nullable: true }
+        duration: { type: number, nullable: true }
+        previewUrl: { type: string, nullable: true }
+        storeUrl: { type: string, nullable: true }
+        source: { type: string, enum: [catalogue, upload] }
+    Track: { allOf: [{ $ref: "#/components/schemas/TrackInput" }, { type: object, required: [id], properties: { id: { type: string }, bpm: { type: number, nullable: true }, key: { type: string, nullable: true }, energy: { type: number, nullable: true } } }] }
+    UploadRequest: { type: object, required: [name, size, contentType, rightsConfirmed], properties: { name: { type: string }, size: { type: integer, maximum: 104857600 }, contentType: { type: string }, rightsConfirmed: { type: boolean } } }
+    UploadResponse: { type: object, required: [uploadUrl, objectPath, intentId], properties: { uploadUrl: { type: string }, objectPath: { type: string }, intentId: { type: string } } }
+    UploadFinalize: { allOf: [{ $ref: "#/components/schemas/TrackInput" }, { type: object, required: [intentId, objectPath, size, contentType, rightsConfirmed], properties: { intentId: { type: string }, objectPath: { type: string }, size: { type: integer }, contentType: { type: string }, rightsConfirmed: { type: boolean } } }] }
+    PlaylistInput: { type: object, required: [name, type], properties: { name: { type: string }, description: { type: string }, type: { type: string, enum: [collection, dj-set] }, folderId: { type: string, nullable: true }, revision: { type: integer } } }
+    Playlist: { allOf: [{ $ref: "#/components/schemas/PlaylistInput" }, { type: object, required: [id, tracks, revision], properties: { id: { type: string }, tracks: { type: array, items: { $ref: "#/components/schemas/Track" } }, revision: { type: integer } } }] }
+    MomentInput: { type: object, required: [title, time, duration], properties: { title: { type: string }, time: { type: string }, duration: { type: integer }, expectedEnergy: { type: integer, nullable: true }, notes: { type: string, nullable: true }, revision: { type: integer } } }
+    ProposalInput: { type: object, required: [guestName, catalogueId], properties: { guestName: { type: string, minLength: 1, maxLength: 80 }, message: { type: string, maxLength: 500 }, catalogueId: { type: integer } } }
+    Proposal: { type: object, required: [id, guestName, message, track, status, votes], properties: { id: { type: string }, guestName: { type: string }, message: { type: string }, track: { $ref: "#/components/schemas/Track" }, status: { type: string }, votes: { type: integer } } }
+    ShareLink: { type: object, required: [id, token, url], properties: { id: { type: string }, token: { type: string, nullable: true }, url: { type: string, nullable: true }, createdAt: { type: string } } }
+    GuestEvent: { type: object, required: [name, proposals], properties: { name: { type: string }, proposals: { type: array, items: { $ref: "#/components/schemas/Proposal" } } } }
+    OwnerState:
+      type: object
+      required: [events, activeEventId, library, playlists, folders, timeline, proposals]
+      properties:
+        events: { type: array, items: { $ref: "#/components/schemas/Event" } }
+        activeEventId: { type: string, nullable: true }
+        library: { type: array, items: { $ref: "#/components/schemas/Track" } }
+        playlists: { type: array, items: { $ref: "#/components/schemas/Playlist" } }
+        folders: { type: array, items: { type: object } }
+        timeline: { type: array, items: { type: object } }
+        proposals: { type: array, items: { $ref: "#/components/schemas/Proposal" } }
+    PrototypeImport: { type: object, required: [state], properties: { state: { type: object }, eventName: { type: string } } }

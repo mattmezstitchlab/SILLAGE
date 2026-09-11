@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { useClerk, useUser } from '@clerk/react';
 
 export function Sidebar() {
   const [location] = useLocation();
@@ -17,6 +18,8 @@ export function Sidebar() {
   const [playlistName, setPlaylistName] = useState('');
   const [playlistType, setPlaylistType] = useState<'collection' | 'dj-set'>('collection');
   const [playlistOpen, setPlaylistOpen] = useState(false);
+  const { signOut } = useClerk();
+  const { user } = useUser();
 
   const handleCreatePlaylist = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,12 +38,11 @@ export function Sidebar() {
   };
 
   const navItems = [
-    { href: '/', icon: Home, label: 'Découverte' },
-    { href: '/search', icon: Search, label: 'Recherche' },
-    { href: '/timeline', icon: Clock, label: 'Chronologie' },
-    { href: '/dj', icon: Disc3, label: 'Vue DJ' },
-    { href: '/collaborate', icon: Users, label: 'Collaboratif' },
-    { href: '/guest', icon: Mic2, label: 'Vue Invité' },
+    { href: '/app', icon: Home, label: 'Découverte' },
+    { href: '/app/search', icon: Search, label: 'Recherche' },
+    { href: '/app/timeline', icon: Clock, label: 'Chronologie' },
+    { href: '/app/dj', icon: Disc3, label: 'Vue DJ' },
+    { href: '/app/collaborate', icon: Users, label: 'Collaboratif' },
   ];
 
   return (
@@ -138,7 +140,7 @@ export function Sidebar() {
                   const pl = playlists.find(p => p.id === pid);
                   if (!pl) return null;
                   return (
-                    <Link key={pl.id} href={`/playlist/${pl.id}`} className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${location === `/playlist/${pl.id}` ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30'}`}>
+                      <Link key={pl.id} href={`/app/playlist/${pl.id}`} className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${location === `/app/playlist/${pl.id}` ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30'}`}>
                       {pl.type === 'dj-set' ? <Radio className="w-3.5 h-3.5" /> : <ListMusic className="w-3.5 h-3.5" />}
                       <span className="truncate">{pl.name}</span>
                     </Link>
@@ -150,7 +152,7 @@ export function Sidebar() {
           
           <div className="space-y-1">
             {playlists.filter(p => !folders.some(f => f.playlistIds.includes(p.id))).map(pl => (
-              <Link key={pl.id} href={`/playlist/${pl.id}`} className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${location === `/playlist/${pl.id}` ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30'}`}>
+              <Link key={pl.id} href={`/app/playlist/${pl.id}`} className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${location === `/app/playlist/${pl.id}` ? 'bg-sidebar-accent text-sidebar-accent-foreground' : 'text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30'}`}>
                 {pl.type === 'dj-set' ? <Radio className="w-3.5 h-3.5" /> : <ListMusic className="w-3.5 h-3.5" />}
                 <span className="truncate">{pl.name}</span>
               </Link>
@@ -158,6 +160,14 @@ export function Sidebar() {
           </div>
         </div>
       </ScrollArea>
+      <div className="border-t border-sidebar-border p-4">
+        <p className="text-xs text-sidebar-foreground/50 truncate mb-2">{user?.primaryEmailAddress?.emailAddress}</p>
+        <Button variant="ghost" size="sm" className="w-full justify-start text-sidebar-foreground/70" onClick={() => void signOut({ redirectUrl: basePath() })}>Se déconnecter</Button>
+      </div>
     </div>
   );
+}
+
+function basePath() {
+  return import.meta.env.BASE_URL.replace(/\/$/, '') || '/';
 }

@@ -6,9 +6,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDuration(seconds: number): string {
+export function formatDuration(seconds: number | null): string {
+  if (seconds == null || !Number.isFinite(seconds)) return '—';
   const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
+  const s = Math.floor(seconds % 60);
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
@@ -21,11 +22,11 @@ export function generateAmbientColorStyle(hue: number = 0, opacity: number = 0.1
 export function computeDNA(tracks: import('./types').Track[]) {
   if (!tracks.length) return { energy: 0, bpmAvg: 0, topGenres: [] as string[] };
   
-  const totalEnergy = tracks.reduce((acc, t) => acc + t.energy, 0);
-  const totalBPM = tracks.reduce((acc, t) => acc + t.bpm, 0);
+  const knownEnergy = tracks.map((t) => t.energy).filter((value): value is number => value != null);
+  const knownBpm = tracks.map((t) => t.bpm).filter((value): value is number => value != null);
   
   const genres = tracks.reduce((acc, t) => {
-    acc[t.genre] = (acc[t.genre] || 0) + 1;
+    if (t.genre) acc[t.genre] = (acc[t.genre] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
   
@@ -35,8 +36,8 @@ export function computeDNA(tracks: import('./types').Track[]) {
     .map(g => g[0]);
     
   return {
-    energy: Math.round(totalEnergy / tracks.length),
-    bpmAvg: Math.round(totalBPM / tracks.length),
+    energy: knownEnergy.length ? Math.round(knownEnergy.reduce((a, n) => a + n, 0) / knownEnergy.length) : 0,
+    bpmAvg: knownBpm.length ? Math.round(knownBpm.reduce((a, n) => a + n, 0) / knownBpm.length) : 0,
     topGenres
   };
 }
