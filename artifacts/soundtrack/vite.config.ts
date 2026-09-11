@@ -5,27 +5,28 @@ import { defineConfig } from 'vite';
 
 import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
 
+// PORT is only consumed by the dev/preview servers. Replit injects it at
+// runtime, but static hosts (Vercel, CI, a plain local `vite build`) never do,
+// so its absence must not abort config resolution — `vite build` does not need
+// a port at all. An explicitly provided but unusable value still throws.
+const DEFAULT_PORT = 3000;
+
 const rawPort = process.env.PORT;
 
-if (!rawPort) {
+const port = rawPort === undefined ? DEFAULT_PORT : Number(rawPort);
+
+if (!Number.isInteger(port) || port <= 0) {
   throw new Error(
-    'PORT environment variable is required but was not provided.',
+    rawPort === undefined
+      ? `Invalid default PORT value: "${DEFAULT_PORT}"`
+      : `Invalid PORT value: "${rawPort}"`,
   );
 }
 
-const port = Number(rawPort);
-
-if (Number.isNaN(port) || port <= 0) {
-  throw new Error(`Invalid PORT value: "${rawPort}"`);
-}
-
-const basePath = process.env.BASE_PATH;
-
-if (!basePath) {
-  throw new Error(
-    'BASE_PATH environment variable is required but was not provided.',
-  );
-}
+// BASE_PATH lets Replit serve the app under a generated sub-path. Anywhere
+// else (Vercel, Netlify, a static server) the app is served from the domain
+// root, so '/' is the correct default.
+const basePath = process.env.BASE_PATH ?? '/';
 
 export default defineConfig({
   base: basePath,
