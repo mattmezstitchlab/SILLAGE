@@ -25,7 +25,16 @@ import Appearance from '@/pages/Appearance';
 import { OwnerThemeProvider } from '@/lib/theme';
 import ProfessionalRoutes from '@/pages/Professional';
 
-const clerkPubKey = publishableKeyFromHost(window.location.hostname, import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
+const explicitClerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+// On Replit the publishable key is derived from the served host, so several
+// custom domains can point at several Clerk instances. On a plain host (Vercel,
+// a static server) that derivation yields `clerk.<host>`, which is not a real
+// Clerk frontend API: set VITE_CLERK_PIN_PUBLISHABLE_KEY=true to use the key
+// from the environment verbatim instead.
+const clerkPubKey =
+  import.meta.env.VITE_CLERK_PIN_PUBLISHABLE_KEY === 'true' && explicitClerkKey
+    ? explicitClerkKey
+    : publishableKeyFromHost(window.location.hostname, explicitClerkKey);
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
 const queryClient = new QueryClient();

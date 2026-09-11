@@ -12,23 +12,64 @@ import {
 
 const REPLIT_SIDECAR_ENDPOINT = 'http://127.0.0.1:1106';
 
-export const objectStorageClient = new Storage({
-  credentials: {
-    audience: 'replit',
-    subject_token_type: 'access_token',
-    token_url: `${REPLIT_SIDECAR_ENDPOINT}/token`,
-    type: 'external_account',
-    credential_source: {
-      url: `${REPLIT_SIDECAR_ENDPOINT}/credential`,
-      format: {
-        type: 'json',
-        subject_token_field_name: 'access_token',
+export type ObjectStorageProvider = 'replit' | 'gcs';
+
+/**
+ * Replit exposes Object Storage through a local sidecar: it hands out short
+ * lived tokens and signs object URLs on our behalf. Everywhere else (Vercel,
+ * a container, CI) the very same Google Cloud Storage buckets are reachable
+ * with normal Google credentials — GOOGLE_APPLICATION_CREDENTIALS pointing at
+ * a service account, or workload identity.
+ *
+ * The provider is auto-detected from the Replit environment (REPL_ID is set by
+ * the platform) and can be forced with OBJECT_STORAGE_PROVIDER=replit|gcs.
+ */
+function resolveProvider(): ObjectStorageProvider {
+  const explicit = process.env.OBJECT_STORAGE_PROVIDER?.toLowerCase();
+
+  if (explicit === 'replit' || explicit === 'gcs') {
+    return explicit;
+  }
+
+  if (explicit) {
+    throw new Error(
+      `Invalid OBJECT_STORAGE_PROVIDER: "${process.env.OBJECT_STORAGE_PROVIDER}" ` +
+        '(expected "replit" or "gcs").',
+    );
+  }
+
+  return process.env.REPL_ID ? 'replit' : 'gcs';
+}
+
+export const objectStorageProvider = resolveProvider();
+
+function createReplitSidecarClient(): Storage {
+  return new Storage({
+    credentials: {
+      audience: 'replit',
+      subject_token_type: 'access_token',
+      token_url: `${REPLIT_SIDECAR_ENDPOINT}/token`,
+      type: 'external_account',
+      credential_source: {
+        url: `${REPLIT_SIDECAR_ENDPOINT}/credential`,
+        format: {
+          type: 'json',
+          subject_token_field_name: 'access_token',
+        },
       },
+      universe_domain: 'googleapis.com',
     },
-    universe_domain: 'googleapis.com',
-  },
-  projectId: '',
-});
+    projectId: '',
+  });
+}
+
+// Outside Replit, no options are passed: @google-cloud/storage then falls back
+// to Application Default Credentials (GOOGLE_APPLICATION_CREDENTIALS,
+// gcloud ADC, or the runtime's workload identity).
+export const objectStorageClient =
+  objectStorageProvider === 'replit'
+    ? createReplitSidecarClient()
+    : new Storage({ projectId: process.env.GCS_PROJECT_ID || undefined });
 
 export class ObjectNotFoundError extends Error {
   constructor() {
@@ -232,17 +273,19 @@ function parseObjectPath(path: string): {
   };
 }
 
-async function signObjectURL({
-  bucketName,
-  objectName,
-  method,
-  ttlSec,
-}: {
+export interface SignedObjectUrlRequest {
   bucketName: string;
   objectName: string;
   method: 'GET' | 'PUT' | 'DELETE' | 'HEAD';
   ttlSec: number;
-}): Promise<string> {
+}
+
+async function signWithReplitSidecar({
+  bucketName,
+  objectName,
+  method,
+  ttlSec,
+}: SignedObjectUrlRequest): Promise<string> {
   const request = {
     bucket_name: bucketName,
     object_name: objectName,
@@ -271,4 +314,50 @@ async function signObjectURL({
     signed_url: string;
   };
   return signedURL;
+}
+
+async function signWithGoogleCredentials({
+  bucketName,
+  objectName,
+  method,
+  ttlSec,
+}: SignedObjectUrlRequest): Promise<string> {
+  // GCS v4 signing only knows read/write/delete/resumable; a HEAD is served by
+  // the same signature as a GET. No contentType is signed on purpose: the
+  // browser picks its own on upload (see Search.tsx) and a signed contentType
+  // would have to match byte for byte.
+  const action =
+    method === 'PUT' ? 'write' : method === 'DELETE' ? 'delete' : 'read';
+
+  const [signedURL] = await objectStorageClient
+    .bucket(bucketName)
+    .file(objectName)
+    .getSignedUrl({
+      version: 'v4',
+      action,
+      expires: Date.now() + ttlSec * 1000,
+    });
+
+  return signedURL;
+}
+
+async function signObjectURL(
+  request: SignedObjectUrlRequest,
+): Promise<string> {
+  return objectStorageProvider === 'replit'
+    ? signWithReplitSidecar(request)
+    : signWithGoogleCredentials(request);
+}
+
+/**
+ * Signs a short-lived PUT URL that the browser can upload to directly, without
+ * the bytes ever transiting through this API (Vercel caps request bodies at
+ * 4.5 MB, so audio must bypass it).
+ */
+export function signPrivateUploadURL(
+  bucketName: string,
+  objectName: string,
+  ttlSec: number,
+): Promise<string> {
+  return signObjectURL({ bucketName, objectName, method: 'PUT', ttlSec });
 }

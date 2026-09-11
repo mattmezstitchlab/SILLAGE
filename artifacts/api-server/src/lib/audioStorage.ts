@@ -1,8 +1,8 @@
 import { randomUUID } from "crypto";
 import type { Response } from "express";
-import { objectStorageClient } from "./objectStorage";
+import { objectStorageClient, signPrivateUploadURL } from "./objectStorage";
 
-const SIDECAR = "http://127.0.0.1:1106";
+const UPLOAD_URL_TTL_SEC = 15 * 60;
 
 function privateLocation() {
   const location = process.env.PRIVATE_OBJECT_DIR;
@@ -21,20 +21,14 @@ function pathParts(objectPath: string) {
 export async function requestPrivateAudioUpload() {
   const { bucket, prefix } = privateLocation();
   const objectName = `${prefix}/sillage/${randomUUID()}`;
-  const response = await fetch(`${SIDECAR}/object-storage/signed-object-url`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      bucket_name: bucket,
-      object_name: objectName,
-      method: "PUT",
-      expires_at: new Date(Date.now() + 15 * 60_000).toISOString(),
-    }),
-    signal: AbortSignal.timeout(30_000),
-  });
-  if (!response.ok) throw new Error(`Impossible de signer l'envoi audio (${response.status}).`);
-  const body = await response.json() as { signed_url: string };
-  return { uploadUrl: body.signed_url, objectPath: `/objects/${objectName.slice(prefix.length + 1)}` };
+  // Signing goes through the shared storage layer: the Replit sidecar on
+  // Replit, plain Google credentials (v4 signed URL) everywhere else.
+  const uploadUrl = await signPrivateUploadURL(
+    bucket,
+    objectName,
+    UPLOAD_URL_TTL_SEC,
+  );
+  return { uploadUrl, objectPath: `/objects/${objectName.slice(prefix.length + 1)}` };
 }
 
 export async function verifyPrivateAudio(objectPath: string, expectedSize: number, expectedMime: string) {
