@@ -25,6 +25,7 @@ import type {
   DjTransferCreate,
   Event,
   EventInput,
+  EventTheme,
   GuestEvent,
   HealthStatus,
   ModerateProposalBody,
@@ -42,8 +43,10 @@ import type {
   SearchCatalogueParams,
   SearchGuestCatalogueParams,
   ShareLink,
+  ThemeImageUploadResponse,
   Track,
   TrackInput,
+  UpdateEventTheme,
   UpdateTrackMetadataBody,
   UploadFinalize,
   UploadRequest,
@@ -141,6 +144,13 @@ export function useHealthCheck<TData = Awaited<ReturnType<typeof healthCheck>>, 
 
   return withQueryKey(query, queryOptions.queryKey);
 }
+
+
+
+
+
+
+
 export const getGetOwnerStateUrl = () => {
 
 
@@ -457,6 +467,389 @@ const {mutation: mutationOptions, request: requestOptions} = options ?
         TContext
       > => {
       return useMutation(getUpdateEventMutationOptions(options));
+    }
+
+export const getGetEventThemeUrl = (eventId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/theme`
+}
+
+export const getEventTheme = async (eventId: string, options?: Parameters<typeof customFetch>[1]): Promise<EventTheme> => {
+
+  return customFetch<EventTheme>(getGetEventThemeUrl(eventId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEventThemeQueryKey = (eventId: string,) => {
+    return [
+    `/api/events/${eventId}/theme`
+    ] as const;
+    }
+
+
+export const getGetEventThemeQueryOptions = <TData = Awaited<ReturnType<typeof getEventTheme>>, TError = ErrorType<unknown>>(eventId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEventTheme>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEventThemeQueryKey(eventId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEventTheme>>> = ({ signal }) => getEventTheme(eventId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: eventId !== null && eventId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEventTheme>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEventThemeQueryResult = NonNullable<Awaited<ReturnType<typeof getEventTheme>>>
+export type GetEventThemeQueryError = ErrorType<unknown>
+
+
+
+export function useGetEventTheme<TData = Awaited<ReturnType<typeof getEventTheme>>, TError = ErrorType<unknown>>(
+ eventId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEventTheme>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEventThemeQueryOptions(eventId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getUpdateEventThemeUrl = (eventId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/theme`
+}
+
+export const updateEventTheme = async (eventId: string,
+    updateEventThemeBody: UpdateEventTheme, options?: Parameters<typeof customFetch>[1]): Promise<EventTheme> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<EventTheme>(getUpdateEventThemeUrl(eventId),
+  {
+    ...options,
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(updateEventThemeBody)
+  }
+);}
+
+
+
+
+
+export const getUpdateEventThemeMutationKey = () => ['updateEventTheme'] as const;
+
+export const getUpdateEventThemeMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEventTheme>>, TError,UpdateEventThemeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof updateEventTheme>>, TError,UpdateEventThemeMutationVariables, TContext> => {
+
+const mutationKey = getUpdateEventThemeMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updateEventTheme>>, UpdateEventThemeMutationVariables> = (props) => {
+          const {eventId,data} = props ?? {};
+
+          return  updateEventTheme(eventId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdateEventThemeMutationResult = NonNullable<Awaited<ReturnType<typeof updateEventTheme>>>
+    export type UpdateEventThemeMutationBody = BodyType<UpdateEventTheme>
+    export type UpdateEventThemeMutationError = ErrorType<void>
+    export type UpdateEventThemeMutationVariables = {eventId: string;data: BodyType<UpdateEventTheme>}
+
+    export const useUpdateEventTheme = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updateEventTheme>>, TError,UpdateEventThemeMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof updateEventTheme>>,
+        TError,
+        UpdateEventThemeMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUpdateEventThemeMutationOptions(options));
+    }
+
+export const getUploadEventThemeImageUrl = (eventId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/theme/images`
+}
+
+export const uploadEventThemeImage = async (eventId: string,
+    uploadEventThemeImageBody: Blob, options?: Parameters<typeof customFetch>[1]): Promise<ThemeImageUploadResponse> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<ThemeImageUploadResponse>(getUploadEventThemeImageUrl(eventId),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'image/jpeg', ...getHeaders(options?.headers) },
+    body: uploadEventThemeImageBody
+  }
+);}
+
+
+
+
+
+export const getUploadEventThemeImageMutationKey = () => ['uploadEventThemeImage'] as const;
+
+export const getUploadEventThemeImageMutationOptions = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadEventThemeImage>>, TError,UploadEventThemeImageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof uploadEventThemeImage>>, TError,UploadEventThemeImageMutationVariables, TContext> => {
+
+const mutationKey = getUploadEventThemeImageMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadEventThemeImage>>, UploadEventThemeImageMutationVariables> = (props) => {
+          const {eventId,data} = props ?? {};
+
+          return  uploadEventThemeImage(eventId,data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadEventThemeImageMutationResult = NonNullable<Awaited<ReturnType<typeof uploadEventThemeImage>>>
+    export type UploadEventThemeImageMutationBody = BodyType<Blob>
+    export type UploadEventThemeImageMutationError = ErrorType<unknown>
+    export type UploadEventThemeImageMutationVariables = {eventId: string;data: BodyType<Blob>}
+
+    export const useUploadEventThemeImage = <TError = ErrorType<unknown>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadEventThemeImage>>, TError,UploadEventThemeImageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof uploadEventThemeImage>>,
+        TError,
+        UploadEventThemeImageMutationVariables,
+        TContext
+      > => {
+      return useMutation(getUploadEventThemeImageMutationOptions(options));
+    }
+
+export const getGetEventThemeImageUrl = (eventId: string,
+    imageId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/theme/images/${imageId}`
+}
+
+export const getEventThemeImage = async (eventId: string,
+    imageId: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetEventThemeImageUrl(eventId,imageId),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetEventThemeImageQueryKey = (eventId: string,
+    imageId: string,) => {
+    return [
+    `/api/events/${eventId}/theme/images/${imageId}`
+    ] as const;
+    }
+
+
+export const getGetEventThemeImageQueryOptions = <TData = Awaited<ReturnType<typeof getEventThemeImage>>, TError = ErrorType<unknown>>(eventId: string,
+    imageId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEventThemeImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetEventThemeImageQueryKey(eventId,imageId);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getEventThemeImage>>> = ({ signal }) => getEventThemeImage(eventId,imageId, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: eventId !== null && eventId !== undefined && imageId !== null && imageId !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getEventThemeImage>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetEventThemeImageQueryResult = NonNullable<Awaited<ReturnType<typeof getEventThemeImage>>>
+export type GetEventThemeImageQueryError = ErrorType<unknown>
+
+
+
+export function useGetEventThemeImage<TData = Awaited<ReturnType<typeof getEventThemeImage>>, TError = ErrorType<unknown>>(
+ eventId: string,
+    imageId: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getEventThemeImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetEventThemeImageQueryOptions(eventId,imageId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getDeleteEventThemeImageUrl = (eventId: string,
+    imageId: string,) => {
+
+
+
+
+  return `/api/events/${eventId}/theme/images/${imageId}`
+}
+
+export const deleteEventThemeImage = async (eventId: string,
+    imageId: string, options?: Parameters<typeof customFetch>[1]): Promise<void> => {
+
+  return customFetch<void>(getDeleteEventThemeImageUrl(eventId,imageId),
+  {
+    ...options,
+    method: 'DELETE'
+
+
+  }
+);}
+
+
+
+
+
+export const getDeleteEventThemeImageMutationKey = () => ['deleteEventThemeImage'] as const;
+
+export const getDeleteEventThemeImageMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEventThemeImage>>, TError,DeleteEventThemeImageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof deleteEventThemeImage>>, TError,DeleteEventThemeImageMutationVariables, TContext> => {
+
+const mutationKey = getDeleteEventThemeImageMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteEventThemeImage>>, DeleteEventThemeImageMutationVariables> = (props) => {
+          const {eventId,imageId} = props ?? {};
+
+          return  deleteEventThemeImage(eventId,imageId,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteEventThemeImageMutationResult = NonNullable<Awaited<ReturnType<typeof deleteEventThemeImage>>>
+
+    export type DeleteEventThemeImageMutationError = ErrorType<void>
+    export type DeleteEventThemeImageMutationVariables = {eventId: string;imageId: string}
+
+    export const useDeleteEventThemeImage = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteEventThemeImage>>, TError,DeleteEventThemeImageMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof deleteEventThemeImage>>,
+        TError,
+        DeleteEventThemeImageMutationVariables,
+        TContext
+      > => {
+      return useMutation(getDeleteEventThemeImageMutationOptions(options));
     }
 
 export const getCreateTrackUrl = (eventId: string,) => {
@@ -2072,6 +2465,148 @@ export function useGetGuestEvent<TData = Awaited<ReturnType<typeof getGuestEvent
  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
 
   const queryOptions = getGetGuestEventQueryOptions(token,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetGuestThemeUrl = (token: string,) => {
+
+
+
+
+  return `/api/guest/${token}/theme`
+}
+
+export const getGuestTheme = async (token: string, options?: Parameters<typeof customFetch>[1]): Promise<EventTheme> => {
+
+  return customFetch<EventTheme>(getGetGuestThemeUrl(token),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetGuestThemeQueryKey = (token: string,) => {
+    return [
+    `/api/guest/${token}/theme`
+    ] as const;
+    }
+
+
+export const getGetGuestThemeQueryOptions = <TData = Awaited<ReturnType<typeof getGuestTheme>>, TError = ErrorType<unknown>>(token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGuestTheme>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetGuestThemeQueryKey(token);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuestTheme>>> = ({ signal }) => getGuestTheme(token, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: token !== null && token !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGuestTheme>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetGuestThemeQueryResult = NonNullable<Awaited<ReturnType<typeof getGuestTheme>>>
+export type GetGuestThemeQueryError = ErrorType<unknown>
+
+
+
+export function useGetGuestTheme<TData = Awaited<ReturnType<typeof getGuestTheme>>, TError = ErrorType<unknown>>(
+ token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGuestTheme>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetGuestThemeQueryOptions(token,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  return withQueryKey(query, queryOptions.queryKey);
+}
+
+
+
+
+
+
+
+export const getGetGuestThemeImageUrl = (token: string,) => {
+
+
+
+
+  return `/api/guest/${token}/theme/image`
+}
+
+export const getGuestThemeImage = async (token: string, options?: Parameters<typeof customFetch>[1]): Promise<Blob> => {
+
+  return customFetch<Blob>(getGetGuestThemeImageUrl(token),
+  {
+    ...options,
+    method: 'GET'
+
+
+  }
+);}
+
+
+
+
+
+export const getGetGuestThemeImageQueryKey = (token: string,) => {
+    return [
+    `/api/guest/${token}/theme/image`
+    ] as const;
+    }
+
+
+export const getGetGuestThemeImageQueryOptions = <TData = Awaited<ReturnType<typeof getGuestThemeImage>>, TError = ErrorType<unknown>>(token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGuestThemeImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetGuestThemeImageQueryKey(token);
+
+
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getGuestThemeImage>>> = ({ signal }) => getGuestThemeImage(token, { signal, ...requestOptions });
+
+
+
+
+
+   return  { queryKey, queryFn, enabled: token !== null && token !== undefined, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getGuestThemeImage>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetGuestThemeImageQueryResult = NonNullable<Awaited<ReturnType<typeof getGuestThemeImage>>>
+export type GetGuestThemeImageQueryError = ErrorType<unknown>
+
+
+
+export function useGetGuestThemeImage<TData = Awaited<ReturnType<typeof getGuestThemeImage>>, TError = ErrorType<unknown>>(
+ token: string, options?: { query?:UseQueryOptions<Awaited<ReturnType<typeof getGuestThemeImage>>, TError, TData>, request?: SecondParameter<typeof customFetch>}
+
+ ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+
+  const queryOptions = getGetGuestThemeImageQueryOptions(token,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
 

@@ -35,8 +35,8 @@ export function TrackRow({ track, index, showCover = true, isDragHandle = false,
   const [editOpen, setEditOpen] = useState(false);
 
   return (
-    <div className={`group flex items-center gap-4 py-2 px-4 rounded-md transition-colors hover:bg-white/5 ${isPlaying ? 'bg-white/5' : ''} ${excluded ? 'opacity-40 grayscale' : ''}`}>
-      <button type="button" aria-label={`Lire ${track.title}`} className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-white/10" onClick={() => setPlaying(track)}>
+    <div className={`group flex items-center gap-4 py-2 px-4 rounded-md transition-colors hover:bg-foreground/5 ${isPlaying ? 'bg-foreground/5' : ''} ${excluded ? 'opacity-40 grayscale' : ''}`}>
+      <button type="button" aria-label={`Lire ${track.title}`} className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-foreground/10" onClick={() => setPlaying(track)}>
         <Play className="w-3.5 h-3.5 fill-current" />
       </button>
       {isDragHandle && (
@@ -59,17 +59,17 @@ export function TrackRow({ track, index, showCover = true, isDragHandle = false,
             className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
             onClick={() => setPlaying(track)}
           >
-            <Play className="w-4 h-4 text-white fill-current" />
+            <Play className="w-4 h-4 text-foreground fill-current" />
           </button>
         </div>
       )}
 
       {!showCover && index === undefined && !isDragHandle && (
          <button 
-          className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+          className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/10 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
           onClick={() => setPlaying(track)}
         >
-          <Play className="w-4 h-4 text-white fill-current ml-1" />
+          <Play className="w-4 h-4 text-foreground fill-current ml-1" />
         </button>
       )}
 
@@ -110,7 +110,7 @@ export function TrackRow({ track, index, showCover = true, isDragHandle = false,
             </DropdownMenuItem>
             <Dialog open={editOpen} onOpenChange={setEditOpen}>
               <DialogTrigger asChild><DropdownMenuItem onSelect={(e) => e.preventDefault()}><Pencil className="w-3.5 h-3.5 mr-2"/>Modifier les métadonnées</DropdownMenuItem></DialogTrigger>
-              <DialogContent className="bg-card border-border"><DialogHeader><DialogTitle className="text-white font-serif">Métadonnées du titre</DialogTitle></DialogHeader><form className="space-y-3" onSubmit={(e) => { e.preventDefault(); const data=new FormData(e.currentTarget); void updateTrackMetadata(track.id,{title:String(data.get('title')),artist:String(data.get('artist')),album:String(data.get('album'))}).then(()=>{setEditOpen(false);toast.success('Métadonnées enregistrées.');}).catch(err=>toast.error(err instanceof Error?err.message:'Enregistrement impossible')); }}><Input name="title" required defaultValue={track.title} className="bg-background"/><Input name="artist" required defaultValue={track.artist} className="bg-background"/><Input name="album" defaultValue={track.album} className="bg-background"/><Button type="submit" className="w-full">Enregistrer</Button></form></DialogContent>
+              <DialogContent className="bg-card border-border"><DialogHeader><DialogTitle className="text-foreground font-serif">Métadonnées du titre</DialogTitle></DialogHeader><form className="space-y-3" onSubmit={(e) => { e.preventDefault(); const data=new FormData(e.currentTarget); void updateTrackMetadata(track.id,{title:String(data.get('title')),artist:String(data.get('artist')),album:String(data.get('album'))}).then(()=>{setEditOpen(false);toast.success('Métadonnées enregistrées.');}).catch(err=>toast.error(err instanceof Error?err.message:'Enregistrement impossible')); }}><Input name="title" required defaultValue={track.title} className="bg-background"/><Input name="artist" required defaultValue={track.artist} className="bg-background"/><Input name="album" defaultValue={track.album} className="bg-background"/><Button type="submit" className="w-full">Enregistrer</Button></form></DialogContent>
             </Dialog>
             <DropdownMenuSeparator />
             <DropdownMenuSub>

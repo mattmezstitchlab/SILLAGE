@@ -19,3 +19,4 @@
 
 export * from "./sillage";
 export * from "./djTransfers";
+export * from "./sillageThemes";

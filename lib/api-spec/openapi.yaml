@@ -10,6 +10,7 @@ tags:
   - name: owner
   - name: guest
   - name: dj-transfer
+  - name: theme
 paths:
   /healthz:
     get:
@@ -55,6 +56,64 @@ paths:
         content: { application/json: { schema: { $ref: "#/components/schemas/EventInput" } } }
       responses:
         "200": { description: Updated, content: { application/json: { schema: { $ref: "#/components/schemas/Event" } } } }
+  /events/{eventId}/theme:
+    get:
+      operationId: getEventTheme
+      tags: [theme]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      responses:
+        "200":
+          description: Saved event theme
+          content: { application/json: { schema: { $ref: "#/components/schemas/EventTheme" } } }
+    put:
+      operationId: updateEventTheme
+      tags: [theme]
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: "#/components/schemas/UpdateEventTheme" } } }
+      responses:
+        "200":
+          description: Saved event theme
+          content: { application/json: { schema: { $ref: "#/components/schemas/EventTheme" } } }
+        "409": { description: Revision conflict }
+  /events/{eventId}/theme/images:
+    post:
+      operationId: uploadEventThemeImage
+      tags: [theme]
+      description: Accepts an image/jpeg, image/png, or image/webp binary body. Multipart/form-data with a single image field is also accepted.
+      parameters: [{ $ref: "#/components/parameters/EventId" }]
+      requestBody:
+        required: true
+        content:
+          image/jpeg: { schema: { type: string, format: binary } }
+          image/png: { schema: { type: string, format: binary } }
+          image/webp: { schema: { type: string, format: binary } }
+      responses:
+        "201":
+          description: Staged image; it is not selected until the theme is saved.
+          content: { application/json: { schema: { $ref: "#/components/schemas/ThemeImageUploadResponse" } } }
+  /events/{eventId}/theme/images/{imageId}:
+    get:
+      operationId: getEventThemeImage
+      tags: [theme]
+      parameters:
+        - { $ref: "#/components/parameters/EventId" }
+        - { $ref: "#/components/parameters/ImageId" }
+      responses:
+        "200":
+          description: Private owner image preview
+          content:
+            image/webp: { schema: { type: string, format: binary } }
+    delete:
+      operationId: deleteEventThemeImage
+      tags: [theme]
+      parameters:
+        - { $ref: "#/components/parameters/EventId" }
+        - { $ref: "#/components/parameters/ImageId" }
+      responses:
+        "204": { description: Deleted staged or unused image }
+        "409": { description: The currently selected image must be deselected first }
   /events/{eventId}/tracks:
     post:
       operationId: createTrack
@@ -232,6 +291,27 @@ paths:
       parameters: [{ $ref: "#/components/parameters/Token" }]
       responses:
         "200": { description: Guest-safe event, content: { application/json: { schema: { $ref: "#/components/schemas/GuestEvent" } } } }
+  /guest/{token}/theme:
+    get:
+      operationId: getGuestTheme
+      tags: [theme]
+      parameters: [{ $ref: "#/components/parameters/Token" }]
+      responses:
+        "200":
+          description: Active-share theme; private image fields are null without consent
+          content: { application/json: { schema: { $ref: "#/components/schemas/EventTheme" } } }
+  /guest/{token}/theme/image:
+    get:
+      operationId: getGuestThemeImage
+      tags: [theme]
+      parameters: [{ $ref: "#/components/parameters/Token" }]
+      responses:
+        "200":
+          description: Current consented private image
+          headers:
+            Cache-Control: { schema: { type: string, example: "private, no-store" } }
+          content:
+            image/webp: { schema: { type: string, format: binary } }
   /guest/{token}/catalogue:
     get:
       operationId: searchGuestCatalogue
@@ -355,6 +435,7 @@ components:
     PlaylistId: { in: path, name: playlistId, required: true, schema: { type: string } }
     MomentId: { in: path, name: momentId, required: true, schema: { type: string } }
     ShareId: { in: path, name: shareId, required: true, schema: { type: string } }
+    ImageId: { in: path, name: imageId, required: true, schema: { type: string, format: uuid } }
     ProposalId: { in: path, name: proposalId, required: true, schema: { type: string } }
     Token: { in: path, name: token, required: true, schema: { type: string } }
     TransferId: { in: path, name: transferId, required: true, schema: { type: string, format: uuid } }
@@ -385,6 +466,36 @@ components:
     Proposal: { type: object, required: [id, guestName, message, track, status, votes], properties: { id: { type: string }, guestName: { type: string }, message: { type: string }, track: { $ref: "#/components/schemas/Track" }, status: { type: string }, votes: { type: integer } } }
     ShareLink: { type: object, required: [id, token, url], properties: { id: { type: string }, token: { type: string, nullable: true }, url: { type: string, nullable: true }, createdAt: { type: string } } }
     GuestEvent: { type: object, required: [name, proposals], properties: { name: { type: string }, proposals: { type: array, items: { $ref: "#/components/schemas/Proposal" } } } }
+    EventTheme:
+      type: object
+      required: [mode, imageId, imageUrl, focalX, focalY, overlay, guestImageConsent, revision]
+      properties:
+        mode: { type: string, enum: [studio, editorial, signature] }
+        imageId: { type: string, format: uuid, nullable: true }
+        imageUrl: { type: string, nullable: true, description: API image route; never an object-storage URL }
+        focalX: { type: number, minimum: 0, maximum: 100 }
+        focalY: { type: number, minimum: 0, maximum: 100 }
+        overlay: { type: number, minimum: 0, maximum: 1 }
+        guestImageConsent: { type: boolean }
+        revision: { type: integer, minimum: 1 }
+    UpdateEventTheme:
+      type: object
+      additionalProperties: false
+      required: [mode, imageId, focalX, focalY, overlay, guestImageConsent, revision]
+      properties:
+        mode: { type: string, enum: [studio, editorial, signature] }
+        imageId: { type: string, format: uuid, nullable: true }
+        focalX: { type: number, minimum: 0, maximum: 100 }
+        focalY: { type: number, minimum: 0, maximum: 100 }
+        overlay: { type: number, minimum: 0, maximum: 1 }
+        guestImageConsent: { type: boolean }
+        revision: { type: integer, minimum: 1 }
+    ThemeImageUploadResponse:
+      type: object
+      required: [imageId, imageUrl]
+      properties:
+        imageId: { type: string, format: uuid }
+        imageUrl: { type: string, description: API image route; never an object-storage URL }
     DjTransferCreate:
       type: object
       required: [recipientEmail, trackIds, expiresAt, rightsConfirmed]

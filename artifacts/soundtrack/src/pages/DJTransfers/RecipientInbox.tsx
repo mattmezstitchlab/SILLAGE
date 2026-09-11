@@ -29,7 +29,7 @@ export default function RecipientInbox() {
 
       <main className="flex-1 p-6 md:p-12 max-w-5xl mx-auto w-full">
         <div className="mb-10">
-          <h2 className="text-3xl font-serif text-white mb-2">Vos transferts reçus</h2>
+          <h2 className="text-3xl font-serif text-foreground mb-2">Vos transferts reçus</h2>
           <p className="text-muted-foreground">Téléchargez les sélections partagées par les organisateurs pour leurs événements.</p>
         </div>
 
@@ -48,7 +48,7 @@ export default function RecipientInbox() {
         ) : transfers?.length === 0 ? (
           <div className="border border-dashed border-border rounded-xl p-12 flex flex-col items-center justify-center text-center bg-card/30">
             <Disc3 className="w-12 h-12 text-muted-foreground/50 mb-4" />
-            <h3 className="text-lg font-medium text-white mb-2">Aucun transfert</h3>
+            <h3 className="text-lg font-medium text-foreground mb-2">Aucun transfert</h3>
             <p className="text-muted-foreground text-sm max-w-sm">
               Vous n'avez pas encore reçu de transferts de fichiers. Si un couple a partagé des fichiers avec vous, vérifiez que vous êtes connecté avec la bonne adresse e-mail.
             </p>
@@ -81,7 +81,7 @@ function TransferCard({ transfer }: { transfer: DJTransfer }) {
           </span>
         </div>
         
-        <h3 className="text-xl font-serif text-white mb-1 line-clamp-2 break-words">{transfer.eventName}</h3>
+        <h3 className="text-xl font-serif text-foreground mb-1 line-clamp-2 break-words">{transfer.eventName}</h3>
         <p className="text-sm text-muted-foreground mb-4">
           Expire le {format(new Date(transfer.expiresAt), 'dd MMM yyyy', { locale: fr })}
         </p>

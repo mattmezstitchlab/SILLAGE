@@ -23,3 +23,8 @@ export * from "./generated/types/djTransferHistoryStatus";
 export * from "./generated/types/djTransferStatus";
 export * from "./generated/types/djTransferTrack";
 export * from "./generated/types/revokeDjTransfer200";
+export * from "./generated/types/eventTheme";
+export * from "./generated/types/eventThemeMode";
+export * from "./generated/types/updateEventTheme";
+export * from "./generated/types/updateEventThemeMode";
+export * from "./generated/types/themeImageUploadResponse";

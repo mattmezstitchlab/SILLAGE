@@ -39,7 +39,7 @@ export default function TimelineView() {
           Orchestrez le rythme de la journée. Chaque moment a son énergie et sa couleur musicale.
         </p>
         </div>
-        <Dialog open={creating} onOpenChange={setCreating}><DialogTrigger asChild><Button><Plus className="w-4 h-4 mr-2"/>Ajouter</Button></DialogTrigger><DialogContent className="bg-card border-border"><DialogHeader><DialogTitle className="text-white font-serif">Nouveau moment</DialogTitle></DialogHeader><form onSubmit={handleCreate} className="space-y-3"><Input name="title" required placeholder="Ex. Cocktail" className="bg-background"/><div className="grid grid-cols-2 gap-3"><Input name="time" type="time" defaultValue="18:00" className="bg-background"/><Input name="duration" type="number" min="1" defaultValue="60" className="bg-background"/></div><Input name="energy" type="number" min="1" max="10" defaultValue="5" className="bg-background"/><textarea name="notes" className="w-full bg-background border border-border rounded p-3" placeholder="Notes (facultatif)"/><Button type="submit" className="w-full">Créer le moment</Button></form></DialogContent></Dialog>
+        <Dialog open={creating} onOpenChange={setCreating}><DialogTrigger asChild><Button><Plus className="w-4 h-4 mr-2"/>Ajouter</Button></DialogTrigger><DialogContent className="bg-card border-border"><DialogHeader><DialogTitle className="text-foreground font-serif">Nouveau moment</DialogTitle></DialogHeader><form onSubmit={handleCreate} className="space-y-3"><Input name="title" required placeholder="Ex. Cocktail" className="bg-background"/><div className="grid grid-cols-2 gap-3"><Input name="time" type="time" defaultValue="18:00" className="bg-background"/><Input name="duration" type="number" min="1" defaultValue="60" className="bg-background"/></div><Input name="energy" type="number" min="1" max="10" defaultValue="5" className="bg-background"/><textarea name="notes" className="w-full bg-background border border-border rounded p-3" placeholder="Notes (facultatif)"/><Button type="submit" className="w-full">Créer le moment</Button></form></DialogContent></Dialog>
       </div>
 
       <div className="relative border-l border-border ml-4 space-y-12">
@@ -62,7 +62,7 @@ export default function TimelineView() {
                       <span className="font-mono">{moment.time}</span>
                       <span className="text-muted-foreground text-sm uppercase tracking-wider">{moment.duration} min</span>
                     </div>
-                    <h2 className="text-2xl font-serif text-white flex items-center gap-2">
+                    <h2 className="text-2xl font-serif text-foreground flex items-center gap-2">
                       {moment.title}
                       
                       <Dialog open={editingMoment === moment.id} onOpenChange={(open) => setEditingMoment(open ? moment.id : null)}>
@@ -73,29 +73,29 @@ export default function TimelineView() {
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[425px] bg-card border-border">
                           <DialogHeader>
-                            <DialogTitle className="text-white font-serif text-xl">Modifier {moment.title}</DialogTitle>
+                            <DialogTitle className="text-foreground font-serif text-xl">Modifier {moment.title}</DialogTitle>
                           </DialogHeader>
                           <form onSubmit={(e) => handleUpdate(e, moment.id)} className="space-y-4 pt-4">
                             <div className="space-y-2">
-                              <label className="text-sm font-medium text-white">Titre</label>
+                              <label className="text-sm font-medium text-foreground">Titre</label>
                               <Input name="title" defaultValue={moment.title} className="bg-background" />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                               <div className="space-y-2">
-                                <label className="text-sm font-medium text-white">Heure</label>
+                                <label className="text-sm font-medium text-foreground">Heure</label>
                                 <Input name="time" defaultValue={moment.time} className="bg-background font-mono" />
                               </div>
                               <div className="space-y-2">
-                                <label className="text-sm font-medium text-white">Durée (min)</label>
+                                <label className="text-sm font-medium text-foreground">Durée (min)</label>
                                 <Input name="duration" type="number" defaultValue={moment.duration} className="bg-background" />
                               </div>
                             </div>
                             <div className="space-y-2">
-                              <label className="text-sm font-medium text-white">Énergie cible (1-10)</label>
+                              <label className="text-sm font-medium text-foreground">Énergie cible (1-10)</label>
                               <Input name="energy" type="number" min="1" max="10" defaultValue={moment.expectedEnergy} className="bg-background" />
                             </div>
                             <div className="space-y-2">
-                              <label className="text-sm font-medium text-white">Notes</label>
+                              <label className="text-sm font-medium text-foreground">Notes</label>
                               <textarea 
                                 name="notes" 
                                 defaultValue={moment.notes} 
@@ -116,7 +116,7 @@ export default function TimelineView() {
                     <p className="text-muted-foreground text-sm mt-2 max-w-lg">{moment.notes}</p>
                   </div>
                   
-                  <div className="flex flex-col gap-2 min-w-[200px] bg-white/5 p-3 rounded-lg border border-white/5 shrink-0">
+                  <div className="flex flex-col gap-2 min-w-[200px] bg-foreground/5 p-3 rounded-lg border border-white/5 shrink-0">
                     <div className="flex justify-between text-xs mb-1">
                       <span className="text-muted-foreground">Couverture</span>
                       <span className={coverage < 100 ? 'text-destructive' : 'text-primary'}>{Math.round(totalDuration)} / {moment.duration} min</span>
@@ -125,9 +125,9 @@ export default function TimelineView() {
                     
                     <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                       <Zap className="w-3.5 h-3.5" />
-                      <span>Énergie cible: <strong className="text-white">{moment.expectedEnergy}/10</strong></span>
+                      <span>Énergie cible: <strong className="text-foreground">{moment.expectedEnergy}/10</strong></span>
                       {dna.energy > 0 && (
-                        <span>(Actuelle: <strong className={Math.abs(dna.energy - moment.expectedEnergy) > 2 ? 'text-destructive' : 'text-white'}>{dna.energy}</strong>)</span>
+                        <span>(Actuelle: <strong className={Math.abs(dna.energy - moment.expectedEnergy) > 2 ? 'text-destructive' : 'text-foreground'}>{dna.energy}</strong>)</span>
                       )}
                     </div>
                   </div>

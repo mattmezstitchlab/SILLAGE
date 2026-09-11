@@ -45,6 +45,8 @@ _Describe the high-level user-facing capabilities of this app once they exist._
 
 ## Gotchas
 
+- Ambiances par événement : Studio sombre, Éditorial clair, Signature avec photo privée. Aperçu local avant enregistrement ; Annuler conserve le thème enregistré. Une photo n'est visible aux invités qu'après consentement explicite enregistré. Les images sont décodées/réencodées sans métadonnées, stockées à part de l'audio ; les accès invités contrôlent le lien et le consentement actuels.
+
 _Populate as you build — sharp edges, "always run X before Y" rules._
 
 ## Pointers

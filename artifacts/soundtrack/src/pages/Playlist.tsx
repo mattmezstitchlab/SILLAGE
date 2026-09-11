@@ -79,32 +79,32 @@ export default function PlaylistView() {
             {playlist.cover ? (
               <img src={playlist.cover} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-white/5">
+              <div className="w-full h-full flex items-center justify-center bg-foreground/5">
                 <span className="text-muted-foreground text-4xl font-serif">{playlist.name.charAt(0)}</span>
               </div>
             )}
             <Dialog open={editOpen} onOpenChange={setEditOpen}>
               <DialogTrigger asChild>
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
-                   <Edit2 className="w-6 h-6 text-white" />
+                   <Edit2 className="w-6 h-6 text-foreground" />
                 </div>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px] bg-card border-border">
                 <DialogHeader>
-                  <DialogTitle className="text-white font-serif text-xl">Modifier la playlist</DialogTitle>
+                  <DialogTitle className="text-foreground font-serif text-xl">Modifier la playlist</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleUpdate} className="space-y-6 pt-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">Nom</label>
+                    <label className="text-sm font-medium text-foreground">Nom</label>
                     <Input 
                       name="name"
                       defaultValue={playlist.name} 
-                      className="bg-background border-border text-white" 
+                      className="bg-background border-border text-foreground" 
                       autoFocus
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">Description</label>
+                    <label className="text-sm font-medium text-foreground">Description</label>
                     <textarea 
                       name="description"
                       defaultValue={playlist.description}
@@ -126,7 +126,7 @@ export default function PlaylistView() {
             <p className="text-xs uppercase tracking-widest text-primary mb-2">
               {playlist.type === 'dj-set' ? 'Set DJ' : 'Collection'}
             </p>
-            <h1 className="text-5xl font-serif font-bold mb-4 truncate text-white hover:text-primary transition-colors cursor-text" title="Modifier" onClick={() => setEditOpen(true)}>
+            <h1 className="text-5xl font-serif font-bold mb-4 truncate text-foreground hover:text-primary transition-colors cursor-text" title="Modifier" onClick={() => setEditOpen(true)}>
               {playlist.name}
             </h1>
             <p className="text-muted-foreground mb-4 max-w-2xl">{playlist.description || "Ajouter une description..."}</p>
@@ -173,7 +173,7 @@ export default function PlaylistView() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-card border-border">
               <DialogHeader>
-                <DialogTitle className="text-2xl mb-2 text-white">Partager "{playlist.name}"</DialogTitle>
+                <DialogTitle className="text-2xl mb-2 text-foreground">Partager "{playlist.name}"</DialogTitle>
                 <DialogDescription>
                   Choisissez comment partager votre sélection.
                 </DialogDescription>
@@ -188,7 +188,7 @@ export default function PlaylistView() {
               </div>
 
               <div className="space-y-4">
-                <Button className="w-full flex justify-between h-14 bg-white text-black hover:bg-white/90" onClick={handleCopyLink}>
+                <Button className="w-full flex justify-between h-14 bg-foreground text-background hover:bg-foreground/90" onClick={handleCopyLink}>
                   <span className="flex items-center">
                     <LinkIcon className="w-5 h-5 mr-3" />
                     Gérer les liens invités

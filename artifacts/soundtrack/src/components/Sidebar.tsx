@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'wouter';
 import { 
   Library, Search, Clock, ListMusic, Users, Radio,
-  Plus, MoreHorizontal, FolderPlus, Disc3, Mic2, Home, Send
+  Plus, MoreHorizontal, FolderPlus, Disc3, Mic2, Home, Send, Palette
 } from 'lucide-react';
 import { useSillage } from '@/lib/store';
 import { Button } from '@/components/ui/button';
@@ -44,6 +44,7 @@ export function Sidebar() {
     { href: '/app/dj', icon: Disc3, label: 'Vue DJ' },
     { href: '/app/collaborate', icon: Users, label: 'Collaboratif' },
     { href: '/app/dj-transfers', icon: Send, label: 'Transferts DJ' },
+    { href: '/app/appearance', icon: Palette, label: 'Ambiance' },
   ];
 
   return (
@@ -78,22 +79,22 @@ export function Sidebar() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px] bg-card border-border">
                 <DialogHeader>
-                  <DialogTitle className="text-white font-serif text-xl">Nouvelle Playlist</DialogTitle>
+                  <DialogTitle className="text-foreground font-serif text-xl">Nouvelle Playlist</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleCreatePlaylist} className="space-y-6 pt-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">Nom</label>
+                    <label className="text-sm font-medium text-foreground">Nom</label>
                     <Input 
                       value={playlistName} 
                       onChange={(e) => setPlaylistName(e.target.value)} 
                       placeholder="Ex: Cérémonie Laïque" 
-                      className="bg-background border-border text-white" 
+                      className="bg-background border-border text-foreground" 
                       autoFocus
                     />
                   </div>
                   
                   <div className="space-y-3">
-                    <label className="text-sm font-medium text-white">Type</label>
+                    <label className="text-sm font-medium text-foreground">Type</label>
                     <div className="flex gap-3">
                       <button 
                         type="button"

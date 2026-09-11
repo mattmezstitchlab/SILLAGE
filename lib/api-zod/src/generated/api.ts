@@ -260,6 +260,110 @@ export const UpdateEventResponse = zod.object({
 }))
 
 
+export const GetEventThemeParams = zod.object({
+  "eventId": zod.coerce.string()
+})
+
+export const getEventThemeResponseFocalXMin = 0;
+export const getEventThemeResponseFocalXMax = 100;
+
+export const getEventThemeResponseFocalYMin = 0;
+export const getEventThemeResponseFocalYMax = 100;
+
+export const getEventThemeResponseOverlayMin = 0;
+export const getEventThemeResponseOverlayMax = 1;
+
+
+
+
+export const GetEventThemeResponse = zod.object({
+  "mode": zod.enum(['studio', 'editorial', 'signature']),
+  "imageId": zod.string().uuid().nullable(),
+  "imageUrl": zod.string().nullable().describe('API image route; never an object-storage URL'),
+  "focalX": zod.number().min(getEventThemeResponseFocalXMin).max(getEventThemeResponseFocalXMax),
+  "focalY": zod.number().min(getEventThemeResponseFocalYMin).max(getEventThemeResponseFocalYMax),
+  "overlay": zod.number().min(getEventThemeResponseOverlayMin).max(getEventThemeResponseOverlayMax),
+  "guestImageConsent": zod.boolean(),
+  "revision": zod.number().int().min(1)
+})
+
+
+export const UpdateEventThemeParams = zod.object({
+  "eventId": zod.coerce.string()
+})
+
+export const updateEventThemeBodyFocalXMin = 0;
+export const updateEventThemeBodyFocalXMax = 100;
+
+export const updateEventThemeBodyFocalYMin = 0;
+export const updateEventThemeBodyFocalYMax = 100;
+
+export const updateEventThemeBodyOverlayMin = 0;
+export const updateEventThemeBodyOverlayMax = 1;
+
+
+
+
+export const UpdateEventThemeBody = zod.object({
+  "mode": zod.enum(['studio', 'editorial', 'signature']),
+  "imageId": zod.string().uuid().nullable(),
+  "focalX": zod.number().min(updateEventThemeBodyFocalXMin).max(updateEventThemeBodyFocalXMax),
+  "focalY": zod.number().min(updateEventThemeBodyFocalYMin).max(updateEventThemeBodyFocalYMax),
+  "overlay": zod.number().min(updateEventThemeBodyOverlayMin).max(updateEventThemeBodyOverlayMax),
+  "guestImageConsent": zod.boolean(),
+  "revision": zod.number().int().min(1)
+})
+
+export const updateEventThemeResponseFocalXMin = 0;
+export const updateEventThemeResponseFocalXMax = 100;
+
+export const updateEventThemeResponseFocalYMin = 0;
+export const updateEventThemeResponseFocalYMax = 100;
+
+export const updateEventThemeResponseOverlayMin = 0;
+export const updateEventThemeResponseOverlayMax = 1;
+
+
+
+
+export const UpdateEventThemeResponse = zod.object({
+  "mode": zod.enum(['studio', 'editorial', 'signature']),
+  "imageId": zod.string().uuid().nullable(),
+  "imageUrl": zod.string().nullable().describe('API image route; never an object-storage URL'),
+  "focalX": zod.number().min(updateEventThemeResponseFocalXMin).max(updateEventThemeResponseFocalXMax),
+  "focalY": zod.number().min(updateEventThemeResponseFocalYMin).max(updateEventThemeResponseFocalYMax),
+  "overlay": zod.number().min(updateEventThemeResponseOverlayMin).max(updateEventThemeResponseOverlayMax),
+  "guestImageConsent": zod.boolean(),
+  "revision": zod.number().int().min(1)
+})
+
+
+export const UploadEventThemeImageParams = zod.object({
+  "eventId": zod.coerce.string()
+})
+
+export const UploadEventThemeImageResponse = zod.object({
+  "imageId": zod.string().uuid(),
+  "imageUrl": zod.string().describe('API image route; never an object-storage URL')
+})
+
+
+export const GetEventThemeImageParams = zod.object({
+  "eventId": zod.coerce.string(),
+  "imageId": zod.coerce.string().uuid()
+})
+
+export const GetEventThemeImageResponse = zod.unknown()
+
+
+export const DeleteEventThemeImageParams = zod.object({
+  "eventId": zod.coerce.string(),
+  "imageId": zod.coerce.string().uuid()
+})
+
+export const DeleteEventThemeImageResponse = zod.void()
+
+
 export const CreateTrackParams = zod.object({
   "eventId": zod.coerce.string()
 })
@@ -661,6 +765,41 @@ export const GetGuestEventResponse = zod.object({
   "votes": zod.number().int()
 }))
 })
+
+
+export const GetGuestThemeParams = zod.object({
+  "token": zod.coerce.string()
+})
+
+export const getGuestThemeResponseFocalXMin = 0;
+export const getGuestThemeResponseFocalXMax = 100;
+
+export const getGuestThemeResponseFocalYMin = 0;
+export const getGuestThemeResponseFocalYMax = 100;
+
+export const getGuestThemeResponseOverlayMin = 0;
+export const getGuestThemeResponseOverlayMax = 1;
+
+
+
+
+export const GetGuestThemeResponse = zod.object({
+  "mode": zod.enum(['studio', 'editorial', 'signature']),
+  "imageId": zod.string().uuid().nullable(),
+  "imageUrl": zod.string().nullable().describe('API image route; never an object-storage URL'),
+  "focalX": zod.number().min(getGuestThemeResponseFocalXMin).max(getGuestThemeResponseFocalXMax),
+  "focalY": zod.number().min(getGuestThemeResponseFocalYMin).max(getGuestThemeResponseFocalYMax),
+  "overlay": zod.number().min(getGuestThemeResponseOverlayMin).max(getGuestThemeResponseOverlayMax),
+  "guestImageConsent": zod.boolean(),
+  "revision": zod.number().int().min(1)
+})
+
+
+export const GetGuestThemeImageParams = zod.object({
+  "token": zod.coerce.string()
+})
+
+export const GetGuestThemeImageResponse = zod.unknown()
 
 
 export const SearchGuestCatalogueParams = zod.object({

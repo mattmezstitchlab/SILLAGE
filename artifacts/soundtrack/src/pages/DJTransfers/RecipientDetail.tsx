@@ -50,7 +50,7 @@ export default function RecipientDetail() {
           <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-2">
             <AlertCircle className="w-8 h-8 text-destructive" />
           </div>
-          <h2 className="text-xl font-serif text-white">Transfert inaccessible</h2>
+          <h2 className="text-xl font-serif text-foreground">Transfert inaccessible</h2>
           <p className="text-muted-foreground text-sm">
             {error instanceof Error ? error.message : 'Ce lien est invalide ou vous n\'êtes pas autorisé à y accéder avec ce compte.'}
           </p>
@@ -73,12 +73,12 @@ export default function RecipientDetail() {
       <header className="border-b border-border/50 bg-background/95 backdrop-blur z-10 sticky top-0 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/dj-transfers">
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-white">
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-5 h-5" />
             </Button>
           </Link>
           <div>
-            <h1 className="font-serif text-lg text-white">{transfer.eventName}</h1>
+            <h1 className="font-serif text-lg text-foreground">{transfer.eventName}</h1>
             <p className="text-xs text-muted-foreground">Transfert DJ</p>
           </div>
         </div>
@@ -106,19 +106,19 @@ export default function RecipientDetail() {
               <dl className="space-y-3 text-sm">
                 <div className="flex justify-between border-b border-border/50 pb-2">
                   <dt className="text-muted-foreground">Destinataire</dt>
-                  <dd className="text-white font-medium">{transfer.recipientEmail}</dd>
+                  <dd className="text-foreground font-medium">{transfer.recipientEmail}</dd>
                 </div>
                 <div className="flex justify-between border-b border-border/50 pb-2">
                   <dt className="text-muted-foreground">Date d'envoi</dt>
-                  <dd className="text-white">{format(new Date(transfer.createdAt), 'dd MMMM yyyy', { locale: fr })}</dd>
+                  <dd className="text-foreground">{format(new Date(transfer.createdAt), 'dd MMMM yyyy', { locale: fr })}</dd>
                 </div>
                 <div className="flex justify-between border-b border-border/50 pb-2">
                   <dt className="text-muted-foreground">Date d'expiration</dt>
-                  <dd className="text-white">{format(new Date(transfer.expiresAt), 'dd MMMM yyyy', { locale: fr })}</dd>
+                  <dd className="text-foreground">{format(new Date(transfer.expiresAt), 'dd MMMM yyyy', { locale: fr })}</dd>
                 </div>
                 <div className="flex justify-between pb-2">
                   <dt className="text-muted-foreground">Volume</dt>
-                  <dd className="text-white">{transfer.tracks.length} fichiers</dd>
+                  <dd className="text-foreground">{transfer.tracks.length} fichiers</dd>
                 </div>
               </dl>
             </div>
@@ -135,7 +135,7 @@ export default function RecipientDetail() {
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-xl font-serif text-white flex items-center gap-2">
+          <h2 className="text-xl font-serif text-foreground flex items-center gap-2">
             Fichiers audios <span className="bg-secondary text-secondary-foreground text-xs font-sans px-2 py-0.5 rounded-full">{transfer.tracks.length}</span>
           </h2>
           
@@ -233,7 +233,7 @@ function TrackDownloadRow({ transferId, track, isActive }: { transferId: string,
           <FileAudio className="w-5 h-5 text-muted-foreground" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="font-medium text-white truncate text-sm">{track.title}</p>
+          <p className="font-medium text-foreground truncate text-sm">{track.title}</p>
           <p className="text-xs text-muted-foreground truncate">{track.artist || 'Artiste inconnu'} • {formatSize(track.byteSize)}</p>
         </div>
       </div>
@@ -248,7 +248,7 @@ function TrackDownloadRow({ transferId, track, isActive }: { transferId: string,
                 style={{ width: `${progress}%` }} 
               />
             </div>
-            <button onClick={handleDownload} className="text-muted-foreground hover:text-white" title="Annuler">
+            <button onClick={handleDownload} className="text-muted-foreground hover:text-foreground" title="Annuler">
               <XCircle className="w-4 h-4" />
             </button>
           </div>

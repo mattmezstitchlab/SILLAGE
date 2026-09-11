@@ -136,6 +136,78 @@ export interface GuestEvent {
   proposals: Proposal[];
 }
 
+export type EventThemeMode = typeof EventThemeMode[keyof typeof EventThemeMode];
+
+
+export const EventThemeMode = {
+  studio: 'studio',
+  editorial: 'editorial',
+  signature: 'signature',
+} as const;
+
+export interface EventTheme {
+  mode: EventThemeMode;
+  imageId: string | null;
+  /** API image route; never an object-storage URL */
+  imageUrl: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  focalX: number;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  focalY: number;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  overlay: number;
+  guestImageConsent: boolean;
+  /** @minimum 1 */
+  revision: number;
+}
+
+export type UpdateEventThemeMode = typeof UpdateEventThemeMode[keyof typeof UpdateEventThemeMode];
+
+
+export const UpdateEventThemeMode = {
+  studio: 'studio',
+  editorial: 'editorial',
+  signature: 'signature',
+} as const;
+
+export interface UpdateEventTheme {
+  mode: UpdateEventThemeMode;
+  imageId: string | null;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  focalX: number;
+  /**
+     * @minimum 0
+     * @maximum 100
+     */
+  focalY: number;
+  /**
+     * @minimum 0
+     * @maximum 1
+     */
+  overlay: number;
+  guestImageConsent: boolean;
+  /** @minimum 1 */
+  revision: number;
+}
+
+export interface ThemeImageUploadResponse {
+  imageId: string;
+  /** API image route; never an object-storage URL */
+  imageUrl: string;
+}
+
 export interface DjTransferCreate {
   /** @maxLength 320 */
   recipientEmail: string;

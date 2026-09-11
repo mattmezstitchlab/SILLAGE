@@ -25,8 +25,8 @@ export default function Library() {
           <div className="absolute bottom-0 left-0 p-8 z-20 w-full flex items-end justify-between">
             <div>
               <p className="text-xs uppercase tracking-widest text-primary mb-2">Sélection du jour</p>
-              <h2 className="text-3xl font-serif text-white mb-2">{featuredPlaylist.name}</h2>
-              <p className="text-white/70 max-w-lg">{featuredPlaylist.description}</p>
+              <h2 className="text-3xl font-serif text-foreground mb-2">{featuredPlaylist.name}</h2>
+              <p className="text-foreground/70 max-w-lg">{featuredPlaylist.description}</p>
             </div>
             <Button 
               size="lg" 
@@ -44,7 +44,7 @@ export default function Library() {
       )}
       {!featuredPlaylist && (
         <section className="mb-10 rounded-xl border border-dashed border-border p-8 text-center">
-          <h2 className="font-serif text-2xl text-white mb-2">Votre espace commence ici</h2>
+          <h2 className="font-serif text-2xl text-foreground mb-2">Votre espace commence ici</h2>
           <p className="text-muted-foreground">Aucun contenu n’est prérempli : ajoutez vos propres morceaux ou des aperçus autorisés.</p>
         </section>
       )}
@@ -73,9 +73,9 @@ export default function Library() {
               >
                 <img src={track.cover} className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
-                  <Play className="w-8 h-8 text-white mb-2" />
-                  <p className="text-sm font-medium text-white truncate">{track.title}</p>
-                  <p className="text-xs text-white/70 truncate">{track.artist}</p>
+                  <Play className="w-8 h-8 text-foreground mb-2" />
+                  <p className="text-sm font-medium text-foreground truncate">{track.title}</p>
+                  <p className="text-xs text-foreground/70 truncate">{track.artist}</p>
                 </div>
               </div>
             ))}

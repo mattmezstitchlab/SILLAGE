@@ -8,7 +8,8 @@
     "build": "node ./build.mjs",
     "start": "node --enable-source-maps ./dist/index.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test:integration": "tsx --test ./test/djTransfers.integration.test.ts"
+    "test:integration": "tsx --test ./test/*.integration.test.ts",
+    "test:theme": "tsx --test ./test/eventTheme.integration.test.ts"
   },
   "dependencies": {
     "@clerk/express": "^2.1.67",
@@ -22,14 +23,17 @@
     "express": "^5.2.1",
     "google-auth-library": "^11.0.2",
     "http-proxy-middleware": "^4.2.0",
+    "multer": "^2.0.2",
     "pino": "^9.14.0",
     "pino-http": "^10.5.0",
+    "sharp": "^0.35.4",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/multer": "^1.4.13",
     "@types/node": "catalog:",
     "esbuild": "0.28.2",
     "esbuild-plugin-pino": "^2.3.3",

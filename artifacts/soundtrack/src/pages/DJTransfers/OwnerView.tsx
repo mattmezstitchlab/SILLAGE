@@ -41,7 +41,7 @@ export default function OwnerDJTransfers() {
     return (
       <div className="p-8 flex flex-col items-center justify-center min-h-full">
         <AlertCircle className="w-12 h-12 text-muted-foreground mb-4" />
-        <h2 className="text-xl font-serif text-white mb-2">Aucun événement actif</h2>
+        <h2 className="text-xl font-serif text-foreground mb-2">Aucun événement actif</h2>
         <p className="text-muted-foreground text-center">Veuillez d'abord sélectionner ou créer un événement.</p>
       </div>
     );
@@ -55,7 +55,7 @@ export default function OwnerDJTransfers() {
     <div className="p-8 max-w-5xl mx-auto w-full">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-serif text-white mb-2">Transferts DJ</h1>
+          <h1 className="text-3xl font-serif text-foreground mb-2">Transferts DJ</h1>
           <p className="text-muted-foreground text-sm">Partagez vos fichiers audios sous licence de manière sécurisée et éphémère.</p>
         </div>
         <Button onClick={() => setIsCreating(true)} className="gap-2">
@@ -75,7 +75,7 @@ export default function OwnerDJTransfers() {
       ) : transfers.length === 0 ? (
         <div className="border border-dashed border-border rounded-xl p-12 flex flex-col items-center justify-center text-center bg-card/30">
           <Send className="w-12 h-12 text-muted-foreground/50 mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">Aucun transfert en cours</h3>
+          <h3 className="text-lg font-medium text-foreground mb-2">Aucun transfert en cours</h3>
           <p className="text-muted-foreground text-sm max-w-sm mb-6">
             Sélectionnez des fichiers ou une playlist complète, et générez un lien privé pour votre DJ.
           </p>
@@ -124,7 +124,7 @@ function TransferCard({ transfer, onRevoke }: { transfer: DJTransfer, onRevoke: 
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3 mb-1">
-            <h3 className="font-medium text-white break-all">{transfer.recipientEmail}</h3>
+            <h3 className="font-medium text-foreground break-all">{transfer.recipientEmail}</h3>
             {getStatusDisplay()}
           </div>
           <p className="text-sm text-muted-foreground mt-1">
@@ -234,13 +234,13 @@ function CreateTransferForm({ onCancel, onSuccess }: { onCancel: () => void, onS
     <div className="p-8 max-w-3xl mx-auto w-full">
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" size="icon" onClick={onCancel} className="text-muted-foreground"><X className="w-5 h-5" /></Button>
-        <h1 className="text-2xl font-serif text-white">Nouveau transfert</h1>
+        <h1 className="text-2xl font-serif text-foreground">Nouveau transfert</h1>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="space-y-4 bg-card/30 p-6 rounded-xl border border-border">
           <div>
-            <label className="block text-sm font-medium text-white mb-1.5">Email du destinataire (DJ)</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">Email du destinataire (DJ)</label>
             <Input 
               type="email" 
               placeholder="dj@example.com" 
@@ -251,7 +251,7 @@ function CreateTransferForm({ onCancel, onSuccess }: { onCancel: () => void, onS
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-white mb-1.5">Expiration (jours)</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">Expiration (jours)</label>
             <Input 
               type="number" 
               min="1" 
@@ -266,7 +266,7 @@ function CreateTransferForm({ onCancel, onSuccess }: { onCancel: () => void, onS
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-lg font-medium text-white">Sélection des fichiers</h2>
+          <h2 className="text-lg font-medium text-foreground">Sélection des fichiers</h2>
           <div className="flex gap-2 p-1 bg-card rounded-lg w-max border border-border">
             <Button type="button" variant={selectionMode === 'playlist' ? 'secondary' : 'ghost'} size="sm" onClick={() => setSelectionMode('playlist')}>Depuis une playlist</Button>
             <Button type="button" variant={selectionMode === 'individual' ? 'secondary' : 'ghost'} size="sm" onClick={() => setSelectionMode('individual')}>Sélection individuelle</Button>
@@ -309,7 +309,7 @@ function CreateTransferForm({ onCancel, onSuccess }: { onCancel: () => void, onS
                     onCheckedChange={() => handleToggleTrack(track.id)}
                   />
                   <div>
-                    <p className="text-sm font-medium text-white">{track.title}</p>
+                    <p className="text-sm font-medium text-foreground">{track.title}</p>
                     <p className="text-xs text-muted-foreground">{track.artist || 'Artiste inconnu'}</p>
                   </div>
                 </label>
@@ -329,7 +329,7 @@ function CreateTransferForm({ onCancel, onSuccess }: { onCancel: () => void, onS
             className="mt-1"
           />
           <label htmlFor="rightsConfirmed" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
-            <strong className="text-white block mb-1">Confirmation des droits</strong>
+            <strong className="text-foreground block mb-1">Confirmation des droits</strong>
             Je confirme que les fichiers sélectionnés ont été acquis légalement et que ce partage s'effectue uniquement dans le cadre privé de mon événement pour l'usage exclusif du professionnel mandaté.
           </label>
         </div>
