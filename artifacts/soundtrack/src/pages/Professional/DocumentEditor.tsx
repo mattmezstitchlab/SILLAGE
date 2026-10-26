@@ -73,7 +73,7 @@ export default function DocumentEditor() {
       discountTerms: formData.discountTerms || undefined,
       latePaymentRate: formData.latePaymentRate || undefined,
       serviceType: formData.serviceType || undefined,
-      purchaseOrderNumber: formData.purchaseOrderNumber || undefined,
+      orderNumber: formData.orderNumber || undefined,
       paymentTerms: formData.paymentTerms || undefined,
       contractText: formData.contractText || undefined,
       notes: formData.notes || undefined,

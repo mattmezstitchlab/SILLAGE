@@ -432,7 +432,11 @@ function sourceMetadata() {
 }
 
 function profileSnapshot(row: DbRow) {
-  return mapProfile(row);
+  return {
+    ...mapProfile(row),
+    // Use the rates saved on the professional profile for invoice validation.
+    vatRatesBps: Array.isArray(row.vat_rates_bps) ? row.vat_rates_bps : [],
+  };
 }
 
 function clientSnapshot(row: DbRow) {

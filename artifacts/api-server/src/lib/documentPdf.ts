@@ -251,7 +251,9 @@ function snapshotLines(snapshot: Snapshot): RenderLine[] {
   const add = (
     value: unknown,
     options: Omit<RenderLine, "value"> = {},
-  ): void => lines.push({ value: text(value), ...options });
+  ): void => {
+    lines.push({ value: text(value), ...options });
+  };
   const blank = (gapBefore = 2): void => add("", { leading: 6, gapBefore });
   const heading = (value: string): void => {
     blank(4);
@@ -259,9 +261,10 @@ function snapshotLines(snapshot: Snapshot): RenderLine[] {
   };
   const wrapped = (
     value: unknown,
-    options: Omit<RenderLine, "value" | "maxCharacters"> = {},
+    options: Omit<RenderLine, "value"> = {},
   ): void => {
-    for (const part of wrapText(value, options.size && options.size >= 11 ? 85 : 102)) {
+    const maxCharacters = options.maxCharacters ?? (options.size && options.size >= 11 ? 85 : 102);
+    for (const part of wrapText(value, maxCharacters)) {
       add(part, options);
     }
   };
